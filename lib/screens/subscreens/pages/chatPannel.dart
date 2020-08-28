@@ -36,18 +36,18 @@ class _ChatState extends State<Chat> {
                             Icon(
                               Icons.supervised_user_circle,
                               color: Colors.white,
-                              size: 20,
+                              size: 30,
                             ),
                             SizedBox(width:10),
                             Text(
                               '${chatlist[index].username}',
                               style: TextStyle(
-                                  fontSize: 15,
+                                  fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white),
                             ),
                             SizedBox(
-                              width: 70,
+                              width: 40,
                             ),
                             Text(
                               '${chatlist[index].number}',

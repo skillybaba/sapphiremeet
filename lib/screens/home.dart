@@ -3,6 +3,7 @@ import './subscreens/pages/chatPannel.dart';
 import './subscreens/pages/Confrence.dart';
 import './subscreens/pages/calling.dart';
 import './subscreens/pages/status.dart';
+import 'package:application/services/authvals.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -10,16 +11,29 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  GlobalKey<ScaffoldState> key = GlobalKey<ScaffoldState>();
   PageController controller = PageController(initialPage: 0);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: key,
+      drawer: Drawer(
+        child: FlatButton.icon(
+            onPressed: () async {
+              await AuthVals().deleteVals('userinfo', 'auth');
+              Navigator.pushReplacementNamed(context, '/');
+              
+            },
+            icon: Icon(Icons.no_encryption),
+            label: Text('Logout')),
+      ),
       appBar: AppBar(
         actions: [
           FlatButton(
-
               onPressed: () {
-                controller.animateToPage(3, duration: Duration(seconds: 1),curve:Curves.fastLinearToSlowEaseIn);
+                controller.animateToPage(3,
+                    duration: Duration(seconds: 1),
+                    curve: Curves.fastLinearToSlowEaseIn);
               },
               child: Icon(Icons.rounded_corner, size: 30, color: Colors.white))
         ],
@@ -31,7 +45,9 @@ class _HomeState extends State<Home> {
                   child: FlatButton.icon(
                     color: Colors.yellow[800],
                     onPressed: () {
-                      controller.animateToPage(0, duration: Duration(seconds: 1),curve:Curves.fastLinearToSlowEaseIn);
+                      controller.animateToPage(0,
+                          duration: Duration(seconds: 1),
+                          curve: Curves.fastLinearToSlowEaseIn);
                     },
                     icon: Icon(
                       Icons.chat,
@@ -46,7 +62,9 @@ class _HomeState extends State<Home> {
               FlatButton.icon(
                   color: Colors.yellow[800],
                   onPressed: () {
-                    controller.animateToPage(1, duration: Duration(seconds: 1),curve:Curves.fastLinearToSlowEaseIn);
+                    controller.animateToPage(1,
+                        duration: Duration(seconds: 1),
+                        curve: Curves.fastLinearToSlowEaseIn);
                   },
                   icon: Icon(
                     Icons.call,
@@ -58,7 +76,9 @@ class _HomeState extends State<Home> {
               FlatButton.icon(
                   color: Colors.yellow[800],
                   onPressed: () {
-                    controller.animateToPage(2, duration: Duration(seconds: 1),curve:Curves.fastLinearToSlowEaseIn);
+                    controller.animateToPage(2,
+                        duration: Duration(seconds: 1),
+                        curve: Curves.fastLinearToSlowEaseIn);
                   },
                   icon: Icon(
                     Icons.group,
@@ -73,7 +93,12 @@ class _HomeState extends State<Home> {
             borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20))),
-        leading: Icon(Icons.menu),
+        leading: FlatButton(
+            onPressed: () {
+              key.currentState.openDrawer();
+            },
+            child: Icon(Icons.menu,color:Colors.white)),
+           
         title: Text('Sapphire Meet'),
         centerTitle: true,
       ),

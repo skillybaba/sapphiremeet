@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:application/services/authvals.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:application/services/firebasedatabse.dart';
 
 class LoginSub extends StatefulWidget {
   @override
@@ -23,8 +24,19 @@ class _LoginSubState extends State<LoginSub> {
           verificationCompleted: (var credential) async {
             var result = await auth.signInWithCredential(credential);
             var user = result.user;
+
             if (user != null) {
-              Navigator.popAndPushNamed(context, '/home');
+            
+              
+              var vals = await AuthVals().getVals('userinfo', 'auth');
+await AuthVals().setAuth();
+              if ((vals[0].length>0)&&(vals[0][0] == number)) {
+                Navigator.pushReplacementNamed(context, '/home');
+              } else {
+                Navigator.pushReplacementNamed(context, '/info', arguments: {
+                  'number': number,
+                });
+              }
             } else {
               print('error');
             }
@@ -46,14 +58,26 @@ class _LoginSubState extends State<LoginSub> {
                           var credential = PhoneAuthProvider.credential(
                               verificationId: verification,
                               smsCode: controllercode.text.trim());
-                              var result = await auth.signInWithCredential(credential);
-            var user = result.user;
-            if (user != null) {
-              Navigator.popAndPushNamed(context, '/home');
-            } else {
-              print('error');
-            }
+                          var result =
+                              await auth.signInWithCredential(credential);
+                          var user = result.user;
 
+                          if (user != null) {
+                            var vals =
+                                await AuthVals().getVals('userinfo', 'auth');
+                            
+
+                            await AuthVals().setAuth();if ((vals[0].length>0)&&(vals[0][0] == number)) {
+                              Navigator.pushReplacementNamed(context, '/home');
+                            } else {
+                              Navigator.pushReplacementNamed(context, '/info',
+                                  arguments: {
+                                    'number': number,
+                                  });
+                            }
+                          } else {
+                            print('error');
+                          }
                         },
                         child: Text('Check OTP'),
                       )
@@ -62,15 +86,27 @@ class _LoginSubState extends State<LoginSub> {
                       controller: controllercode,
                       onEditingComplete: () async {
                         var credential = PhoneAuthProvider.credential(
-                              verificationId: verification,
-                              smsCode: controllercode.text.trim());
-                              var result = await auth.signInWithCredential(credential);
-            var user = result.user;
-            if (user != null) {
-              Navigator.popAndPushNamed(context, '/home');
-            } else {
-              print('error');
-            }
+                            verificationId: verification,
+                            smsCode: controllercode.text.trim());
+                        var result =
+                            await auth.signInWithCredential(credential);
+                        var user = result.user;
+                        if (user != null) {
+                          var vals =
+                              await AuthVals().getVals('userinfo', 'auth');
+                          
+
+                          await AuthVals().setAuth();if((vals[0].length>0)&&(vals[0][0] == number)) {
+                            Navigator.pushReplacementNamed(context, '/home');
+                          } else {
+                            Navigator.pushReplacementNamed(context, '/info',
+                                arguments: {
+                                  'number': number,
+                                });
+                          }
+                        } else {
+                          print('error');
+                        }
                       },
                     ),
                   );
