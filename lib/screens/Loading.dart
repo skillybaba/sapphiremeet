@@ -2,7 +2,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/material.dart';
 import 'package:application/services/authvals.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:application/services/firebasedatabse.dart';
+
 
 class Loading extends StatefulWidget {
   @override
@@ -40,7 +40,7 @@ class _LoadingState extends State<Loading> {
   @override
   Widget build(BuildContext context) {
     getVals();
-   
+    
     return Container(
       child: Center(
         child: SpinKitChasingDots(color: Colors.yellow[800], size: 50),

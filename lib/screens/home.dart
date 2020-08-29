@@ -1,3 +1,4 @@
+import 'package:application/services/firebasedatabse.dart';
 import 'package:flutter/material.dart';
 import './subscreens/pages/chatPannel.dart';
 import './subscreens/pages/Confrence.dart';
@@ -22,7 +23,6 @@ class _HomeState extends State<Home> {
             onPressed: () async {
               await AuthVals().deleteVals('userinfo', 'auth');
               Navigator.pushReplacementNamed(context, '/');
-              
             },
             icon: Icon(Icons.no_encryption),
             label: Text('Logout')),
@@ -97,8 +97,7 @@ class _HomeState extends State<Home> {
             onPressed: () {
               key.currentState.openDrawer();
             },
-            child: Icon(Icons.menu,color:Colors.white)),
-           
+            child: Icon(Icons.menu, color: Colors.white)),
         title: Text('Sapphire Meet'),
         centerTitle: true,
       ),
@@ -112,7 +111,11 @@ class _HomeState extends State<Home> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+      
+        onPressed: () {
+          Navigator.popAndPushNamed(context, '/contacts' );
+          print('done');
+        },
         child: Icon(Icons.group_add_outlined),
         backgroundColor: Colors.yellow[800],
       ),
