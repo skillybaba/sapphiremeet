@@ -5,7 +5,7 @@ import './screens/home.dart';
 import './screens/infoscreen.dart';
 import './screens/Loading.dart';
 import './screens/contacts.dart';
-
+import './screens/chatpannel.dart';
 void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
@@ -16,6 +16,7 @@ void main() {
       '/home': (context) => Home(),
       '/info': (context) => InfoScreen(),
       '/contacts': (context)=>ContactView(),
+      '/chatpannel':(context)=>ChatPannel(),
     },
   ));
 }

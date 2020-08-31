@@ -55,11 +55,19 @@ class _InfoScreenState extends State<InfoScreen> {
           ),
           FlatButton.icon(
             onPressed: () async {
-              AuthVals authVals = AuthVals();
-              authVals.auth = true;
-               FireBaseDataBase(number: data['number'],username:name.text).addUser();
-              await authVals.setVal(data['number'], name.text);
-              Navigator.pushReplacementNamed(context, '/home');
+              try {
+                AuthVals authVals = AuthVals();
+                authVals.auth = true;
+                print(data);
+                var firedata = FireBaseDataBase(
+                    number: data['number'], username: name.text);
+                await firedata.addUser();
+                await firedata.setPref();
+                authVals.setVal(data['number'], name.text);
+                Navigator.pushReplacementNamed(context, '/home');
+              } catch (e) {
+                print(e);
+              }
             },
             icon: Icon(
               Icons.arrow_right,

@@ -1,5 +1,4 @@
 import 'package:shared_preferences/shared_preferences.dart';
-
 class AuthVals {
   String number;
   String name;

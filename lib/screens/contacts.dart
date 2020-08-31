@@ -48,12 +48,15 @@ class _ContactViewState extends State<ContactView> {
               ),
               SliverList(delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
-                  if (index < contacts.length)
+                  if (index < contacts[0].length)
                     return Container(
                         padding: EdgeInsets.all(20),
                         child: FlatButton.icon(
                             onPressed: () {
-                              Navigator.popAndPushNamed(context, '/home');
+                              Navigator.popAndPushNamed(context, '/chatpannel',arguments: {
+                                'number':contacts[0][index],
+                                'docid':contacts[1][index],
+                              });
                             },
                             icon: Container(
                               padding: EdgeInsets.only(right: 20),
@@ -64,7 +67,7 @@ class _ContactViewState extends State<ContactView> {
                               ),
                             ),
                             label: Text(
-                              '${contacts[index]}',
+                              '${contacts[0][index]}',
                               style: TextStyle(
                                   color: Colors.yellow[800], fontSize: 20),
                             )));
