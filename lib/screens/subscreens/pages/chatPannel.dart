@@ -31,10 +31,10 @@ class _ChatState extends State<Chat> {
                 ? ChatModel(username: 'null', number: e)
                 : ChatModel(username: 'null', number: 'null'))
             .toList();
-
+        print(chatlist);
         chatlist.removeAt(0);
         chatlist.removeAt(0);
-        print(chatlist[0].number);
+        print(chatlist);
         flag = false;
       });
   }
@@ -48,7 +48,18 @@ class _ChatState extends State<Chat> {
           SliverList(
             delegate:
                 SliverChildBuilderDelegate((BuildContext context, int index) {
-              if (index < chatlist.length) {
+              if ((chatlist.length == 0) && (index < 1))
+                return Container(
+                    padding: EdgeInsets.all(60),
+                    child: Center(
+                        child: Text(
+                      'Welcome!!',
+                      style: TextStyle(
+                          color: Colors.yellow[800],
+                          fontSize: 40,
+                          fontWeight: FontWeight.bold),
+                    )));
+              else if (index < chatlist.length) {
                 print(chatlist[index].number);
                 return FlatButton(
                     onPressed: () async {
