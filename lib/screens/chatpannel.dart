@@ -56,15 +56,15 @@ class _ChatPannelState extends State<ChatPannel> {
     var doc = firestore.doc(info[2]);
     var docref = await doc.get();
     var data1 = docref.data()[data['number']]['message'];
-
-    if (prevlength != data1.length) {
-      prevlength = data1.length;
-      setState(() {
+    setState(() {
+      if (prevlength != data1.length) {
+        prevlength = data1.length;
+        
         this.message.add(ChatMessage(
             text: data1[data1.length - 1]['val'][0],
             user: ChatUser(name: data1[data1.length - 1]['val'][3])));
-      });
-    }
+      }
+    });
   }
 
   void initState() {
@@ -75,10 +75,16 @@ class _ChatPannelState extends State<ChatPannel> {
   Widget build(BuildContext context) {
     data = ModalRoute.of(context).settings.arguments;
     messages();
-
     return Scaffold(
         appBar: AppBar(
-            title: Text('Sapphire Meet'), backgroundColor: Colors.yellow[800]),
+            leading: FlatButton(
+                onPressed: () {
+                  Navigator.popAndPushNamed(context, '/home');
+                },
+                child: Icon(Icons.arrow_back,color:Colors.white),),
+                
+            title: Text('Sapphire Meet'),
+            backgroundColor: Colors.yellow[800]),
         body: StreamBuilder(builder: (context, snapshot) {
           if (flag) {
             retrive();
@@ -99,12 +105,23 @@ class _ChatPannelState extends State<ChatPannel> {
                   });
                   print(messagedata);
                   if (messagedata == null) {
-                    ref.update({
-                      data['number']: {'name': data['number'], 'message': []}
+                    await ref.update({
+                      data['number']: {
+                        'name': data['number'],
+                        'docid': data['docid'],
+                        'message': []
+                      }
                     });
-                    ref2.update({
-                      info[0]: {'name': data['number'], 'message': []}
+                    await ref2.update({
+                      info[0]: {
+                        'name': data['number'],
+                        'docid': data['docid'],
+                        'message': []
+                      }
                     });
+                    SharedPreferences pref =
+                        await SharedPreferences.getInstance();
+                    await pref.setString(data['number'], data['docid']);
                   } else {
                     messagedata['message'].add({
                       'val': [

@@ -14,6 +14,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   GlobalKey<ScaffoldState> key = GlobalKey<ScaffoldState>();
   PageController controller = PageController(initialPage: 0);
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
