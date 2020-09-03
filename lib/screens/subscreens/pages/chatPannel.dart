@@ -37,6 +37,7 @@ class _ChatState extends State<Chat> {
         print(chatlist);
         flag = false;
       });
+    setState(() {});
   }
 
   @override

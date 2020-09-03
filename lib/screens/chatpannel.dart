@@ -32,14 +32,25 @@ class _ChatPannelState extends State<ChatPannel> {
         print(info);
         var doc = firestore.doc(info[2]);
         var data1 = await doc.get();
-        List chats = data1.data()[data['number']]['message'];
+        Map chats = data1.data();
         print(chats);
-        this.message = [];
-        for (var i in chats)
-          this.message.add(
-              ChatMessage(text: i['val'][0], user: ChatUser(uid: i['val'][3])));
-        print(message);
+        if (chats.containsKey(data['number'])) {
+          var data1 = chats[data['number']]['message'];
+          this.message = [];
 
+          for (var i in data1)
+            this.message.add(ChatMessage(
+                quickReplies: i['val'][0] == 'hi'
+                    ? QuickReplies(values: [Reply(title: 'hello')])
+                    : null,
+                text: i['val'][0],
+                user: ChatUser(name: i['val'][3].substring(3))));
+          print(message);
+
+          setState(() {
+            flag = true;
+          });
+        }
         setState(() {
           flag = true;
         });
@@ -49,21 +60,55 @@ class _ChatPannelState extends State<ChatPannel> {
     }
   }
 
-  int prevlength = 0;
+  int prevlength;
   void retrive() async {
+    prevlength = message.length;
     await Firebase.initializeApp();
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     var doc = firestore.doc(info[2]);
     var docref = await doc.get();
-    var data1 = docref.data()[data['number']]['message'];
+    var data2 = docref.data();
+    if (data2.containsKey(data['number'])) {
+      var data1 = data2[data['number']]['message'];
+      setState(() {
+        if (prevlength != data1.length) {
+          prevlength = data1.length;
+
+          this.message.add(ChatMessage(
+              text: data1[data1.length - 1]['val'][0],
+              user: ChatUser(name: data1[data1.length - 1]['val'][3].substring(3))));
+        }
+      });
+    }
+  }
+
+  bool flag3 = false;
+  void check() async {
+    data = ModalRoute.of(context).settings.arguments;
+    await Firebase.initializeApp();
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    var ref = firestore.doc(info[2]);
+    var ref2 = firestore.doc(data['docid']);
+    Map messagedata;
+    await ref.get().then((value) {
+      messagedata = value.data()[data['number']];
+    });
+    print(messagedata);
+    if (messagedata == null) {
+      await ref.update({
+        data['number']: {
+          'name': data['number'],
+          'docid': data['docid'],
+          'message': []
+        }
+      });
+      await ref2.update({
+        info[0]: {'name': data['number'], 'docid': data['docid'], 'message': []}
+      });
+    }
     setState(() {
-      if (prevlength != data1.length) {
-        prevlength = data1.length;
-        
-        this.message.add(ChatMessage(
-            text: data1[data1.length - 1]['val'][0],
-            user: ChatUser(name: data1[data1.length - 1]['val'][3])));
-      }
+      flag3 = true;
     });
   }
 
@@ -74,15 +119,16 @@ class _ChatPannelState extends State<ChatPannel> {
   @override
   Widget build(BuildContext context) {
     data = ModalRoute.of(context).settings.arguments;
+    if (!flag3) check();
     messages();
     return Scaffold(
         appBar: AppBar(
             leading: FlatButton(
-                onPressed: () {
-                  Navigator.popAndPushNamed(context, '/home');
-                },
-                child: Icon(Icons.arrow_back,color:Colors.white),),
-                
+              onPressed: () {
+                Navigator.popAndPushNamed(context, '/home');
+              },
+              child: Icon(Icons.arrow_back, color: Colors.white),
+            ),
             title: Text('Sapphire Meet'),
             backgroundColor: Colors.yellow[800]),
         body: StreamBuilder(builder: (context, snapshot) {
@@ -90,6 +136,57 @@ class _ChatPannelState extends State<ChatPannel> {
             retrive();
             return DashChat(
               key: key,
+              onQuickReply: (chatmessage) async{
+                try {
+                  print(info);
+                  await Firebase.initializeApp();
+                  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+                  var ref = firestore.doc(info[2]);
+                  var ref2 = firestore.doc(data['docid']);
+                  Map messagedata;
+                  await ref.get().then((value) {
+                    messagedata = value.data()[data['number']];
+                  });
+                  print(messagedata);
+                  // if (messagedata == null) {
+                  //   await ref.update({
+                  //     data['number']: {
+                  //       'name': data['number'],
+                  //       'docid': data['docid'],
+                  //       'message': []
+                  //     }
+                  //   });
+                  //   await ref2.update({
+                  //     info[0]: {
+                  //       'name': data['number'],
+                  //       'docid': data['docid'],
+                  //       'message': []
+                  //     }
+                  //   });
+                  SharedPreferences pref =
+                      await SharedPreferences.getInstance();
+                  await pref.setString(data['number'], data['docid']);
+
+                  messagedata['message'].add({
+                    'val': [
+                      chatmessage.title,
+                      null,
+                      null,
+                      info[0],
+                      DateTime.now().toString(),
+                    ]
+                  });
+                  print(messagedata);
+                  await ref.update({data['number']: messagedata});
+                  await ref2.update({info[0]: messagedata});
+                  setState(() {
+                    print('done');
+                  });
+                } catch (e) {
+                  print(e);
+                }
+              },
               messages: message,
               onSend: (ChatMessage chatmessage) async {
                 try {
@@ -104,41 +201,40 @@ class _ChatPannelState extends State<ChatPannel> {
                     messagedata = value.data()[data['number']];
                   });
                   print(messagedata);
-                  if (messagedata == null) {
-                    await ref.update({
-                      data['number']: {
-                        'name': data['number'],
-                        'docid': data['docid'],
-                        'message': []
-                      }
-                    });
-                    await ref2.update({
-                      info[0]: {
-                        'name': data['number'],
-                        'docid': data['docid'],
-                        'message': []
-                      }
-                    });
-                    SharedPreferences pref =
-                        await SharedPreferences.getInstance();
-                    await pref.setString(data['number'], data['docid']);
-                  } else {
-                    messagedata['message'].add({
-                      'val': [
-                        chatmessage.text,
-                        chatmessage.image,
-                        chatmessage.user.uid,
-                        info[0],
-                        DateTime.now().toString(),
-                      ]
-                    });
-                    print(messagedata);
-                    await ref.update({data['number']: messagedata});
-                    await ref2.update({info[0]: messagedata});
-                    setState(() {
-                      print('done');
-                    });
-                  }
+                  // if (messagedata == null) {
+                  //   await ref.update({
+                  //     data['number']: {
+                  //       'name': data['number'],
+                  //       'docid': data['docid'],
+                  //       'message': []
+                  //     }
+                  //   });
+                  //   await ref2.update({
+                  //     info[0]: {
+                  //       'name': data['number'],
+                  //       'docid': data['docid'],
+                  //       'message': []
+                  //     }
+                  //   });
+                  SharedPreferences pref =
+                      await SharedPreferences.getInstance();
+                  await pref.setString(data['number'], data['docid']);
+
+                  messagedata['message'].add({
+                    'val': [
+                      chatmessage.text,
+                      chatmessage.image,
+                      chatmessage.user.uid,
+                      info[0],
+                      DateTime.now().toString(),
+                    ]
+                  });
+                  print(messagedata);
+                  await ref.update({data['number']: messagedata});
+                  await ref2.update({info[0]: messagedata});
+                  setState(() {
+                    print('done');
+                  });
                 } catch (e) {
                   print(e);
                 }
@@ -148,7 +244,7 @@ class _ChatPannelState extends State<ChatPannel> {
               ),
             );
           } else
-            return SpinKitDualRing(
+            return SpinKitRing(
               color: Colors.yellow[800],
             );
         }));

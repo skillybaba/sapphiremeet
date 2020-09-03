@@ -60,7 +60,7 @@ class FireBaseDataBase {
           });
         }
       }
-      
+
       return [list, docid];
     } catch (e) {
       print(e);
@@ -69,6 +69,7 @@ class FireBaseDataBase {
 
   Future<void> setPref() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+
     await prefs
         .setStringList('your info', [this.number, this.username, docid.path]);
     print('done121');
@@ -95,29 +96,30 @@ class FireBaseDataBase {
       });
 
       if (val) {
-        await user.add({
+       var user1= await user.add({
           'number': this.number,
           'username': this.username,
-        }).then((value) async {
-          print('done');
-          await Firebase.initializeApp();
+        });
+         print('done');
+          
           FirebaseFirestore firestore = FirebaseFirestore.instance;
           CollectionReference usermsg = firestore.collection('msg');
 
-          await usermsg
-              .add({'name': this.username, 'number': this.number}).then(
-                  (value) async {
-            docid = value;
-          }).catchError((error) {});
-          await user.doc(value.id).update({'Doc Id': docid.path});
+          docid =
+              await usermsg.add({'name': this.username, 'number': this.number});
+          print(docid.path);
+          await user.doc(user1.id).update({'Doc Id': docid.path});
           SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setStringList(
-              'your info', [this.number, this.username, docid.path]);
+          await prefs.setString(
+              this.number, docid.path);
           print('done121');
-        }).catchError((onError) {
-          print('something went wrong,$onError');
-        });
       }
+      
+       SharedPreferences prefs = await SharedPreferences.getInstance();
+       
+          await prefs.setStringList(
+              'your info', [this.number, this.username, prefs.getString(this.number)]);
+          print('done121');
     } catch (e) {
       print(e);
     }

@@ -26,17 +26,32 @@ class _LoginSubState extends State<LoginSub> {
             var user = result.user;
 
             if (user != null) {
-            
-              
               var vals = await AuthVals().getVals('userinfo', 'auth');
-await AuthVals().setAuth();
-              if ((vals[0].length>0)&&(vals[0][0] == number)) {
-                Navigator.pushReplacementNamed(context, '/home');
-              } else {
-                Navigator.pushReplacementNamed(context, '/info', arguments: {
-                  'number': number,
-                });
-              }
+              await AuthVals().setAuth();
+               if (user != null) {
+                            var vals =
+                                await AuthVals().getVals('userinfo', 'auth');
+                            print(vals);
+                            await AuthVals().setAuth();
+                            if (vals != null) {
+                              if (vals[0] != null) {
+                                if ((vals[0].length > 0) &&
+                                    (vals[0][0] == number)) {
+                                  Navigator.pushReplacementNamed(
+                                      context, '/home');
+                                } else {
+                                  Navigator.pushReplacementNamed(context, '/info',arguments: {
+                                      'number': number,
+                                    });
+                                }
+                              } else {
+                                Navigator.pushReplacementNamed(context, '/info',
+                                    arguments: {
+                                      'number': number,
+                                    });
+                              }
+                            }
+                          }
             } else {
               print('error');
             }
@@ -65,18 +80,26 @@ await AuthVals().setAuth();
                           if (user != null) {
                             var vals =
                                 await AuthVals().getVals('userinfo', 'auth');
-                            
-
-                            await AuthVals().setAuth();if ((vals[0].length>0)&&(vals[0][0] == number)) {
-                              Navigator.pushReplacementNamed(context, '/home');
-                            } else {
-                              Navigator.pushReplacementNamed(context, '/info',
-                                  arguments: {
-                                    'number': number,
-                                  });
+                            print(vals);
+                            await AuthVals().setAuth();
+                            if (vals != null) {
+                              if (vals[0] != null) {
+                                if ((vals[0].length > 0) &&
+                                    (vals[0][0] == number)) {
+                                  Navigator.pushReplacementNamed(
+                                      context, '/home');
+                                } else {
+                                  Navigator.pushReplacementNamed(context, '/info',arguments: {
+                                      'number': number,
+                                    });
+                                }
+                              } else {
+                                Navigator.pushReplacementNamed(context, '/info',
+                                    arguments: {
+                                      'number': number,
+                                    });
+                              }
                             }
-                          } else {
-                            print('error');
                           }
                         },
                         child: Text('Check OTP'),
@@ -94,18 +117,32 @@ await AuthVals().setAuth();
                         if (user != null) {
                           var vals =
                               await AuthVals().getVals('userinfo', 'auth');
-                          
 
-                          await AuthVals().setAuth();if((vals[0].length>0)&&(vals[0][0] == number)) {
-                            Navigator.pushReplacementNamed(context, '/home');
-                          } else {
-                            Navigator.pushReplacementNamed(context, '/info',
-                                arguments: {
-                                  'number': number,
-                                });
+                          await AuthVals().setAuth();
+                           if (user != null) {
+                            var vals =
+                                await AuthVals().getVals('userinfo', 'auth');
+                            print(vals);
+                            await AuthVals().setAuth();
+                            if (vals != null) {
+                              if (vals[0] != null) {
+                                if ((vals[0].length > 0) &&
+                                    (vals[0][0] == number)) {
+                                  Navigator.pushReplacementNamed(
+                                      context, '/home');
+                                } else {
+                                  Navigator.pushReplacementNamed(context, '/info',arguments: {
+                                      'number': number,
+                                    });
+                                }
+                              } else {
+                                Navigator.pushReplacementNamed(context, '/info',
+                                    arguments: {
+                                      'number': number,
+                                    });
+                              }
+                            }
                           }
-                        } else {
-                          print('error');
                         }
                       },
                     ),

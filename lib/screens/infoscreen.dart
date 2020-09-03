@@ -62,8 +62,8 @@ class _InfoScreenState extends State<InfoScreen> {
                 var firedata = FireBaseDataBase(
                     number: data['number'], username: name.text);
                 await firedata.addUser();
-                await firedata.setPref();
-                authVals.setVal(data['number'], name.text);
+                
+                await authVals.setVal(data['number'], name.text);
                 Navigator.pushReplacementNamed(context, '/home');
               } catch (e) {
                 print(e);

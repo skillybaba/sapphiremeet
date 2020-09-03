@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+
 class AuthVals {
   String number;
   String name;
@@ -19,16 +20,16 @@ class AuthVals {
   Future<List> getVals(key, authkey) async {
     var sharedpref = await SharedPreferences.getInstance();
 
-    var vals = await sharedpref.getStringList(key);
+    var vals = sharedpref.getStringList(key);
 
-    var authval = await sharedpref.getBool(authkey);
+    var authval = sharedpref.getBool(authkey);
     return [vals, authval];
   }
 
   Future<bool> deleteVals(key, authkey) async {
     var sharedpref = await SharedPreferences.getInstance();
-
-    sharedpref.setBool(authkey, false);
+    await sharedpref.setStringList(key, []);
+    await sharedpref.setBool(authkey, false);
     return true;
   }
 }
