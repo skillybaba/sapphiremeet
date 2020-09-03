@@ -96,30 +96,38 @@ class FireBaseDataBase {
       });
 
       if (val) {
-       var user1= await user.add({
+        var user1 = await user.add({
           'number': this.number,
           'username': this.username,
         });
-         print('done');
-          
-          FirebaseFirestore firestore = FirebaseFirestore.instance;
-          CollectionReference usermsg = firestore.collection('msg');
+        print('done');
 
-          docid =
-              await usermsg.add({'name': this.username, 'number': this.number});
-          print(docid.path);
-          await user.doc(user1.id).update({'Doc Id': docid.path});
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setString(
-              this.number, docid.path);
-          print('done121');
+        FirebaseFirestore firestore = FirebaseFirestore.instance;
+        CollectionReference usermsg = firestore.collection('msg');
+
+        docid =
+            await usermsg.add({'name': this.username, 'number': this.number});
+        print(docid.path);
+        await user.doc(user1.id).update({'Doc Id': docid.path});
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString(this.number, docid.path);
+        print('done121');
+      } else {
+        var user1 = await user.get();
+        var docidpath;
+        user1.docs.forEach((element) {
+          if (element.data()['number'] == this.number)
+             docidpath = element.data()['Doc Id'];
+        });
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString(this.number, docidpath);
       }
-      
-       SharedPreferences prefs = await SharedPreferences.getInstance();
-       
-          await prefs.setStringList(
-              'your info', [this.number, this.username, prefs.getString(this.number)]);
-          print('done121');
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      await prefs.setStringList('your info',
+          [this.number, this.username, prefs.getString(this.number)]);
+      print('done121');
     } catch (e) {
       print(e);
     }

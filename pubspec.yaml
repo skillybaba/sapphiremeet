@@ -40,7 +40,6 @@ dependencies:
   shared_preferences: ^0.5.10
   flutter_spinkit: "^4.1.2"
   firebase_storage: ^4.0.0
-  
   dash_chat: ^1.1.14
   
   
