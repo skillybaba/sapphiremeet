@@ -32,7 +32,7 @@ class _ContactViewState extends State<ContactView> {
                     onPressed: () {
                       Navigator.popAndPushNamed(context, '/home');
                     },
-                    child: Icon(Icons.arrow_back,color:Colors.white)),
+                    child: Icon(Icons.arrow_back, color: Colors.white)),
                 floating: true,
                 pinned: true,
                 expandedHeight: 120.0,
@@ -53,10 +53,12 @@ class _ContactViewState extends State<ContactView> {
                         padding: EdgeInsets.all(20),
                         child: FlatButton.icon(
                             onPressed: () {
-                              Navigator.popAndPushNamed(context, '/chatpannel',arguments: {
-                                'number':contacts[0][index],
-                                'docid':contacts[1][index],
-                              });
+                              Navigator.popAndPushNamed(context, '/chatpannel',
+                                  arguments: {
+                                    'number': contacts[0][index],
+                                    'docid': contacts[1][index],
+                                    'name': contacts[2][index],
+                                  });
                             },
                             icon: Container(
                               padding: EdgeInsets.only(right: 20),
@@ -66,11 +68,16 @@ class _ContactViewState extends State<ContactView> {
                                 color: Colors.yellow[800],
                               ),
                             ),
-                            label: Text(
-                              '${contacts[0][index]}',
-                              style: TextStyle(
-                                  color: Colors.yellow[800], fontSize: 20),
-                            )));
+                            label: Column(children: [
+                              Text(
+                                '${contacts[0][index]}',
+                                style: TextStyle(
+                                    color: Colors.yellow[800], fontSize: 20),
+                              ),
+                              Text('${contacts[2][index]}',
+                                  style: TextStyle(
+                                      color: Colors.yellow[800], fontSize: 20))
+                            ])));
                 },
               )),
             ],

@@ -66,12 +66,14 @@ class _ChatState extends State<Chat> {
                     onPressed: () async {
                       SharedPreferences pref =
                           await SharedPreferences.getInstance();
-                      var docid = pref.getString(chatlist[index].number);
+                      var docid = pref.getStringList(chatlist[index].number)[1];
+                      var name = pref.getStringList(chatlist[index].number)[0];
                       print(docid);
                       Navigator.popAndPushNamed(context, '/chatpannel',
                           arguments: {
                             'number': chatlist[index].number,
-                            'docid': docid
+                            'docid': docid,
+                            'name':name
                           });
                     },
                     child: Container(

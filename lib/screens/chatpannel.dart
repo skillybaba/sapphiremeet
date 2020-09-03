@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:dash_chat/dash_chat.dart';
@@ -166,7 +165,7 @@ class _ChatPannelState extends State<ChatPannel> {
                   //   });
                   SharedPreferences pref =
                       await SharedPreferences.getInstance();
-                  await pref.setString(data['number'], data['docid']);
+                  await pref.setStringList(data['number'], [data['name'],data['docid']]);
 
                   messagedata['message'].add({
                     'val': [

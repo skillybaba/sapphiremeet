@@ -40,10 +40,14 @@ class FireBaseDataBase {
       List finallist = [];
       List docid = [];
       var map = {};
+      var name = {};
+      List name1 = [];
       await user.get().then((value) {
         value.docs.forEach((element) {
           finallist.add(element.data()['number']);
           map[element.data()['number']] = element.data()['Doc Id'];
+          
+          name[element.data()['number']] = element.data()['username'];
           print(element.data()['number']);
         });
       });
@@ -54,6 +58,7 @@ class FireBaseDataBase {
             if (element.value.replaceAll(' ', '') == j) {
               list.add(j);
               docid.add(map[element.value]);
+              name1.add(name[element.value]);
             }
 
             return true;
@@ -61,7 +66,7 @@ class FireBaseDataBase {
         }
       }
 
-      return [list, docid];
+      return [list, docid,name1];
     } catch (e) {
       print(e);
     }
@@ -117,7 +122,7 @@ class FireBaseDataBase {
         var docidpath;
         user1.docs.forEach((element) {
           if (element.data()['number'] == this.number)
-             docidpath = element.data()['Doc Id'];
+            docidpath = element.data()['Doc Id'];
         });
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString(this.number, docidpath);
