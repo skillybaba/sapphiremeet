@@ -20,6 +20,9 @@ class _ChatPannelState extends State<ChatPannel> {
   GlobalKey<DashChatState> key = GlobalKey<DashChatState>();
   List<ChatMessage> message = [];
   messages() async {
+   
+    print(data['number']);
+    print(data['docid']);
     if (!flag) {
       try {
         data = ModalRoute.of(context).settings.arguments;
@@ -75,7 +78,8 @@ class _ChatPannelState extends State<ChatPannel> {
 
           this.message.add(ChatMessage(
               text: data1[data1.length - 1]['val'][0],
-              user: ChatUser(name: data1[data1.length - 1]['val'][3].substring(3))));
+              user: ChatUser(
+                  name: data1[data1.length - 1]['val'][3].substring(3))));
         }
       });
     }
@@ -135,7 +139,7 @@ class _ChatPannelState extends State<ChatPannel> {
             retrive();
             return DashChat(
               key: key,
-              onQuickReply: (chatmessage) async{
+              onQuickReply: (chatmessage) async {
                 try {
                   print(info);
                   await Firebase.initializeApp();
@@ -163,9 +167,6 @@ class _ChatPannelState extends State<ChatPannel> {
                   //       'message': []
                   //     }
                   //   });
-                  SharedPreferences pref =
-                      await SharedPreferences.getInstance();
-                  await pref.setStringList(data['number'], [data['name'],data['docid']]);
 
                   messagedata['message'].add({
                     'val': [
@@ -215,9 +216,6 @@ class _ChatPannelState extends State<ChatPannel> {
                   //       'message': []
                   //     }
                   //   });
-                  SharedPreferences pref =
-                      await SharedPreferences.getInstance();
-                  await pref.setString(data['number'], data['docid']);
 
                   messagedata['message'].add({
                     'val': [

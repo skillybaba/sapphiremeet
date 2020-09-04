@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:application/services/firebasedatabse.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ContactView extends StatefulWidget {
   @override
@@ -9,16 +10,36 @@ class ContactView extends StatefulWidget {
 
 class _ContactViewState extends State<ContactView> {
   List contacts;
+  bool flag1 = false;
+  bool flag = false;
   Future<bool> getThings() async {
-    contacts = await FireBaseDataBase().fetchContact();
-
-    setState(() {
-      flag = true;
-    });
-    return true;
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      print((prefs.containsKey('contact fetched')));
+      if ((prefs.containsKey('contact fetched') && (!flag1))) {
+        List names = prefs.getStringList('contact name');
+        List docid = prefs.getStringList('contact docid');
+        List list = prefs.getStringList('contact list');
+        print('$list, $docid, $names');
+        contacts = [list, docid, names];
+      } else {
+        contacts = await FireBaseDataBase().fetchContact();
+      }
+      setState(() {
+        flag = true;
+      });
+      return true;
+    } catch (e) {
+      print(e);
+    }
   }
 
-  bool flag = false;
+  fun(String number, String docid, String name) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.setStringList(number, [docid, name]);
+    
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!flag) getThings();
@@ -28,6 +49,19 @@ class _ContactViewState extends State<ContactView> {
           child: CustomScrollView(
             slivers: [
               SliverAppBar(
+                actions: [
+                  RaisedButton(
+                    color: Colors.yellow[800],
+                    textColor: Colors.white,
+                    onPressed: () {
+                      setState(() {
+                        flag1 = true;
+                        flag = false;
+                      });
+                    },
+                    child: Icon(Icons.refresh),
+                  )
+                ],
                 leading: FlatButton(
                     onPressed: () {
                       Navigator.popAndPushNamed(context, '/home');
@@ -48,7 +82,10 @@ class _ContactViewState extends State<ContactView> {
               ),
               SliverList(delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
-                  if (index < contacts[0].length)
+                  if (index < contacts[0].length) {
+                    fun(contacts[0][index], contacts[1][index],
+                        contacts[2][index]);
+                    print(contacts[1][index]);
                     return Container(
                         padding: EdgeInsets.all(20),
                         child: FlatButton.icon(
@@ -78,6 +115,7 @@ class _ContactViewState extends State<ContactView> {
                                   style: TextStyle(
                                       color: Colors.yellow[800], fontSize: 20))
                             ])));
+                  }
                 },
               )),
             ],

@@ -17,8 +17,11 @@ class _ChatState extends State<Chat> {
         username: "Kanishk",
         lastmsg: 'Hello my name is someone')
   ];
+
   bool flag = true;
+  SharedPreferences pref1;
   getChats() async {
+    pref1 = await SharedPreferences.getInstance();
     await Firebase.initializeApp();
     SharedPreferences pref = await SharedPreferences.getInstance();
     var info = pref.getStringList('your info');
@@ -49,7 +52,7 @@ class _ChatState extends State<Chat> {
           SliverList(
             delegate:
                 SliverChildBuilderDelegate((BuildContext context, int index) {
-              if ((chatlist.length == 0) && (index < 1))
+              if ((chatlist.length == 0) && (index < 1)) {
                 return Container(
                     padding: EdgeInsets.all(60),
                     child: Center(
@@ -60,20 +63,19 @@ class _ChatState extends State<Chat> {
                           fontSize: 40,
                           fontWeight: FontWeight.bold),
                     )));
-              else if (index < chatlist.length) {
-                print(chatlist[index].number);
+              } else if ((index < chatlist.length)&&(chatlist.length>0)) {
+                var name;
+                var docid ;
+                if(pref1.containsKey(chatlist[index].number)){
+                 name = pref1.getStringList(chatlist[index].number)[1];
+                 docid = pref1.getStringList(chatlist[index].number)[0];}
                 return FlatButton(
                     onPressed: () async {
-                      SharedPreferences pref =
-                          await SharedPreferences.getInstance();
-                      var docid = pref.getStringList(chatlist[index].number)[1];
-                      var name = pref.getStringList(chatlist[index].number)[0];
-                      print(docid);
                       Navigator.popAndPushNamed(context, '/chatpannel',
                           arguments: {
                             'number': chatlist[index].number,
                             'docid': docid,
-                            'name':name
+                            'name': name,
                           });
                     },
                     child: Container(
@@ -93,7 +95,7 @@ class _ChatState extends State<Chat> {
                               ),
                               SizedBox(width: 10),
                               Text(
-                                '${chatlist[index].username}',
+                                '$name',
                                 style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,

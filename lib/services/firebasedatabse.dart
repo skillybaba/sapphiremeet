@@ -38,20 +38,20 @@ class FireBaseDataBase {
       FirebaseFirestore users = FirebaseFirestore.instance;
       CollectionReference user = users.collection('users');
       List finallist = [];
-      List docid = [];
+      List<String> docid = [];
       var map = {};
       var name = {};
-      List name1 = [];
+      List<String> name1 = [];
       await user.get().then((value) {
         value.docs.forEach((element) {
           finallist.add(element.data()['number']);
           map[element.data()['number']] = element.data()['Doc Id'];
-          
+
           name[element.data()['number']] = element.data()['username'];
           print(element.data()['number']);
         });
       });
-      var list = [];
+      List<String> list = [];
       for (var i in contact) {
         for (var j in finallist) {
           i.phones.any((element) {
@@ -65,8 +65,12 @@ class FireBaseDataBase {
           });
         }
       }
-
-      return [list, docid,name1];
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setStringList('contact list', list);
+      await prefs.setStringList('contact docid', docid);
+      await prefs.setStringList('contact name', name1);
+      await prefs.setBool('contact fetched', true);
+      return [list, docid, name1];
     } catch (e) {
       print(e);
     }
