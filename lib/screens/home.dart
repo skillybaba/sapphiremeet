@@ -1,10 +1,15 @@
 import 'package:application/services/firebasedatabse.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import './subscreens/pages/chatPannel.dart';
 import './subscreens/pages/Confrence.dart';
 import './subscreens/pages/calling.dart';
 import './subscreens/pages/status.dart';
 import 'package:application/services/authvals.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'dart:io';
 
 class Home extends StatefulWidget {
   @override
@@ -14,20 +19,324 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   GlobalKey<ScaffoldState> key = GlobalKey<ScaffoldState>();
   PageController controller = PageController(initialPage: 0);
-  
+  logout() async {
+    await AuthVals().deleteVals('userinfo', 'auth');
+    Navigator.pushReplacementNamed(context, '/');
+  }
+
+  SharedPreferences pref;
+  void prefs() async {
+    pref = await SharedPreferences.getInstance();
+    setState(() {});
+  }
+
+  void initState() {
+    super.initState();
+    prefs();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: key,
       drawer: Drawer(
-        child: FlatButton.icon(
-            onPressed: () async {
-              await AuthVals().deleteVals('userinfo', 'auth');
-              Navigator.pushReplacementNamed(context, '/');
-            },
-            icon: Icon(Icons.no_encryption),
-            label: Text('Logout')),
-      ),
+          child: Column(children: [
+        DrawerHeader(
+          decoration: BoxDecoration(
+            color: Colors.yellow[800],
+          ),
+          child: Container(
+              padding: EdgeInsets.only(top: 30, left: 10, right: 10),
+              child: Row(
+                children: [
+                  pref.containsKey('DP')
+                      ? Container(
+                          decoration: BoxDecoration(shape: BoxShape.circle),
+                          child: FlatButton(
+                              onPressed: () async {
+                                showDialog(
+                                    context: context,
+                                    child: Dialog(
+                                        child: Column(
+                                      children: [
+                                        FlatButton(
+                                            onPressed: () async {
+                                              ImagePicker picker =
+                                                  ImagePicker();
+                                              if (await Permission.photos
+                                                  .request()
+                                                  .isGranted) {
+                                                var image =
+                                                    await picker.getImage(
+                                                        source: ImageSource
+                                                            .gallery);
+                                                var crop = await ImageCropper
+                                                    .cropImage(
+                                                        sourcePath: image.path,
+                                                        aspectRatioPresets: [
+                                                          CropAspectRatioPreset
+                                                              .square,
+                                                          CropAspectRatioPreset
+                                                              .ratio3x2,
+                                                          CropAspectRatioPreset
+                                                              .original,
+                                                          CropAspectRatioPreset
+                                                              .ratio4x3,
+                                                          CropAspectRatioPreset
+                                                              .ratio16x9
+                                                        ],
+                                                        androidUiSettings: AndroidUiSettings(
+                                                            toolbarTitle:
+                                                                'Cropper',
+                                                            toolbarColor: Colors
+                                                                .deepOrange,
+                                                            toolbarWidgetColor:
+                                                                Colors.white,
+                                                            initAspectRatio:
+                                                                CropAspectRatioPreset
+                                                                    .original,
+                                                            lockAspectRatio:
+                                                                false),
+                                                        iosUiSettings:
+                                                            IOSUiSettings(
+                                                          minimumAspectRatio:
+                                                              1.0,
+                                                        ));
+
+                                                await FireBaseDataBase().addDP(
+                                                    crop,
+                                                    pref.getStringList(
+                                                        'your info')[1]);
+                                                setState(() {
+                                                  print('done');
+                                                });
+                                              }
+                                            },
+                                            child: Text("From Gallery")),
+                                        FlatButton(
+                                            onPressed: () async {
+                                              ImagePicker picker =
+                                                  ImagePicker();
+                                              if (await Permission.camera
+                                                  .request()
+                                                  .isGranted) {
+                                                var image =
+                                                    await picker.getImage(
+                                                        source:
+                                                            ImageSource.camera);
+                                                var crop = await ImageCropper
+                                                    .cropImage(
+                                                        sourcePath: image.path,
+                                                        aspectRatioPresets: [
+                                                          CropAspectRatioPreset
+                                                              .square,
+                                                          CropAspectRatioPreset
+                                                              .ratio3x2,
+                                                          CropAspectRatioPreset
+                                                              .original,
+                                                          CropAspectRatioPreset
+                                                              .ratio4x3,
+                                                          CropAspectRatioPreset
+                                                              .ratio16x9
+                                                        ],
+                                                        androidUiSettings: AndroidUiSettings(
+                                                            toolbarTitle:
+                                                                'Cropper',
+                                                            toolbarColor: Colors
+                                                                .deepOrange,
+                                                            toolbarWidgetColor:
+                                                                Colors.white,
+                                                            initAspectRatio:
+                                                                CropAspectRatioPreset
+                                                                    .original,
+                                                            lockAspectRatio:
+                                                                false),
+                                                        iosUiSettings:
+                                                            IOSUiSettings(
+                                                          minimumAspectRatio:
+                                                              1.0,
+                                                        ));
+
+                                                await FireBaseDataBase().addDP(
+                                                    crop,
+                                                    pref.getStringList(
+                                                        'your info')[1]);
+                                                setState(() {});
+                                              }
+                                            },
+                                            child: Text("From Camera")),
+                                      ],
+                                    )));
+                              },
+                              child: Image.file(File(pref.getString("DP")))))
+                      : IconButton(
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                child: Dialog(
+                                    child: Column(
+                                  children: [
+                                    FlatButton(
+                                        onPressed: () async {
+                                          ImagePicker picker = ImagePicker();
+                                          if (await Permission.photos
+                                              .request()
+                                              .isGranted) {
+                                            var image = await picker.getImage(
+                                                source: ImageSource.gallery);
+                                            var crop =
+                                                await ImageCropper.cropImage(
+                                                    sourcePath: image.path,
+                                                    aspectRatioPresets: [
+                                                      CropAspectRatioPreset
+                                                          .square,
+                                                      CropAspectRatioPreset
+                                                          .ratio3x2,
+                                                      CropAspectRatioPreset
+                                                          .original,
+                                                      CropAspectRatioPreset
+                                                          .ratio4x3,
+                                                      CropAspectRatioPreset
+                                                          .ratio16x9
+                                                    ],
+                                                    androidUiSettings:
+                                                        AndroidUiSettings(
+                                                            toolbarTitle:
+                                                                'Cropper',
+                                                            toolbarColor: Colors
+                                                                .deepOrange,
+                                                            toolbarWidgetColor:
+                                                                Colors.white,
+                                                            initAspectRatio:
+                                                                CropAspectRatioPreset
+                                                                    .original,
+                                                            lockAspectRatio:
+                                                                false),
+                                                    iosUiSettings:
+                                                        IOSUiSettings(
+                                                      minimumAspectRatio: 1.0,
+                                                    ));
+
+                                            await FireBaseDataBase().addDP(
+                                                crop,
+                                                pref.getStringList(
+                                                    'your info')[1]);
+                                            setState(() {});
+                                          }
+                                        },
+                                        child: Text("From Gallery")),
+                                    FlatButton(
+                                        onPressed: () async {
+                                          ImagePicker picker = ImagePicker();
+                                          if (await Permission.camera
+                                              .request()
+                                              .isGranted) {
+                                            var image = await picker.getImage(
+                                                source: ImageSource.camera);
+                                            var crop =
+                                                await ImageCropper.cropImage(
+                                                    sourcePath: image.path,
+                                                    aspectRatioPresets: [
+                                                      CropAspectRatioPreset
+                                                          .square,
+                                                      CropAspectRatioPreset
+                                                          .ratio3x2,
+                                                      CropAspectRatioPreset
+                                                          .original,
+                                                      CropAspectRatioPreset
+                                                          .ratio4x3,
+                                                      CropAspectRatioPreset
+                                                          .ratio16x9
+                                                    ],
+                                                    androidUiSettings:
+                                                        AndroidUiSettings(
+                                                            toolbarTitle:
+                                                                'Cropper',
+                                                            toolbarColor: Colors
+                                                                .deepOrange,
+                                                            toolbarWidgetColor:
+                                                                Colors.white,
+                                                            initAspectRatio:
+                                                                CropAspectRatioPreset
+                                                                    .original,
+                                                            lockAspectRatio:
+                                                                false),
+                                                    iosUiSettings:
+                                                        IOSUiSettings(
+                                                      minimumAspectRatio: 1.0,
+                                                    ));
+
+                                            await FireBaseDataBase().addDP(
+                                                crop,
+                                                pref.getStringList(
+                                                    'your info')[1]);
+                                            setState(() {});
+                                          }
+                                        },
+                                        child: Text("From Camera")),
+                                  ],
+                                )));
+                          },
+                          icon: Icon(Icons.account_circle),
+                          iconSize: 80,
+                          color: Colors.white,
+                        ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    pref.getStringList('your info')[1],
+                    style: TextStyle(color: Colors.white, fontSize: 23),
+                  ),
+                ],
+              )),
+        ),
+        RaisedButton.icon(
+            color: Colors.yellow[800],
+            onPressed: () {},
+            icon: Icon(
+              Icons.info_outline,
+              color: Colors.white,
+            ),
+            label: Text(
+              'A B O U T  U S',
+              style: TextStyle(color: Colors.white),
+            )),
+        RaisedButton.icon(
+            color: Colors.yellow[800],
+            onPressed: () {},
+            icon: Icon(
+              Icons.contact_support_sharp,
+              color: Colors.white,
+            ),
+            label: Text(
+              'C O N T A C T  U S',
+              style: TextStyle(color: Colors.white),
+            )),
+        RaisedButton.icon(
+            color: Colors.yellow[800],
+            onPressed: () {},
+            icon: Icon(
+              Icons.settings,
+              color: Colors.white,
+            ),
+            label: Text(
+              'S E T T I N G S',
+              style: TextStyle(color: Colors.white),
+            )),
+        RaisedButton.icon(
+          color: Colors.yellow[800],
+          onPressed: logout,
+          icon: Icon(
+            Icons.logout,
+            color: Colors.white,
+          ),
+          label: Text(
+            "L O G O U T",
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      ])),
       appBar: AppBar(
         actions: [
           FlatButton(
@@ -112,9 +421,8 @@ class _HomeState extends State<Home> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-      
         onPressed: () {
-          Navigator.popAndPushNamed(context, '/contacts' );
+          Navigator.popAndPushNamed(context, '/contacts');
           print('done');
         },
         child: Icon(Icons.group_add_outlined),

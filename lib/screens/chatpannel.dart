@@ -20,7 +20,6 @@ class _ChatPannelState extends State<ChatPannel> {
   GlobalKey<DashChatState> key = GlobalKey<DashChatState>();
   List<ChatMessage> message = [];
   messages() async {
-   
     print(data['number']);
     print(data['docid']);
     if (!flag) {
@@ -48,14 +47,11 @@ class _ChatPannelState extends State<ChatPannel> {
                 text: i['val'][0],
                 user: ChatUser(name: i['val'][3].substring(3))));
           print(message);
-
-          setState(() {
-            flag = true;
-          });
         }
         setState(() {
           flag = true;
         });
+        print('kan');
       } catch (e) {
         print(e);
       }

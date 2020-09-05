@@ -11,13 +11,13 @@ class Chat extends StatefulWidget {
 }
 
 class _ChatState extends State<Chat> {
-  List<ChatModel> chatlist = <ChatModel>[
+  List chatlist = <ChatModel>[
     ChatModel(
         number: '+918979626196',
         username: "Kanishk",
         lastmsg: 'Hello my name is someone')
   ];
-
+  int length = 0;
   bool flag = true;
   SharedPreferences pref1;
   getChats() async {
@@ -27,20 +27,22 @@ class _ChatState extends State<Chat> {
     var info = pref.getStringList('your info');
     var doc = await FirebaseFirestore.instance.doc(info[2]).get();
     var data = doc.data();
-    if (flag)
+    if (data.length > length)
       setState(() {
         this.chatlist = data.keys
-            .map((e) => ((e != 'name') && (e != 'number'))
+            .map((e) => ((e != 'name') && (e != 'number') && (e != 'DP'))
                 ? ChatModel(username: 'null', number: e)
-                : ChatModel(username: 'null', number: 'null'))
+                : 'null')
             .toList();
         print(chatlist);
         chatlist.removeAt(0);
         chatlist.removeAt(0);
+        chatlist.remove('null');
+        
         print(chatlist);
         flag = false;
+        length = data.length;
       });
-    setState(() {});
   }
 
   @override
@@ -63,12 +65,13 @@ class _ChatState extends State<Chat> {
                           fontSize: 40,
                           fontWeight: FontWeight.bold),
                     )));
-              } else if ((index < chatlist.length)&&(chatlist.length>0)) {
+              } else if ((index < chatlist.length) && (chatlist.length > 0)) {
                 var name;
-                var docid ;
-                if(pref1.containsKey(chatlist[index].number)){
-                 name = pref1.getStringList(chatlist[index].number)[1];
-                 docid = pref1.getStringList(chatlist[index].number)[0];}
+                var docid;
+                if (pref1.containsKey(chatlist[index].number)) {
+                  name = pref1.getStringList(chatlist[index].number)[1];
+                  docid = pref1.getStringList(chatlist[index].number)[0];
+                }
                 return FlatButton(
                     onPressed: () async {
                       Navigator.popAndPushNamed(context, '/chatpannel',

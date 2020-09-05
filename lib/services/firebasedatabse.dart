@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:path_provider/path_provider.dart';
 
 class FireBaseDataBase {
   String username;
@@ -16,12 +17,12 @@ class FireBaseDataBase {
     this.number = number;
     this.data = data;
   }
-  static Future<void> storeMedia(File file) async {
+  static Future<void> storeMedia(File file,type) async {
     try {
       await Firebase.initializeApp();
       StorageReference firebasestorage = FirebaseStorage()
           .ref()
-          .child("gs://sapphire-meet.appspot.com/msg images");
+          .child("gs://sapphire-meet.appspot.com/msg images/"+type);
       firebasestorage.putFile(file);
     } catch (e) {
       print(e);
@@ -82,6 +83,27 @@ class FireBaseDataBase {
     await prefs
         .setStringList('your info', [this.number, this.username, docid.path]);
     print('done121');
+  }
+
+  Future<void> addDP(File file, metadata) async {
+    await Firebase.initializeApp();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    StorageReference storageReference = FirebaseStorage().ref().child(
+        'gs://sapphire-meet.appspot.com/profile images/' +
+            prefs.getStringList('your info')[0]);
+    var upload = storageReference.putFile(file);
+    var ref = await upload.onComplete;
+
+    var val = prefs.getStringList('your info');
+    var firebase = FirebaseFirestore.instance;
+    var firestore = firebase.doc(val[2]);
+    await firestore.update({'DP': await ref.ref.getPath()});
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    String path = appDocDir.path + '/Display';
+    File dp = File(path);
+    dp.deleteSync();
+    dp.writeAsBytesSync(file.readAsBytesSync());
+    await prefs.setString('DP', path);
   }
 
   Future<void> addUser() async {
