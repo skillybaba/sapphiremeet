@@ -42,19 +42,26 @@ class _ChatState extends State<Chat> {
                     (e != 'calling') &&
                     (e != 'receving') &&
                     (e != 'connected') &&
-                    (e != 'caller'))
-                ? ChatModel(username: e, number: e,docid:data[e]['docid'])
+                    (e != 'caller') &&
+                    (e != 'channelid'))
+                ? ChatModel(
+                    username: e,
+                    number: e,
+                  )
                 : 'null')
             .toList();
 
         print(chatlist);
-        chatlist.removeAt(0);
-        chatlist.removeAt(0);
         chatlist.remove('null');
         chatlist.remove('null');
         chatlist.remove('null');
         chatlist.remove('null');
         chatlist.remove('null');
+        chatlist.remove('null');
+        chatlist.remove('null');
+        chatlist.remove('null');
+        chatlist.remove('null');
+
         print(chatlist);
         flag = false;
         length = data.length;
@@ -87,7 +94,7 @@ class _ChatState extends State<Chat> {
           'recever': data1['caller'][2],
           'caller': info[2],
           'check': check,
-          'channelid':data1['channelid']
+          'channelid': data1['channelid']
         });
         check[0] = 3;
       }
@@ -104,6 +111,7 @@ class _ChatState extends State<Chat> {
           SliverList(
             delegate:
                 SliverChildBuilderDelegate((BuildContext context, int index) {
+              
               if ((chatlist.length == 0) && (index < 1)) {
                 return Container(
                     padding: EdgeInsets.all(60),
@@ -117,14 +125,17 @@ class _ChatState extends State<Chat> {
                     )));
               } else if ((index < chatlist.length) && (chatlist.length > 0)) {
                 var name;
-               
+
                 if (pref1.containsKey(chatlist[index].number)) {
                   name = pref1.getStringList(chatlist[index].number)[1];
                   
                 } else {
                   name = dataman[chatlist[index].number]['name'];
-                  
+                  // print(dataman[chatlist[index].number]['docid']);
                 }
+                // print(chatlist[index].number);
+                // print(dataman[chatlist[index].number]['docid']);
+                //  print(index);
                 return FlatButton(
                     onPressed: () async {
                       Navigator.popAndPushNamed(context, '/chatpannel',

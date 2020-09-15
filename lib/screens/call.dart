@@ -54,10 +54,15 @@ class _CallState extends State<Call> {
     await Firebase.initializeApp();
     var firestore = FirebaseFirestore.instance;
     var ref = firestore.doc(info['caller']);
+
     while (checkcall == 0) {
       var val = await ref.get();
       var data = val.data();
+
       if (data['connected']) {
+        CallingService(data['channelid'],
+                caller: info['caller'], recever: info['recever'])
+            .connect();
         if (info['check'][0] == 3) {
           info['check'][0] = 0;
           Navigator.popAndPushNamed(context, '/home');
@@ -140,6 +145,7 @@ class _CallState extends State<Call> {
                     ? IconButton(
                         icon: Icon(Icons.call, color: Colors.green, size: 40),
                         onPressed: () async {
+                          checkcall = 1;
                           await Firebase.initializeApp();
                           var firestore = FirebaseFirestore.instance;
                           var ref = firestore.doc(info['caller']);

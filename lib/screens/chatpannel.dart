@@ -64,7 +64,7 @@ class _ChatPannelState extends State<ChatPannel> {
     await Firebase.initializeApp();
     var doc = FirebaseFirestore.instance;
     var ref = doc.doc(info[2]);
-    while ((true)&&(check[0]==1)) {
+    while ((true) && (check[0] == 1)) {
       var dataref = await ref.get();
       var data1 = dataref.data();
       print('allcool');
@@ -79,8 +79,8 @@ class _ChatPannelState extends State<ChatPannel> {
           'recever': data1['caller'][2],
           'caller': info[2],
           'check': check,
-          
         });
+
         check[0] = 2;
       }
     }
@@ -131,7 +131,7 @@ class _ChatPannelState extends State<ChatPannel> {
         }
       });
       await ref2.update({
-        info[0]: {'name': info[1], ' docid': info[2], 'message': []}
+        info[0]: {'name': info[1], 'docid': info[2], 'message': []}
       });
     }
     setState(() {
@@ -165,15 +165,29 @@ class _ChatPannelState extends State<ChatPannel> {
                   var data1 = ref.data();
                   if (((data1['receving'] == null) || (!data1['receving'])) &&
                       ((data1['connected'] == null) || (!data1['connected']))) {
-                     doc.update({'receving': true, 'caller': info,'channelid':(data['number']+info[0])});
-                     doc2.update({'calling': true,'channelid':(data['number']+info[0])});
+                    print((data['number'].substring(1) + info[0].substring(1)));
+                    await doc.update({
+                      'receving': true,
+                      'caller': info,
+                      'channelid':
+                          (data['number'].substring(1) + info[0].substring(1)),
+                          
+                    });
+                    await doc2.update({
+                      'calling': true,
+                      'channelid':
+                          (data['number'].substring(1) + info[0].substring(1))
+
+                    });
 
                     Navigator.pushNamed(context, '/caller', arguments: {
                       'number': data['number'],
                       'type': 'calling',
                       'recever': data['docid'],
                       'caller': info[2],
-                      'channelid':(data['number']+info[0])
+                      'channelid':
+                          (data['number'].substring(1) + info[0].substring(1)),
+                          'check':[2],
                     });
                   } else {
                     Navigator.pushNamed(context, '/caller', arguments: {
@@ -181,9 +195,14 @@ class _ChatPannelState extends State<ChatPannel> {
                       'type': 'buzy',
                       'recever': data['docid'],
                       'caller': info[2],
-                      'channelid':(data['number']+info[0])
+                      'channelid':
+                          (data['number'].substring(1) + info[0].substring(1)),
+                          check:[2]
                     });
-                     doc2.update({'calling': true,'channelid':(data['number']+info[2])});
+                    doc2.update({
+                      'calling': true,
+                      'channelid': (data['number'] + info[2])
+                    });
                   }
                 },
               ),

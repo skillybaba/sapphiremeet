@@ -19,7 +19,7 @@ class _ConfrenceState extends State<Confrence> {
           FlatButton.icon(
             onPressed: () async {
               await Conf_Service(
-                      'kanishk', 'meeting', 'kaniskh', 'kanu0704@gmail.com')
+                      'kanishk', 'meeting', 'kaniskh',)
                   .hostMeet();
             },
             icon: Icon(Icons.meeting_room, color: Colors.yellow[800], size: 40),

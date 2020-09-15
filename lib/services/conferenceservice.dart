@@ -1,4 +1,5 @@
 import 'package:jitsi_meet/jitsi_meet.dart';
+import 'package:jitsi_meet/feature_flag/feature_flag_enum.dart';
 
 class Conf_Service {
   String roomid;
@@ -17,10 +18,12 @@ class Conf_Service {
     options.subject = this.subject;
     options.userDisplayName = this.username;
     options.userEmail = this.email;
-    
+ 
     options.videoMuted = false;
     options.audioMuted = false;
 
-    await JitsiMeet.joinMeeting(options);
+    await JitsiMeet.joinMeeting(
+      options,
+    );
   }
 }
