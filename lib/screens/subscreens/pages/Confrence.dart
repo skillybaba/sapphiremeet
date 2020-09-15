@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:application/services/conferenceservice.dart';
 
 class Confrence extends StatefulWidget {
   @override
@@ -16,7 +17,11 @@ class _ConfrenceState extends State<Confrence> {
             height: 90,
           ),
           FlatButton.icon(
-            onPressed: () {},
+            onPressed: () async {
+              await Conf_Service(
+                      'kanishk', 'meeting', 'kaniskh', 'kanu0704@gmail.com')
+                  .hostMeet();
+            },
             icon: Icon(Icons.meeting_room, color: Colors.yellow[800], size: 40),
             label: Text(
               'Host A Meeting',
@@ -39,20 +44,22 @@ class _ConfrenceState extends State<Confrence> {
           SizedBox(
             height: 20,
           ),
-          Container(padding: EdgeInsets.only(left: 30,right: 30),child:TextField(
-            controller: controller,
-            decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(40),
-                ),
-                hintText: 'Enter the Meeting Code here to Join'),
-          )),
+          Container(
+              padding: EdgeInsets.only(left: 30, right: 30),
+              child: TextField(
+                controller: controller,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                    hintText: 'Enter the Meeting Code here to Join'),
+              )),
           SizedBox(
             height: 10,
           ),
           FlatButton.icon(
               onPressed: () {},
-              icon: Icon(Icons.merge_type,color: Colors.yellow[800], size: 40),
+              icon: Icon(Icons.merge_type, color: Colors.yellow[800], size: 40),
               label: Text('Join',
                   style: TextStyle(
                       color: Colors.yellow[800],

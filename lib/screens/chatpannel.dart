@@ -1,10 +1,7 @@
-import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:dash_chat/dash_chat.dart';
-import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -58,6 +55,37 @@ class _ChatPannelState extends State<ChatPannel> {
     }
   }
 
+  bool checkcall = false;
+  void checkCall(context, data) async {
+    var check = data['check'];
+    checkcall = true;
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    var info = pref.getStringList('your info');
+    await Firebase.initializeApp();
+    var doc = FirebaseFirestore.instance;
+    var ref = doc.doc(info[2]);
+    while ((true)&&(check[0]==1)) {
+      var dataref = await ref.get();
+      var data1 = dataref.data();
+      print('allcool');
+      print(check);
+      if ((check[0] == 1) &&
+          ((data1['receving'] != null) && (data1['receving'])) &&
+          (((data1['calling'] == null) || (!data1['calling'])) &&
+              ((data1['connected'] == null) || (!data1['connected'])))) {
+        Navigator.pushNamed(context, '/caller', arguments: {
+          'number': data1['caller'][0],
+          'type': 'receving',
+          'recever': data1['caller'][2],
+          'caller': info[2],
+          'check': check,
+          
+        });
+        check[0] = 2;
+      }
+    }
+  }
+
   int prevlength;
   void retrive() async {
     prevlength = message.length;
@@ -103,7 +131,7 @@ class _ChatPannelState extends State<ChatPannel> {
         }
       });
       await ref2.update({
-        info[0]: {'name': data['number'], 'docid': data['docid'], 'message': []}
+        info[0]: {'name': info[1], ' docid': info[2], 'message': []}
       });
     }
     setState(() {
@@ -118,13 +146,60 @@ class _ChatPannelState extends State<ChatPannel> {
   @override
   Widget build(BuildContext context) {
     data = ModalRoute.of(context).settings.arguments;
+    if (!checkcall) checkCall(context, data);
     if (!flag3) check();
     messages();
     return Scaffold(
         appBar: AppBar(
+            actions: [
+              IconButton(
+                icon: Icon(Icons.call),
+                onPressed: () async {
+                  await Firebase.initializeApp();
+                  var firestore = FirebaseFirestore.instance;
+                  var doc = firestore.doc(data['docid']);
+                  var doc2 = firestore.doc(info[2]);
+
+                  var ref = await doc.get();
+
+                  var data1 = ref.data();
+                  if (((data1['receving'] == null) || (!data1['receving'])) &&
+                      ((data1['connected'] == null) || (!data1['connected']))) {
+                     doc.update({'receving': true, 'caller': info,'channelid':(data['number']+info[0])});
+                     doc2.update({'calling': true,'channelid':(data['number']+info[0])});
+
+                    Navigator.pushNamed(context, '/caller', arguments: {
+                      'number': data['number'],
+                      'type': 'calling',
+                      'recever': data['docid'],
+                      'caller': info[2],
+                      'channelid':(data['number']+info[0])
+                    });
+                  } else {
+                    Navigator.pushNamed(context, '/caller', arguments: {
+                      'number': data['number'],
+                      'type': 'buzy',
+                      'recever': data['docid'],
+                      'caller': info[2],
+                      'channelid':(data['number']+info[0])
+                    });
+                     doc2.update({'calling': true,'channelid':(data['number']+info[2])});
+                  }
+                },
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              IconButton(
+                icon: Icon(Icons.attach_file),
+                onPressed: () {},
+              ),
+              SizedBox(width: 10)
+            ],
             leading: FlatButton(
               onPressed: () {
                 Navigator.popAndPushNamed(context, '/home');
+                data['check'][0] = 0;
               },
               child: Icon(Icons.arrow_back, color: Colors.white),
             ),
@@ -144,8 +219,12 @@ class _ChatPannelState extends State<ChatPannel> {
                   var ref = firestore.doc(info[2]);
                   var ref2 = firestore.doc(data['docid']);
                   Map messagedata;
+                  Map messagedata1;
                   await ref.get().then((value) {
                     messagedata = value.data()[data['number']];
+                  });
+                  await ref2.get().then((value) {
+                    messagedata = value.data()[info[0]];
                   });
                   print(messagedata);
                   // if (messagedata == null) {
@@ -173,9 +252,18 @@ class _ChatPannelState extends State<ChatPannel> {
                       DateTime.now().toString(),
                     ]
                   });
+                  messagedata1['message'].add({
+                    'val': [
+                      chatmessage.title,
+                      null,
+                      null,
+                      info[0],
+                      DateTime.now().toString(),
+                    ]
+                  });
                   print(messagedata);
                   await ref.update({data['number']: messagedata});
-                  await ref2.update({info[0]: messagedata});
+                  await ref2.update({info[0]: messagedata1});
                   setState(() {
                     print('done');
                   });
@@ -193,8 +281,12 @@ class _ChatPannelState extends State<ChatPannel> {
                   var ref = firestore.doc(info[2]);
                   var ref2 = firestore.doc(data['docid']);
                   Map messagedata;
+                  Map messagedata1;
                   await ref.get().then((value) {
                     messagedata = value.data()[data['number']];
+                  });
+                  await ref2.get().then((value) {
+                    messagedata1 = value.data()[info[0]];
                   });
                   print(messagedata);
                   // if (messagedata == null) {
@@ -222,9 +314,18 @@ class _ChatPannelState extends State<ChatPannel> {
                       DateTime.now().toString(),
                     ]
                   });
+                  messagedata1['message'].add({
+                    'val': [
+                      chatmessage.text,
+                      chatmessage.image,
+                      chatmessage.user.uid,
+                      info[0],
+                      DateTime.now().toString(),
+                    ]
+                  });
                   print(messagedata);
                   await ref.update({data['number']: messagedata});
-                  await ref2.update({info[0]: messagedata});
+                  await ref2.update({info[0]: messagedata1});
                   setState(() {
                     print('done');
                   });

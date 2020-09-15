@@ -36,6 +36,7 @@ class _ContactViewState extends State<ContactView> {
 
   fun(String number, String docid, String name) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
+    if(!pref.containsKey(number))
     await pref.setStringList(number, [docid, name]);
     
   }

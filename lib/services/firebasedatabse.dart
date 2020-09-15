@@ -17,12 +17,12 @@ class FireBaseDataBase {
     this.number = number;
     this.data = data;
   }
-  static Future<void> storeMedia(File file,type) async {
+  static Future<void> storeMedia(File file, type) async {
     try {
       await Firebase.initializeApp();
       StorageReference firebasestorage = FirebaseStorage()
           .ref()
-          .child("gs://sapphire-meet.appspot.com/msg images/"+type);
+          .child("gs://sapphire-meet.appspot.com/msg images/" + type);
       firebasestorage.putFile(file);
     } catch (e) {
       print(e);
@@ -101,6 +101,7 @@ class FireBaseDataBase {
     Directory appDocDir = await getApplicationDocumentsDirectory();
     String path = appDocDir.path + '/Display';
     File dp = File(path);
+    if(dp.existsSync())
     dp.deleteSync();
     dp.writeAsBytesSync(file.readAsBytesSync());
     await prefs.setString('DP', path);

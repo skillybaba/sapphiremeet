@@ -11,6 +11,8 @@ class Chat extends StatefulWidget {
 }
 
 class _ChatState extends State<Chat> {
+  var info;
+  var check = [0];
   List chatlist = <ChatModel>[
     ChatModel(
         number: '+918979626196',
@@ -19,7 +21,9 @@ class _ChatState extends State<Chat> {
   ];
   int length = 0;
   bool flag = true;
+  var dataman;
   SharedPreferences pref1;
+  Map infodata;
   getChats() async {
     pref1 = await SharedPreferences.getInstance();
     await Firebase.initializeApp();
@@ -27,26 +31,72 @@ class _ChatState extends State<Chat> {
     var info = pref.getStringList('your info');
     var doc = await FirebaseFirestore.instance.doc(info[2]).get();
     var data = doc.data();
-    if (data.length > length)
-      setState(() {
+    dataman = data;
+
+    setState(() {
+      if (data.length > length) {
         this.chatlist = data.keys
-            .map((e) => ((e != 'name') && (e != 'number') && (e != 'DP'))
-                ? ChatModel(username: 'null', number: e)
+            .map((e) => ((e != 'name') &&
+                    (e != 'number') &&
+                    (e != 'DP') &&
+                    (e != 'calling') &&
+                    (e != 'receving') &&
+                    (e != 'connected') &&
+                    (e != 'caller'))
+                ? ChatModel(username: e, number: e,docid:data[e]['docid'])
                 : 'null')
             .toList();
+
         print(chatlist);
         chatlist.removeAt(0);
         chatlist.removeAt(0);
         chatlist.remove('null');
-        
+        chatlist.remove('null');
+        chatlist.remove('null');
+        chatlist.remove('null');
+        chatlist.remove('null');
         print(chatlist);
         flag = false;
         length = data.length;
-      });
+        print(dataman);
+      }
+    });
+    print('donw');
+  }
+
+  bool checkcall = false;
+  void checkCall(context) async {
+    checkcall = true;
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    info = pref.getStringList('your info');
+    await Firebase.initializeApp();
+    var doc = FirebaseFirestore.instance;
+    var ref = doc.doc(info[2]);
+    while ((true) && (check[0] == 0)) {
+      var dataref = await ref.get();
+      var data1 = dataref.data();
+      print('allcool');
+      print(check);
+      if ((check[0] == 0) &&
+          ((data1['receving'] != null) && (data1['receving'])) &&
+          (((data1['calling'] == null) || (!data1['calling'])) &&
+              ((data1['connected'] == null) || (!data1['connected'])))) {
+        Navigator.popAndPushNamed(context, '/caller', arguments: {
+          'number': data1['caller'][0],
+          'type': 'receving',
+          'recever': data1['caller'][2],
+          'caller': info[2],
+          'check': check,
+          'channelid':data1['channelid']
+        });
+        check[0] = 3;
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!checkcall) checkCall(context);
     getChats();
     if (!flag)
       return CustomScrollView(
@@ -67,19 +117,24 @@ class _ChatState extends State<Chat> {
                     )));
               } else if ((index < chatlist.length) && (chatlist.length > 0)) {
                 var name;
-                var docid;
+               
                 if (pref1.containsKey(chatlist[index].number)) {
                   name = pref1.getStringList(chatlist[index].number)[1];
-                  docid = pref1.getStringList(chatlist[index].number)[0];
+                  
+                } else {
+                  name = dataman[chatlist[index].number]['name'];
+                  
                 }
                 return FlatButton(
                     onPressed: () async {
                       Navigator.popAndPushNamed(context, '/chatpannel',
                           arguments: {
                             'number': chatlist[index].number,
-                            'docid': docid,
+                            'docid': dataman[chatlist[index].number]['docid'],
                             'name': name,
+                            'check': check,
                           });
+                      check[0] = 1;
                     },
                     child: Container(
                       padding: EdgeInsets.all(20),
