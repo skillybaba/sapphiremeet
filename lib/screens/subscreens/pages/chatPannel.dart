@@ -43,7 +43,8 @@ class _ChatState extends State<Chat> {
                     (e != 'receving') &&
                     (e != 'connected') &&
                     (e != 'caller') &&
-                    (e != 'channelid'))
+                    (e != 'channelid')&&
+                    ( e!='callhis'))
                 ? ChatModel(
                     username: e,
                     number: e,
@@ -88,6 +89,7 @@ class _ChatState extends State<Chat> {
           ((data1['receving'] != null) && (data1['receving'])) &&
           (((data1['calling'] == null) || (!data1['calling'])) &&
               ((data1['connected'] == null) || (!data1['connected'])))) {
+                
         Navigator.popAndPushNamed(context, '/caller', arguments: {
           'number': data1['caller'][0],
           'type': 'receving',
@@ -96,6 +98,7 @@ class _ChatState extends State<Chat> {
           'check': check,
           'channelid': data1['channelid']
         });
+      
         check[0] = 3;
       }
     }

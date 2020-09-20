@@ -25,6 +25,7 @@ class _HomeState extends State<Home> {
     Navigator.pushReplacementNamed(context, '/');
   }
 
+  File dp;
   SharedPreferences pref;
   void prefs() async {
     pref = await SharedPreferences.getInstance();
@@ -36,10 +37,23 @@ class _HomeState extends State<Home> {
     prefs();
   }
 
+  var flag = false;
+  getDp() async {
+    if (pref != null) {
+      var ref = FireBaseDataBase(number: pref.getStringList('your info')[0]);
+      await ref.fetchDP();
+      dp = ref.dp;
+      setState(() {
+        flag = true;
+      });
+    }
+  }
+
   bool ff = true;
   int i = 0;
   @override
   Widget build(BuildContext context) {
+    getDp();
     return Scaffold(
       key: key,
       drawer: Drawer(
@@ -52,7 +66,7 @@ class _HomeState extends State<Home> {
               padding: EdgeInsets.only(top: 30, left: 10, right: 10),
               child: Row(
                 children: [
-                  pref.containsKey('DP')
+                  flag
                       ? Container(
                           decoration: BoxDecoration(shape: BoxShape.circle),
                           child: FlatButton(
@@ -108,10 +122,9 @@ class _HomeState extends State<Home> {
                                                               1.0,
                                                         ));
 
-                                                await FireBaseDataBase().addDP(
+                                                await FireBaseDataBase(number:pref.getStringList('your info')[0]).addDP(
                                                     crop,
-                                                    pref.getStringList(
-                                                        'your info')[1]);
+                                                   );
                                                 setState(() {
                                                   ff = false;
                                                 });
@@ -163,10 +176,9 @@ class _HomeState extends State<Home> {
                                                         minimumAspectRatio: 1.0,
                                                       ));
 
-                                              await FireBaseDataBase().addDP(
+                                              await FireBaseDataBase(number:pref.getStringList('your info')[0]).addDP(
                                                   crop,
-                                                  pref.getStringList(
-                                                      'your info')[1]);
+                                                 );
 
                                               setState(() {
                                                 ff = false;
@@ -184,10 +196,10 @@ class _HomeState extends State<Home> {
                                     ))));
                               },
                               child: CircularProfileAvatar('',
-                              key:  Key(this.i.toString()),
+                                  key: Key(this.i.toString()),
                                   child: Image(
-                                    image:FileImage(File(pref.getString("DP"))),
-                                   
+                                    image:
+                                        FileImage(dp),
                                   ))))
                       : IconButton(
                           onPressed: () async {
@@ -241,10 +253,9 @@ class _HomeState extends State<Home> {
                                                       minimumAspectRatio: 1.0,
                                                     ));
 
-                                            await FireBaseDataBase().addDP(
+                                            await FireBaseDataBase(number:pref.getStringList('your info')[0]).addDP(
                                                 crop,
-                                                pref.getStringList(
-                                                    'your info')[1]);
+                                               );
                                             setState(() {
                                               ff = false;
                                             });
@@ -293,10 +304,9 @@ class _HomeState extends State<Home> {
                                                     minimumAspectRatio: 1.0,
                                                   ));
 
-                                          await FireBaseDataBase().addDP(
+                                          await FireBaseDataBase(number:pref.getStringList('your info')[0]).addDP(
                                               crop,
-                                              pref.getStringList(
-                                                  'your info')[1]);
+                                             );
 
                                           setState(() {
                                             ff = false;

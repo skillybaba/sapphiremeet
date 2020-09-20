@@ -12,6 +12,7 @@ class FireBaseDataBase {
   String number;
   var data;
   var docid;
+  File dp;
   FireBaseDataBase({String username, String number, data}) {
     this.username = username;
     this.number = number;
@@ -56,7 +57,8 @@ class FireBaseDataBase {
       for (var i in contact) {
         for (var j in finallist) {
           i.phones.any((element) {
-            if (element.value.replaceAll(' ', '') == j) {
+            if ((element.value.replaceAll(' ', '') == j) &&
+                (name[element.value] != null)) {
               list.add(j);
               docid.add(map[element.value]);
               name1.add(name[element.value]);
@@ -85,12 +87,26 @@ class FireBaseDataBase {
     print('done121');
   }
 
-  Future<void> addDP(File file, metadata) async {
+  Future<void> fetchDP() async {
+    await Firebase.initializeApp();
+    StorageReference ref = FirebaseStorage()
+        .ref()
+        .child('gs://sapphire-meet.appspot.com/profile images/' + this.number.trim());
+    var data = await ref.getData(128);
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+
+    this.dp = File(appDocDir.path + "/Dp");
+    if (dp.existsSync()) dp.deleteSync();
+    this.dp.writeAsBytesSync(data);
+
+  }
+
+  Future<void> addDP(File file, [metadata]) async {
     await Firebase.initializeApp();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     StorageReference storageReference = FirebaseStorage().ref().child(
         'gs://sapphire-meet.appspot.com/profile images/' +
-            prefs.getStringList('your info')[0]);
+            this.number);
     var upload = storageReference.putFile(file);
     var ref = await upload.onComplete;
 
@@ -101,10 +117,9 @@ class FireBaseDataBase {
     Directory appDocDir = await getApplicationDocumentsDirectory();
     String path = appDocDir.path + '/Display';
     File dp = File(path);
-    if(dp.existsSync())
-    dp.deleteSync();
+    if (dp.existsSync()) dp.deleteSync();
     dp.writeAsBytesSync(file.readAsBytesSync());
-    await prefs.setString('DP', path);
+    
   }
 
   Future<void> addUser() async {

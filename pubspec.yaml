@@ -46,7 +46,7 @@ dependencies:
   path_provider: ^1.6.14
   circular_profile_avatar: ^1.0.6
   jitsi_meet: ^0.4.0
-  
+  loading_overlay: ^0.2.1
   toast: ^0.1.5
   
   

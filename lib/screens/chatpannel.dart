@@ -4,6 +4,8 @@ import 'package:dash_chat/dash_chat.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:loading_overlay/loading_overlay.dart';
+import 'package:toast/toast.dart';
 
 class ChatPannel extends StatefulWidget {
   @override
@@ -13,6 +15,7 @@ class ChatPannel extends StatefulWidget {
 class _ChatPannelState extends State<ChatPannel> {
   Map data;
   var info;
+  bool isloading = false;
   bool flag = false;
   GlobalKey<DashChatState> key = GlobalKey<DashChatState>();
   List<ChatMessage> message = [];
@@ -155,13 +158,23 @@ class _ChatPannelState extends State<ChatPannel> {
               IconButton(
                 icon: Icon(Icons.call),
                 onPressed: () async {
+                  setState(() {
+                    isloading = true;
+                  });
+                  Toast.show("Connecting Call Plz Wait", context,
+                      duration: Toast.LENGTH_LONG,
+                      gravity: Toast.BOTTOM,
+                      backgroundColor: Colors.blue,
+                      textColor: Colors.white);
+
                   await Firebase.initializeApp();
                   var firestore = FirebaseFirestore.instance;
                   var doc = firestore.doc(data['docid']);
                   var doc2 = firestore.doc(info[2]);
-
-                  var ref = await doc.get();
-
+                  var ref2 = await doc.get();
+                  var data2 = ref2.data();
+                  var ref = await doc2.get();
+                  print(data['docid']);
                   var data1 = ref.data();
                   if (((data1['receving'] == null) || (!data1['receving'])) &&
                       ((data1['connected'] == null) || (!data1['connected']))) {
@@ -171,15 +184,32 @@ class _ChatPannelState extends State<ChatPannel> {
                       'caller': info,
                       'channelid':
                           (data['number'].substring(1) + info[0].substring(1)),
-                          
                     });
                     await doc2.update({
                       'calling': true,
                       'channelid':
                           (data['number'].substring(1) + info[0].substring(1))
-
                     });
-
+                    List caller = data1['callhis'];
+                    List recever = data2['callhis'];
+                    print(recever);
+                    if (caller == null) caller = [];
+                    if (recever == null) recever = [];
+                    caller.add({
+                      'type': 'calling',
+                      'number': data['number'],
+                      'name': data['name'],
+                      'docid': data['docid'],
+                    });
+                    recever.add({
+                      'type': 'receving',
+                      'number': info[0],
+                      'name': info[1],
+                      'docid': info[2],
+                    });
+                    setState(() {
+                      isloading = false;
+                    });
                     Navigator.pushNamed(context, '/caller', arguments: {
                       'number': data['number'],
                       'type': 'calling',
@@ -187,7 +217,13 @@ class _ChatPannelState extends State<ChatPannel> {
                       'caller': info[2],
                       'channelid':
                           (data['number'].substring(1) + info[0].substring(1)),
-                          'check':[2],
+                      'check': [2],
+                    });
+                    doc.update({
+                      'callhis': recever,
+                    });
+                    doc2.update({
+                      'callhis': caller,
                     });
                   } else {
                     Navigator.pushNamed(context, '/caller', arguments: {
@@ -197,11 +233,12 @@ class _ChatPannelState extends State<ChatPannel> {
                       'caller': info[2],
                       'channelid':
                           (data['number'].substring(1) + info[0].substring(1)),
-                          check:[2]
+                      'check': [2]
                     });
                     doc2.update({
                       'calling': true,
-                      'channelid': (data['number'] + info[2])
+                      'channelid':
+                          (data['number'].substring(1) + info[0].substring(1))
                     });
                   }
                 },
@@ -222,144 +259,149 @@ class _ChatPannelState extends State<ChatPannel> {
               },
               child: Icon(Icons.arrow_back, color: Colors.white),
             ),
-            title: Text('Sapphire Meet'),
+            title: Text(data['name']),
             backgroundColor: Colors.yellow[800]),
-        body: StreamBuilder(builder: (context, snapshot) {
-          if (flag) {
-            retrive();
-            return DashChat(
-              key: key,
-              onQuickReply: (chatmessage) async {
-                try {
-                  print(info);
-                  await Firebase.initializeApp();
-                  FirebaseFirestore firestore = FirebaseFirestore.instance;
+        body: LoadingOverlay(
+          child: StreamBuilder(builder: (context, snapshot) {
+            if (flag) {
+              retrive();
+              return DashChat(
+                key: key,
+                onQuickReply: (chatmessage) async {
+                  try {
+                    print(info);
+                    await Firebase.initializeApp();
+                    FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-                  var ref = firestore.doc(info[2]);
-                  var ref2 = firestore.doc(data['docid']);
-                  Map messagedata;
-                  Map messagedata1;
-                  await ref.get().then((value) {
-                    messagedata = value.data()[data['number']];
-                  });
-                  await ref2.get().then((value) {
-                    messagedata = value.data()[info[0]];
-                  });
-                  print(messagedata);
-                  // if (messagedata == null) {
-                  //   await ref.update({
-                  //     data['number']: {
-                  //       'name': data['number'],
-                  //       'docid': data['docid'],
-                  //       'message': []
-                  //     }
-                  //   });
-                  //   await ref2.update({
-                  //     info[0]: {
-                  //       'name': data['number'],
-                  //       'docid': data['docid'],
-                  //       'message': []
-                  //     }
-                  //   });
+                    var ref = firestore.doc(info[2]);
+                    var ref2 = firestore.doc(data['docid']);
+                    Map messagedata;
+                    Map messagedata1;
+                    await ref.get().then((value) {
+                      messagedata = value.data()[data['number']];
+                    });
+                    await ref2.get().then((value) {
+                      messagedata = value.data()[info[0]];
+                    });
+                    print(messagedata);
+                    // if (messagedata == null) {
+                    //   await ref.update({
+                    //     data['number']: {
+                    //       'name': data['number'],
+                    //       'docid': data['docid'],
+                    //       'message': []
+                    //     }
+                    //   });
+                    //   await ref2.update({
+                    //     info[0]: {
+                    //       'name': data['number'],
+                    //       'docid': data['docid'],
+                    //       'message': []
+                    //     }
+                    //   });
 
-                  messagedata['message'].add({
-                    'val': [
-                      chatmessage.title,
-                      null,
-                      null,
-                      info[0],
-                      DateTime.now().toString(),
-                    ]
-                  });
-                  messagedata1['message'].add({
-                    'val': [
-                      chatmessage.title,
-                      null,
-                      null,
-                      info[0],
-                      DateTime.now().toString(),
-                    ]
-                  });
-                  print(messagedata);
-                  await ref.update({data['number']: messagedata});
-                  await ref2.update({info[0]: messagedata1});
-                  setState(() {
-                    print('done');
-                  });
-                } catch (e) {
-                  print(e);
-                }
-              },
-              messages: message,
-              onSend: (ChatMessage chatmessage) async {
-                try {
-                  print(info);
-                  await Firebase.initializeApp();
-                  FirebaseFirestore firestore = FirebaseFirestore.instance;
+                    messagedata['message'].add({
+                      'val': [
+                        chatmessage.title,
+                        null,
+                        null,
+                        info[0],
+                        DateTime.now().toString(),
+                      ]
+                    });
+                    messagedata1['message'].add({
+                      'val': [
+                        chatmessage.title,
+                        null,
+                        null,
+                        info[0],
+                        DateTime.now().toString(),
+                      ]
+                    });
+                    print(messagedata);
+                    await ref.update({data['number']: messagedata});
+                    await ref2.update({info[0]: messagedata1});
+                    setState(() {
+                      print('done');
+                    });
+                  } catch (e) {
+                    print(e);
+                  }
+                },
+                messages: message,
+                onSend: (ChatMessage chatmessage) async {
+                  try {
+                    print(info);
+                    await Firebase.initializeApp();
+                    FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-                  var ref = firestore.doc(info[2]);
-                  var ref2 = firestore.doc(data['docid']);
-                  Map messagedata;
-                  Map messagedata1;
-                  await ref.get().then((value) {
-                    messagedata = value.data()[data['number']];
-                  });
-                  await ref2.get().then((value) {
-                    messagedata1 = value.data()[info[0]];
-                  });
-                  print(messagedata);
-                  // if (messagedata == null) {
-                  //   await ref.update({
-                  //     data['number']: {
-                  //       'name': data['number'],
-                  //       'docid': data['docid'],
-                  //       'message': []
-                  //     }
-                  //   });
-                  //   await ref2.update({
-                  //     info[0]: {
-                  //       'name': data['number'],
-                  //       'docid': data['docid'],
-                  //       'message': []
-                  //     }
-                  //   });
+                    var ref = firestore.doc(info[2]);
+                    var ref2 = firestore.doc(data['docid']);
+                    Map messagedata;
+                    Map messagedata1;
+                    await ref.get().then((value) {
+                      messagedata = value.data()[data['number']];
+                    });
+                    await ref2.get().then((value) {
+                      messagedata1 = value.data()[info[0]];
+                    });
+                    print(messagedata);
+                    // if (messagedata == null) {
+                    //   await ref.update({
+                    //     data['number']: {
+                    //       'name': data['number'],
+                    //       'docid': data['docid'],
+                    //       'message': []
+                    //     }
+                    //   });
+                    //   await ref2.update({
+                    //     info[0]: {
+                    //       'name': data['number'],
+                    //       'docid': data['docid'],
+                    //       'message': []
+                    //     }
+                    //   });
 
-                  messagedata['message'].add({
-                    'val': [
-                      chatmessage.text,
-                      chatmessage.image,
-                      chatmessage.user.uid,
-                      info[0],
-                      DateTime.now().toString(),
-                    ]
-                  });
-                  messagedata1['message'].add({
-                    'val': [
-                      chatmessage.text,
-                      chatmessage.image,
-                      chatmessage.user.uid,
-                      info[0],
-                      DateTime.now().toString(),
-                    ]
-                  });
-                  print(messagedata);
-                  await ref.update({data['number']: messagedata});
-                  await ref2.update({info[0]: messagedata1});
-                  setState(() {
-                    print('done');
-                  });
-                } catch (e) {
-                  print(e);
-                }
-              },
-              user: ChatUser(
-                firstName: 'vfdvanks',
-              ),
-            );
-          } else
-            return SpinKitRing(
-              color: Colors.yellow[800],
-            );
-        }));
+                    messagedata['message'].add({
+                      'val': [
+                        chatmessage.text,
+                        chatmessage.image,
+                        chatmessage.user.uid,
+                        info[0],
+                        DateTime.now().toString(),
+                      ]
+                    });
+                    messagedata1['message'].add({
+                      'val': [
+                        chatmessage.text,
+                        chatmessage.image,
+                        chatmessage.user.uid,
+                        info[0],
+                        DateTime.now().toString(),
+                      ]
+                    });
+                    print(messagedata);
+                    await ref.update({data['number']: messagedata});
+                    await ref2.update({info[0]: messagedata1});
+                    setState(() {
+                      print('done');
+                    });
+                  } catch (e) {
+                    print(e);
+                  }
+                },
+                user: ChatUser(
+                  firstName: 'vfdvanks',
+                ),
+              );
+            } else
+              return SpinKitRing(
+                color: Colors.yellow[800],
+              );
+          }),
+          isLoading: isloading,
+          opacity: 0.3,
+          progressIndicator: CircularProgressIndicator(),
+        ));
   }
 }
