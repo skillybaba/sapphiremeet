@@ -7,11 +7,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 
 class Calling extends StatefulWidget {
+  List check;
+  Calling({List check}) {
+    this.check = check;
+  }
   @override
-  _CallingState createState() => _CallingState();
+  _CallingState createState() => _CallingState(check: check);
 }
 
 class _CallingState extends State<Calling> {
+  List check;
+  _CallingState({List check}) {
+    this.check = check;
+  }
   List info;
   bool isloading = false;
   List<CallingModel> callinglist = <CallingModel>[];
@@ -24,7 +32,7 @@ class _CallingState extends State<Calling> {
     var getvals = await doc.get();
     var data = getvals.data()['callhis'];
     callinglist = [];
-    
+
     if (data != null)
       for (var i in data) {
         callinglist.add(CallingModel(
@@ -41,6 +49,11 @@ class _CallingState extends State<Calling> {
   }
 
   bool flag = false;
+  void initState() {
+    super.initState();
+    check[0] = 32323;
+  }
+
   @override
   Widget build(BuildContext context) {
     getData();

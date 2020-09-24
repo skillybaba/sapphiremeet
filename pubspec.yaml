@@ -48,6 +48,7 @@ dependencies:
   jitsi_meet: ^0.4.0
   loading_overlay: ^0.2.1
   toast: ^0.1.5
+  clipboard: ^0.1.2+8
   
   
 

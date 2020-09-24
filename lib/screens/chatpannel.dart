@@ -67,7 +67,7 @@ class _ChatPannelState extends State<ChatPannel> {
     await Firebase.initializeApp();
     var doc = FirebaseFirestore.instance;
     var ref = doc.doc(info[2]);
-    while ((true) && (check[0] == 1)) {
+    while (check[0] == 1) {
       var dataref = await ref.get();
       var data1 = dataref.data();
       print('allcool');
@@ -104,6 +104,7 @@ class _ChatPannelState extends State<ChatPannel> {
           prevlength = data1.length;
 
           this.message.add(ChatMessage(
+             
               text: data1[data1.length - 1]['val'][0],
               user: ChatUser(
                   name: data1[data1.length - 1]['val'][3].substring(3))));
@@ -121,21 +122,43 @@ class _ChatPannelState extends State<ChatPannel> {
     var ref = firestore.doc(info[2]);
     var ref2 = firestore.doc(data['docid']);
     Map messagedata;
-    await ref.get().then((value) {
-      messagedata = value.data()[data['number']];
-    });
+    var docdata = await ref.get();
+    messagedata = docdata.data()[data['number']];
+    var docdata2 = await ref2.get();
+
     print(messagedata);
     if (messagedata == null) {
       await ref.update({
         data['number']: {
           'name': data['number'],
           'docid': data['docid'],
+          'avtar': docdata2.data()['downloadablelink'] != null
+              ? docdata2.data()['downloadablelink']
+              : null,
           'message': []
         }
       });
       await ref2.update({
-        info[0]: {'name': info[1], 'docid': info[2], 'message': []}
+        info[0]: {
+          'name': info[1],
+          'docid': info[2],
+          'avtar': docdata.data()['downloadablelink'] != null
+              ? docdata.data()['downloadablelink']
+              : null,
+          'message': []
+        }
       });
+    } else {
+      var map1 = docdata.data()[data['number']];
+      var map2 = docdata2.data()[info[0]];
+      map1['avtar'] = docdata2.data()['downloadablelink'] != null
+          ? docdata2.data()['downloadablelink']
+          : null;
+      map2['avtar'] = docdata.data()['downloadablelink'] != null
+          ? docdata.data()['downloadablelink']
+          : null;
+      ref.update({data['number']: map1});
+      ref2.update({info[0]: map2});
     }
     setState(() {
       flag3 = true;
@@ -248,7 +271,10 @@ class _ChatPannelState extends State<ChatPannel> {
               ),
               IconButton(
                 icon: Icon(Icons.attach_file),
-                onPressed: () {},
+                onPressed: () async {
+                  await Future.delayed(Duration(seconds: 3));
+                  print('kjcds');
+                },
               ),
               SizedBox(width: 10)
             ],

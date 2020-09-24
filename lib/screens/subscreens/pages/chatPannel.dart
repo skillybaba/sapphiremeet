@@ -1,3 +1,5 @@
+import 'package:application/services/firebasedatabse.dart';
+import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:application/models/chatmodels.dart';
@@ -6,13 +8,21 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Chat extends StatefulWidget {
+  List check;
+  Chat({List check, key}) : super(key: key) {
+    this.check = check;
+  }
   @override
-  _ChatState createState() => _ChatState();
+  _ChatState createState() => _ChatState(check: check);
 }
 
 class _ChatState extends State<Chat> {
   var info;
-  var check = [0];
+  var check;
+  var image = 0;
+  _ChatState({List check}) {
+    this.check = check;
+  }
   List chatlist = <ChatModel>[
     ChatModel(
         number: '+918979626196',
@@ -43,11 +53,12 @@ class _ChatState extends State<Chat> {
                     (e != 'receving') &&
                     (e != 'connected') &&
                     (e != 'caller') &&
-                    (e != 'channelid')&&
-                    ( e!='callhis'))
+                    (e != 'channelid') &&
+                    (e != 'callhis')&&(e!='downloadablelink'))
                 ? ChatModel(
                     username: e,
                     number: e,
+                    dp: data[e]['avtar']!=null? data[e]['avtar']:null,
                   )
                 : 'null')
             .toList();
@@ -64,11 +75,22 @@ class _ChatState extends State<Chat> {
         chatlist.remove('null');
 
         print(chatlist);
-        flag = false;
+        
         length = data.length;
         print(dataman);
       }
     });
+    if (image == 0) {
+      image = 1;
+      for (var i in chatlist) {
+        var temp = FireBaseDataBase(number: i.number);
+        await temp.fetchDP();
+        if (temp.dp != null) i.dp = temp.dp;
+      }
+      image = 0;
+   
+    setState(() {});}
+    flag = false;
     print('donw');
   }
 
@@ -80,7 +102,7 @@ class _ChatState extends State<Chat> {
     await Firebase.initializeApp();
     var doc = FirebaseFirestore.instance;
     var ref = doc.doc(info[2]);
-    while ((true) && (check[0] == 0)) {
+    while (check[0] == 0) {
       var dataref = await ref.get();
       var data1 = dataref.data();
       print('allcool');
@@ -89,7 +111,6 @@ class _ChatState extends State<Chat> {
           ((data1['receving'] != null) && (data1['receving'])) &&
           (((data1['calling'] == null) || (!data1['calling'])) &&
               ((data1['connected'] == null) || (!data1['connected'])))) {
-                
         Navigator.popAndPushNamed(context, '/caller', arguments: {
           'number': data1['caller'][0],
           'type': 'receving',
@@ -98,10 +119,15 @@ class _ChatState extends State<Chat> {
           'check': check,
           'channelid': data1['channelid']
         });
-      
+
         check[0] = 3;
       }
     }
+  }
+
+  void initState() {
+    super.initState();
+    check[0] = 0;
   }
 
   @override
@@ -114,7 +140,6 @@ class _ChatState extends State<Chat> {
           SliverList(
             delegate:
                 SliverChildBuilderDelegate((BuildContext context, int index) {
-              
               if ((chatlist.length == 0) && (index < 1)) {
                 return Container(
                     padding: EdgeInsets.all(60),
@@ -131,7 +156,6 @@ class _ChatState extends State<Chat> {
 
                 if (pref1.containsKey(chatlist[index].number)) {
                   name = pref1.getStringList(chatlist[index].number)[1];
-                  
                 } else {
                   name = dataman[chatlist[index].number]['name'];
                   // print(dataman[chatlist[index].number]['docid']);
@@ -140,7 +164,8 @@ class _ChatState extends State<Chat> {
                 // print(dataman[chatlist[index].number]['docid']);
                 //  print(index);
                 return FlatButton(
-                    onPressed: () async {
+                    onPressed: () {
+                        check[0] = 1;
                       Navigator.popAndPushNamed(context, '/chatpannel',
                           arguments: {
                             'number': chatlist[index].number,
@@ -148,7 +173,7 @@ class _ChatState extends State<Chat> {
                             'name': name,
                             'check': check,
                           });
-                      check[0] = 1;
+                    
                     },
                     child: Container(
                       padding: EdgeInsets.all(20),
@@ -160,11 +185,13 @@ class _ChatState extends State<Chat> {
                         children: [
                           Row(
                             children: [
-                              Icon(
-                                Icons.supervised_user_circle,
-                                color: Colors.white,
-                                size: 30,
-                              ),
+                              chatlist[index].dp != null
+                                  ? CircularProfileAvatar('',radius: 20,child:Image(image: NetworkImage(chatlist[index].dp),))
+                                  : Icon(
+                                      Icons.supervised_user_circle,
+                                      color: Colors.white,
+                                      size: 30,
+                                    ),
                               SizedBox(width: 10),
                               Text(
                                 '$name',

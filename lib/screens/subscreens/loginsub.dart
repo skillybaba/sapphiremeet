@@ -18,7 +18,7 @@ class _LoginSubState extends State<LoginSub> {
       await Firebase.initializeApp();
       FirebaseAuth auth = FirebaseAuth.instance;
 
-      auth.verifyPhoneNumber(
+      await auth.verifyPhoneNumber(
           timeout: Duration(minutes: 1),
           phoneNumber: number,
           verificationCompleted: (var credential) async {
@@ -28,30 +28,29 @@ class _LoginSubState extends State<LoginSub> {
             if (user != null) {
               var vals = await AuthVals().getVals('userinfo', 'auth');
               await AuthVals().setAuth();
-               if (user != null) {
-                            var vals =
-                                await AuthVals().getVals('userinfo', 'auth');
-                            print(vals);
-                            await AuthVals().setAuth();
-                            if (vals != null) {
-                              if (vals[0] != null) {
-                                if ((vals[0].length > 0) &&
-                                    (vals[0][0] == number)) {
-                                  Navigator.pushReplacementNamed(
-                                      context, '/home');
-                                } else {
-                                  Navigator.pushReplacementNamed(context, '/info',arguments: {
-                                      'number': number,
-                                    });
-                                }
-                              } else {
-                                Navigator.pushReplacementNamed(context, '/info',
-                                    arguments: {
-                                      'number': number,
-                                    });
-                              }
-                            }
-                          }
+              if (user != null) {
+                var vals = await AuthVals().getVals('userinfo', 'auth');
+                print(vals);
+                await AuthVals().setAuth();
+                if (vals != null) {
+                  if (vals[0] != null) {
+                    if ((vals[0].length > 0) && (vals[0][0] == number)) {
+                      Navigator.pop(context);
+                      Navigator.popAndPushNamed(context, '/home');
+                    } else {
+                      Navigator.pop(context);
+                      Navigator.popAndPushNamed(context, '/info', arguments: {
+                        'number': number,
+                      });
+                    }
+                  } else {
+                    Navigator.pop(context);
+                    Navigator.popAndPushNamed(context, '/info', arguments: {
+                      'number': number,
+                    });
+                  }
+                }
+              }
             } else {
               print('error');
             }
@@ -86,15 +85,18 @@ class _LoginSubState extends State<LoginSub> {
                               if (vals[0] != null) {
                                 if ((vals[0].length > 0) &&
                                     (vals[0][0] == number)) {
-                                  Navigator.pushReplacementNamed(
-                                      context, '/home');
+                                  Navigator.pop(context);
+                                  Navigator.popAndPushNamed(context, '/home');
                                 } else {
-                                  Navigator.pushReplacementNamed(context, '/info',arguments: {
-                                      'number': number,
-                                    });
+                                  Navigator.pop(context);
+                                  Navigator.popAndPushNamed(context, '/info',
+                                      arguments: {
+                                        'number': number,
+                                      });
                                 }
                               } else {
-                                Navigator.pushReplacementNamed(context, '/info',
+                                Navigator.pop(context);
+                                Navigator.popAndPushNamed(context, '/info',
                                     arguments: {
                                       'number': number,
                                     });
@@ -119,7 +121,7 @@ class _LoginSubState extends State<LoginSub> {
                               await AuthVals().getVals('userinfo', 'auth');
 
                           await AuthVals().setAuth();
-                           if (user != null) {
+                          if (user != null) {
                             var vals =
                                 await AuthVals().getVals('userinfo', 'auth');
                             print(vals);
@@ -128,15 +130,18 @@ class _LoginSubState extends State<LoginSub> {
                               if (vals[0] != null) {
                                 if ((vals[0].length > 0) &&
                                     (vals[0][0] == number)) {
-                                  Navigator.pushReplacementNamed(
-                                      context, '/home');
+                                      Navigator.pop(context);
+                                  Navigator.popAndPushNamed(context, '/home');
                                 } else {
-                                  Navigator.pushReplacementNamed(context, '/info',arguments: {
-                                      'number': number,
-                                    });
+                                  Navigator.pop(context);
+                                  Navigator.popAndPushNamed(context, '/info',
+                                      arguments: {
+                                        'number': number,
+                                      });
                                 }
                               } else {
-                                Navigator.pushReplacementNamed(context, '/info',
+                                Navigator.pop(context);
+                                Navigator.popAndPushNamed(context, '/info',
                                     arguments: {
                                       'number': number,
                                     });

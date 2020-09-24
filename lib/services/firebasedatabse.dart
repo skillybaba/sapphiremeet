@@ -12,7 +12,7 @@ class FireBaseDataBase {
   String number;
   var data;
   var docid;
-  File dp;
+  String dp;
   FireBaseDataBase({String username, String number, data}) {
     this.username = username;
     this.number = number;
@@ -44,30 +44,23 @@ class FireBaseDataBase {
       var map = {};
       var name = {};
       List<String> name1 = [];
-      await user.get().then((value) {
-        value.docs.forEach((element) {
-          finallist.add(element.data()['number']);
-          map[element.data()['number']] = element.data()['Doc Id'];
-
-          name[element.data()['number']] = element.data()['username'];
-          print(element.data()['number']);
-        });
-      });
       List<String> list = [];
-      for (var i in contact) {
-        for (var j in finallist) {
-          i.phones.any((element) {
-            if ((element.value.replaceAll(' ', '') == j) &&
-                (name[element.value] != null)) {
-              list.add(j);
-              docid.add(map[element.value]);
-              name1.add(name[element.value]);
+      var ref = await user.get();
+      var datacon = ref.docs.forEach((element) {
+        for (var i in contact) {
+          i.phones.any((element1) {
+            if ((element1.value.replaceAll(' ', '') ==
+                    element.data()['number']) ||
+                (name[element1.value] != null)) {
+              docid.add(element.data()['Doc Id']);
+              name1.add(element.data()['username']);
+              list.add(element.data()['number']);
             }
-
             return true;
           });
         }
-      }
+      });
+
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setStringList('contact list', list);
       await prefs.setStringList('contact docid', docid);
@@ -89,24 +82,27 @@ class FireBaseDataBase {
 
   Future<void> fetchDP() async {
     await Firebase.initializeApp();
-    StorageReference ref = FirebaseStorage()
-        .ref()
-        .child('gs://sapphire-meet.appspot.com/profile images/' + this.number.trim());
-    var data = await ref.getData(128);
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-
-    this.dp = File(appDocDir.path + "/Dp");
-    if (dp.existsSync()) dp.deleteSync();
-    this.dp.writeAsBytesSync(data);
-
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var val = prefs.getStringList('your info');
+    StorageReference ref = FirebaseStorage().ref().child(
+        'gs://sapphire-meet.appspot.com/profile images/' + this.number.trim());
+    if (ref != null) {
+      var data = await ref.getDownloadURL();
+      var firebase = FirebaseFirestore.instance;
+      var firestore = firebase.doc(val[2]);
+      firestore.update({
+        'downloadablelink': data,
+      });
+      this.dp = data;
+    }
   }
 
   Future<void> addDP(File file, [metadata]) async {
     await Firebase.initializeApp();
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    StorageReference storageReference = FirebaseStorage().ref().child(
-        'gs://sapphire-meet.appspot.com/profile images/' +
-            this.number);
+    StorageReference storageReference = FirebaseStorage()
+        .ref()
+        .child('gs://sapphire-meet.appspot.com/profile images/' + this.number);
     var upload = storageReference.putFile(file);
     var ref = await upload.onComplete;
 
@@ -119,7 +115,6 @@ class FireBaseDataBase {
     File dp = File(path);
     if (dp.existsSync()) dp.deleteSync();
     dp.writeAsBytesSync(file.readAsBytesSync());
-    
   }
 
   Future<void> addUser() async {

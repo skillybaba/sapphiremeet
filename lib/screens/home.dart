@@ -18,6 +18,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  List check = [0];
   GlobalKey<ScaffoldState> key = GlobalKey<ScaffoldState>();
   PageController controller = PageController(initialPage: 0);
   logout() async {
@@ -25,7 +26,7 @@ class _HomeState extends State<Home> {
     Navigator.pushReplacementNamed(context, '/');
   }
 
-  File dp;
+  String dp;
   SharedPreferences pref;
   void prefs() async {
     pref = await SharedPreferences.getInstance();
@@ -37,15 +38,21 @@ class _HomeState extends State<Home> {
     prefs();
   }
 
+  void dispose() {
+    super.dispose();
+  }
+
+  var info;
   var flag = false;
   getDp() async {
     if (pref != null) {
       var ref = FireBaseDataBase(number: pref.getStringList('your info')[0]);
       await ref.fetchDP();
       dp = ref.dp;
-      setState(() {
-        flag = true;
-      });
+      if (dp != null)
+        setState(() {
+          flag = true;
+        });
     }
   }
 
@@ -53,7 +60,7 @@ class _HomeState extends State<Home> {
   int i = 0;
   @override
   Widget build(BuildContext context) {
-    getDp();
+    if (!flag) getDp();
     return Scaffold(
       key: key,
       drawer: Drawer(
@@ -66,7 +73,7 @@ class _HomeState extends State<Home> {
               padding: EdgeInsets.only(top: 30, left: 10, right: 10),
               child: Row(
                 children: [
-                  flag
+                  dp != null
                       ? Container(
                           decoration: BoxDecoration(shape: BoxShape.circle),
                           child: FlatButton(
@@ -80,6 +87,7 @@ class _HomeState extends State<Home> {
                                         SizedBox(height: 180),
                                         FlatButton(
                                             onPressed: () async {
+                                              Navigator.pop(context);
                                               ImagePicker picker =
                                                   ImagePicker();
                                               if (await Permission.photos
@@ -122,11 +130,16 @@ class _HomeState extends State<Home> {
                                                               1.0,
                                                         ));
 
-                                                await FireBaseDataBase(number:pref.getStringList('your info')[0]).addDP(
-                                                    crop,
-                                                   );
+                                                await FireBaseDataBase(
+                                                        number:
+                                                            pref.getStringList(
+                                                                'your info')[0])
+                                                    .addDP(
+                                                  crop,
+                                                );
                                                 setState(() {
                                                   ff = false;
+                                                  flag = false;
                                                 });
                                               }
                                             },
@@ -138,6 +151,7 @@ class _HomeState extends State<Home> {
                                                         FontWeight.bold))),
                                         FlatButton(
                                             onPressed: () async {
+                                              Navigator.pop(context);
                                               ImagePicker picker =
                                                   ImagePicker();
 
@@ -176,12 +190,17 @@ class _HomeState extends State<Home> {
                                                         minimumAspectRatio: 1.0,
                                                       ));
 
-                                              await FireBaseDataBase(number:pref.getStringList('your info')[0]).addDP(
-                                                  crop,
-                                                 );
+                                              await FireBaseDataBase(
+                                                      number:
+                                                          pref.getStringList(
+                                                              'your info')[0])
+                                                  .addDP(
+                                                crop,
+                                              );
 
                                               setState(() {
                                                 ff = false;
+                                                flag = false;
                                                 this.i++;
                                               });
                                             },
@@ -198,11 +217,11 @@ class _HomeState extends State<Home> {
                               child: CircularProfileAvatar('',
                                   key: Key(this.i.toString()),
                                   child: Image(
-                                    image:
-                                        FileImage(dp),
+                                    image: NetworkImage(dp),
                                   ))))
                       : IconButton(
                           onPressed: () async {
+                            Navigator.pop(context);
                             await showDialog(
                                 context: context,
                                 child: Center(
@@ -253,11 +272,15 @@ class _HomeState extends State<Home> {
                                                       minimumAspectRatio: 1.0,
                                                     ));
 
-                                            await FireBaseDataBase(number:pref.getStringList('your info')[0]).addDP(
-                                                crop,
-                                               );
+                                            await FireBaseDataBase(
+                                                    number: pref.getStringList(
+                                                        'your info')[0])
+                                                .addDP(
+                                              crop,
+                                            );
                                             setState(() {
                                               ff = false;
+                                              flag = false;
                                             });
                                           }
                                         },
@@ -268,6 +291,7 @@ class _HomeState extends State<Home> {
                                                 fontWeight: FontWeight.bold))),
                                     FlatButton(
                                         onPressed: () async {
+                                          Navigator.pop(context);
                                           ImagePicker picker = ImagePicker();
 
                                           var image = await picker.getImage(
@@ -304,12 +328,16 @@ class _HomeState extends State<Home> {
                                                     minimumAspectRatio: 1.0,
                                                   ));
 
-                                          await FireBaseDataBase(number:pref.getStringList('your info')[0]).addDP(
-                                              crop,
-                                             );
+                                          await FireBaseDataBase(
+                                                  number: pref.getStringList(
+                                                      'your info')[0])
+                                              .addDP(
+                                            crop,
+                                          );
 
                                           setState(() {
                                             ff = false;
+                                            flag = false;
                                           });
                                         },
                                         child: Text("From Camera",
@@ -387,6 +415,7 @@ class _HomeState extends State<Home> {
                 controller.animateToPage(3,
                     duration: Duration(seconds: 1),
                     curve: Curves.fastLinearToSlowEaseIn);
+                check[0] = 3232;
               },
               child: Icon(Icons.rounded_corner, size: 30, color: Colors.white))
         ],
@@ -401,6 +430,7 @@ class _HomeState extends State<Home> {
                       controller.animateToPage(0,
                           duration: Duration(seconds: 1),
                           curve: Curves.fastLinearToSlowEaseIn);
+                      check[0] = 0;
                     },
                     icon: Icon(
                       Icons.chat,
@@ -418,6 +448,7 @@ class _HomeState extends State<Home> {
                     controller.animateToPage(1,
                         duration: Duration(seconds: 1),
                         curve: Curves.fastLinearToSlowEaseIn);
+                    check[0] = 3232;
                   },
                   icon: Icon(
                     Icons.call,
@@ -432,6 +463,7 @@ class _HomeState extends State<Home> {
                     controller.animateToPage(2,
                         duration: Duration(seconds: 1),
                         curve: Curves.fastLinearToSlowEaseIn);
+                    check[0] = 3232;
                   },
                   icon: Icon(
                     Icons.group,
@@ -457,9 +489,11 @@ class _HomeState extends State<Home> {
       body: PageView(
         controller: controller,
         children: [
-          Chat(),
-          Calling(),
-          Confrence(),
+          Chat(check: check),
+          Calling(check: check),
+          Confrence(
+            check: check,
+          ),
           Status(),
         ],
       ),
@@ -467,6 +501,7 @@ class _HomeState extends State<Home> {
         onPressed: () {
           Navigator.popAndPushNamed(context, '/contacts');
           print('done');
+          check[0] = 343;
         },
         child: Icon(Icons.group_add_outlined),
         backgroundColor: Colors.yellow[800],

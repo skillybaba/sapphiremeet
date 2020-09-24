@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
-
+import 'package:application/services/conferenceservice.dart';
+import 'package:flutter/cupertino.dart';
 class SignUp extends StatefulWidget {
   @override
   _SignUpState createState() => _SignUpState();
@@ -41,7 +41,29 @@ class _SignUpState extends State<SignUp> {
         ),
         SizedBox(height: 10),
         FlatButton.icon(
-            onPressed: () {},
+            onPressed: () async{
+              try {
+                    await Conf_Service(
+                      roomid: controller.text,
+                      username:'Random Person',
+                    ).hostMeet();
+                  } catch (e) {
+                    showCupertinoModalPopup(
+                        context: context,
+                        builder: (context) {
+                          return Container(
+                              color: Colors.yellow,
+                              child: Text(
+                                'Enter the Meeting code',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                ),
+                              ));
+                        });
+                  }
+                },
+           
             icon: Icon(Icons.group_add, color: Colors.yellow[800]),
             label: Text('JOIN NOW',
                 style: TextStyle(color: Colors.yellow[800])))

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import './screens/auth.dart';
 import './screens/home.dart';

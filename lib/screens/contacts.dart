@@ -88,7 +88,9 @@ class _ContactViewState extends State<ContactView> {
                         contacts[2][index]);
                     print(contacts[1][index]);
                     return Container(
-                        padding: EdgeInsets.all(20),
+                      margin: EdgeInsets.all(10),
+                      color: Colors.yellow[800],
+                        padding: EdgeInsets.all(10),
                         child: FlatButton.icon(
                             onPressed: () {
                               Navigator.popAndPushNamed(context, '/chatpannel',
@@ -99,22 +101,22 @@ class _ContactViewState extends State<ContactView> {
                                   });
                             },
                             icon: Container(
-                              padding: EdgeInsets.only(right: 20),
+                              padding: EdgeInsets.only(right: 10),
                               child: Icon(
                                 Icons.contact_mail,
-                                size: 30,
-                                color: Colors.yellow[800],
+                                size: 20,
+                                color: Colors.white,
                               ),
                             ),
                             label: Column(children: [
                               Text(
                                 '${contacts[0][index]}',
                                 style: TextStyle(
-                                    color: Colors.yellow[800], fontSize: 20),
+                                    color: Colors.white, fontSize: 15),
                               ),
                               Text('${contacts[2][index]}',
                                   style: TextStyle(
-                                      color: Colors.yellow[800], fontSize: 20))
+                                      color: Colors.white, fontSize: 15))
                             ])));
                   }
                 },
