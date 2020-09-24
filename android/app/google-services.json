@@ -42,6 +42,43 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:414973538233:android:14327a894aa96303369068",
+        "android_client_info": {
+          "package_name": "com.sapphiremeet.sapphiremeet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "414973538233-j5jor4g3mpppekqfrq7m8jkkv4qhek6q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sapphiremeet.sapphiremeet",
+            "certificate_hash": "090577b114919887f3a1cd534f7a4060e8d8c439"
+          }
+        },
+        {
+          "client_id": "414973538233-tdb5h4kfga6vddfolnh5qlg3tgmt6h4n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCRrryclMgXefuEIw6Pt_iMM0tagyWU8UA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "414973538233-tdb5h4kfga6vddfolnh5qlg3tgmt6h4n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"
