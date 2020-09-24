@@ -263,6 +263,9 @@ class _ChatPannelState extends State<ChatPannel> {
                       'channelid':
                           (data['number'].substring(1) + info[0].substring(1))
                     });
+                    setState(() {
+                      isloading = false;
+                    });
                   }
                 },
               ),

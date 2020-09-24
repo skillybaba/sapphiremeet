@@ -20,7 +20,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   List check = [0];
   GlobalKey<ScaffoldState> key = GlobalKey<ScaffoldState>();
-  PageController controller = PageController(initialPage: 0);
+  PageController controller = PageController(initialPage: 2);
   logout() async {
     await AuthVals().deleteVals('userinfo', 'auth');
     Navigator.pushReplacementNamed(context, '/');

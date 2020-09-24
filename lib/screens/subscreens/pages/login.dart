@@ -19,7 +19,7 @@ class _LoginState extends State<Login> {
               height: 10,
             ),
             Image.asset(
-              'assests/images/Logos/IMG-20200821-WA0005(1).jpg',
+              'assests/images/Logos/Sapphire_Meet_Logo-removebg.png',
               height: 270,
             ),
             LoginSub(),

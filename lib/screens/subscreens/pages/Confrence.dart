@@ -238,10 +238,11 @@ class _ConfrenceState extends State<Confrence> {
                 onPressed: () async {
                   try {
                     await Conf_Service(
-                      roomid: controller.text,
-                      username: details[0].replace("+", "") + " " + details[1],
+                      roomid: controller.text.trim(),
+                      username: details[0].replaceAll("+", "") + " " + details[1],
                     ).hostMeet();
                   } catch (e) {
+                    print(e);
                     showCupertinoModalPopup(
                         context: context,
                         builder: (context) {

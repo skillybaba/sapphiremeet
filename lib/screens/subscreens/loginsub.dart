@@ -17,11 +17,12 @@ class _LoginSubState extends State<LoginSub> {
     try {
       await Firebase.initializeApp();
       FirebaseAuth auth = FirebaseAuth.instance;
-
+      
       await auth.verifyPhoneNumber(
           timeout: Duration(minutes: 1),
           phoneNumber: number,
           verificationCompleted: (var credential) async {
+            
             var result = await auth.signInWithCredential(credential);
             var user = result.user;
 
@@ -75,10 +76,11 @@ class _LoginSubState extends State<LoginSub> {
                           var result =
                               await auth.signInWithCredential(credential);
                           var user = result.user;
-
+                      
                           if (user != null) {
                             var vals =
                                 await AuthVals().getVals('userinfo', 'auth');
+                                
                             print(vals);
                             await AuthVals().setAuth();
                             if (vals != null) {

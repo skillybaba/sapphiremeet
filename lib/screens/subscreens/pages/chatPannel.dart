@@ -54,11 +54,12 @@ class _ChatState extends State<Chat> {
                     (e != 'connected') &&
                     (e != 'caller') &&
                     (e != 'channelid') &&
-                    (e != 'callhis')&&(e!='downloadablelink'))
+                    (e != 'callhis') &&
+                    (e != 'downloadablelink'))
                 ? ChatModel(
                     username: e,
                     number: e,
-                    dp: data[e]['avtar']!=null? data[e]['avtar']:null,
+                    dp: data[e]['avtar'] != null ? data[e]['avtar'] : null,
                   )
                 : 'null')
             .toList();
@@ -73,23 +74,15 @@ class _ChatState extends State<Chat> {
         chatlist.remove('null');
         chatlist.remove('null');
         chatlist.remove('null');
+        chatlist.remove('null');
 
         print(chatlist);
-        
+
         length = data.length;
         print(dataman);
       }
     });
-    if (image == 0) {
-      image = 1;
-      for (var i in chatlist) {
-        var temp = FireBaseDataBase(number: i.number);
-        await temp.fetchDP();
-        if (temp.dp != null) i.dp = temp.dp;
-      }
-      image = 0;
-   
-    setState(() {});}
+
     flag = false;
     print('donw');
   }
@@ -130,6 +123,11 @@ class _ChatState extends State<Chat> {
     check[0] = 0;
   }
 
+  void dispose() {
+    super.dispose();
+    check[0] = 1;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!checkcall) checkCall(context);
@@ -165,7 +163,7 @@ class _ChatState extends State<Chat> {
                 //  print(index);
                 return FlatButton(
                     onPressed: () {
-                        check[0] = 1;
+                      check[0] = 1;
                       Navigator.popAndPushNamed(context, '/chatpannel',
                           arguments: {
                             'number': chatlist[index].number,
@@ -173,7 +171,6 @@ class _ChatState extends State<Chat> {
                             'name': name,
                             'check': check,
                           });
-                    
                     },
                     child: Container(
                       padding: EdgeInsets.all(20),
@@ -186,7 +183,11 @@ class _ChatState extends State<Chat> {
                           Row(
                             children: [
                               chatlist[index].dp != null
-                                  ? CircularProfileAvatar('',radius: 20,child:Image(image: NetworkImage(chatlist[index].dp),))
+                                  ? CircularProfileAvatar('',
+                                      radius: 20,
+                                      child: Image(
+                                        image: NetworkImage(chatlist[index].dp),
+                                      ))
                                   : Icon(
                                       Icons.supervised_user_circle,
                                       color: Colors.white,

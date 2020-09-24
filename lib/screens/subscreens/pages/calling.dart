@@ -182,6 +182,9 @@ class _CallingState extends State<Calling> {
                                   'channelid':
                                       (callinglist[index].number + info[2])
                                 });
+                                setState(() {
+                      isloading = false;
+                    });
                               }
                             },
                           )

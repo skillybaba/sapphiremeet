@@ -61,7 +61,7 @@ class _CallState extends State<Call> {
 
       if (data['connected']) {
         CallingService(data['channelid'],
-                caller: info['caller'], recever: info['recever'])
+                caller: info['caller'], recever: info['recever'],number: info['number'])
             .connect();
         if (info['check'][0] == 3) {
           info['check'][0] = 0;
@@ -155,7 +155,7 @@ class _CallState extends State<Call> {
 
                           CallingService(data['channelid'],
                                   caller: info['caller'],
-                                  recever: info['recever'])
+                                  recever: info['recever'],number: info['number'])
                               .connect();
                           ref.update({
                             'connected': true,

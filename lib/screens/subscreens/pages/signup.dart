@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:application/services/conferenceservice.dart';
 import 'package:flutter/cupertino.dart';
+
 class SignUp extends StatefulWidget {
   @override
   _SignUpState createState() => _SignUpState();
@@ -8,7 +9,7 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   var controller = TextEditingController();
-  
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,6 +32,7 @@ class _SignUpState extends State<SignUp> {
         Container(
           padding: EdgeInsets.only(left: 30, right: 50),
           child: TextField(
+            controller: controller,
             autocorrect: true,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
@@ -41,32 +43,32 @@ class _SignUpState extends State<SignUp> {
         ),
         SizedBox(height: 10),
         FlatButton.icon(
-            onPressed: () async{
+            onPressed: () async {
               try {
-                    await Conf_Service(
-                      roomid: controller.text,
-                      username:'Random Person',
-                    ).hostMeet();
-                  } catch (e) {
-                    showCupertinoModalPopup(
-                        context: context,
-                        builder: (context) {
-                          return Container(
-                              color: Colors.yellow,
-                              child: Text(
-                                'Enter the Meeting code',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.white,
-                                ),
-                              ));
-                        });
-                  }
-                },
-           
+                await Conf_Service(
+                  roomid: controller.text.trim(),
+                  username: 'Random Person',
+                ).hostMeet();
+              } catch (e) {
+                print(e);
+                showCupertinoModalPopup(
+                    context: context,
+                    builder: (context) {
+                      return Container(
+                          color: Colors.yellow,
+                          child: Text(
+                            'Enter the Meeting code',
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                            ),
+                          ));
+                    });
+              }
+            },
             icon: Icon(Icons.group_add, color: Colors.yellow[800]),
-            label: Text('JOIN NOW',
-                style: TextStyle(color: Colors.yellow[800])))
+            label:
+                Text('JOIN NOW', style: TextStyle(color: Colors.yellow[800])))
       ],
     ));
   }

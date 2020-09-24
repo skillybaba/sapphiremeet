@@ -8,7 +8,10 @@ class CallingService {
   String channel;
   String caller;
   String recever;
-  CallingService(String channel, {String caller, String recever}) {
+  String number;
+  CallingService(String channel,
+      {String caller, String recever, String number}) {
+    this.number = number;
     this.channel = channel;
     this.caller = caller;
     this.recever = recever;
@@ -27,11 +30,12 @@ class CallingService {
   };
   connect() async {
     var options = JitsiMeetingOptions();
-
+    print(this.number);
+    options.userDisplayName = this.number.replaceAll('+', '');
     options.room = this.channel;
     options.featureFlags.addAll(this.feature);
     options.videoMuted = true;
-    
+
     await JitsiMeet.joinMeeting(options, listener: JitsiMeetingListener(
         onConferenceTerminated: ({Map<dynamic, dynamic> message}) async {
       await Firebase.initializeApp();

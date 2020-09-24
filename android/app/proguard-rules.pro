@@ -5,6 +5,22 @@
 -keep class io.flutter.view.**  { *; }
 -keep class io.flutter.**  { *; }
 -keep class io.flutter.plugins.**  { *; }
+-keep class com.firebase.** { *; }
+-keep class org.apache.** { *; }
+-keepnames class com.fasterxml.jackson.** { *; }
+-keepnames class javax.servlet.** { *; }
+-keepnames class org.ietf.jgss.** { *; }
+-dontwarn org.w3c.dom.**
+-dontwarn org.joda.time.**
+-dontwarn org.shaded.apache.**
+-dontwarn org.ietf.jgss.**
+-dontwarn com.backendless.**
+-dontwarn weborb.**
+-keep class weborb.** { *; }
+-keep class com.backendless.** { *; }
+
+# Only necessary if you downloaded the SDK jar directly instead of from maven.
+-keep class com.shaded.fasterxml.jackson.** { *; }
 
 #=== Jitsi ===#
 # Source: https://github.com/jitsi/jitsi-meet/blob/master/android/app/proguard-rules.pro
