@@ -1,6 +1,7 @@
 import 'package:jitsi_meet/feature_flag/feature_flag_helper.dart';
 import 'package:jitsi_meet/jitsi_meet.dart';
 import 'package:jitsi_meet/feature_flag/feature_flag_enum.dart';
+import 'package:jitsi_meet/jitsi_meeting_listener.dart';
 
 class Conf_Service {
   String roomid;
@@ -25,7 +26,7 @@ class Conf_Service {
     options.featureFlags
         .putIfAbsent(FeatureFlagEnum.CALENDAR_ENABLED, () => true);
     await JitsiMeet.joinMeeting(
-      options,
+      options,listener: JitsiMeetingListener()
     );
   }
 }

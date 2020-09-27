@@ -154,7 +154,7 @@ class _ConfrenceState extends State<Confrence> {
                                     builder: (context) {
                                       return AlertDialog(
                                         title: Text(
-                                          'Copy the NameId: ' +
+                                          'Copy the Meeting Code and share this code to the People for joining into your room: ' +
                                               randoms[meetingname.text.length]
                                                   .toString() +
                                               meetingname.text,

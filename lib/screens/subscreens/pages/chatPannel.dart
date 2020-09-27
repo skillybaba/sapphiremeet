@@ -55,7 +55,9 @@ class _ChatState extends State<Chat> {
                     (e != 'caller') &&
                     (e != 'channelid') &&
                     (e != 'callhis') &&
-                    (e != 'downloadablelink'))
+                    (e != 'downloadablelink')&&(
+                      e!='status'
+                    ))
                 ? ChatModel(
                     username: e,
                     number: e,
