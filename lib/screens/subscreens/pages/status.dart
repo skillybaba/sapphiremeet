@@ -80,6 +80,7 @@ class _StatusState extends State<Status> {
   Widget build(BuildContext context) {
     if (flagfinal)
       return Center(
+        widthFactor: 10.0,
           child: Text(
         'Fetch the Contacts from the below floating button First',
         style: TextStyle(

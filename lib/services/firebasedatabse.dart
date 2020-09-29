@@ -84,17 +84,13 @@ class FireBaseDataBase {
     await Firebase.initializeApp();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var val = prefs.getStringList('your info');
-    StorageReference ref = FirebaseStorage().ref().child(
-        'gs://sapphire-meet.appspot.com/profile images/' + this.number.trim());
-    if (ref != null) {
-      var data = await ref.getDownloadURL();
-      var firebase = FirebaseFirestore.instance;
-      var firestore = firebase.doc(val[2]);
-      firestore.update({
-        'downloadablelink': data,
-      });
-      this.dp = data;
-    }
+
+    var firebase = FirebaseFirestore.instance;
+    var firestore = firebase.doc(val[2]);
+    var dataref = await firestore.get();
+    var data = dataref.data()['DP'];
+
+    this.dp = data;
   }
 
   Future<void> addDP(File file, [metadata]) async {
@@ -109,12 +105,7 @@ class FireBaseDataBase {
     var val = prefs.getStringList('your info');
     var firebase = FirebaseFirestore.instance;
     var firestore = firebase.doc(val[2]);
-    await firestore.update({'DP': await ref.ref.getPath()});
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-    String path = appDocDir.path + '/Display';
-    File dp = File(path);
-    if (dp.existsSync()) dp.deleteSync();
-    dp.writeAsBytesSync(file.readAsBytesSync());
+    await firestore.update({'DP': await ref.ref.getDownloadURL()});
   }
 
   Future<void> addUser() async {
@@ -141,7 +132,9 @@ class FireBaseDataBase {
         var user1 = await user.add({
           'number': this.number,
           'username': this.username,
+          'account': 'free',
         });
+
         print('done');
 
         FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -152,17 +145,22 @@ class FireBaseDataBase {
         print(docid.path);
         await user.doc(user1.id).update({'Doc Id': docid.path});
         SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('userdocid', user1.path);
         await prefs.setString(this.number, docid.path);
         print('done121');
       } else {
         var user1 = await user.get();
         var docidpath;
+        var userdoc;
         user1.docs.forEach((element) {
-          if (element.data()['number'] == this.number)
+          if (element.data()['number'] == this.number) {
             docidpath = element.data()['Doc Id'];
+            userdoc = element.reference.path;
+          }
         });
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString(this.number, docidpath);
+        await prefs.setString('userdocid', userdoc);
       }
 
       SharedPreferences prefs = await SharedPreferences.getInstance();

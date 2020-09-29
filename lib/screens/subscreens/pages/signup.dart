@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:application/services/conferenceservice.dart';
 import 'package:flutter/cupertino.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 class SignUp extends StatefulWidget {
   @override
   _SignUpState createState() => _SignUpState();
@@ -45,10 +47,23 @@ class _SignUpState extends State<SignUp> {
         FlatButton.icon(
             onPressed: () async {
               try {
+                await Firebase.initializeApp();
+                    FirebaseFirestore ref = FirebaseFirestore.instance;
+                    var doc = ref.doc('meetings/SjVi5S7Qyj3iTqwFn6Od');
+                    var docdata = await doc.get();
+                    if (docdata.data()[controller.text.trim()]['current'] <=
+                        docdata.data()[controller.text.trim()]['max'])
                 await Conf_Service(
                   roomid: controller.text.trim(),
                   username: 'Random Person',
+                  type:'join',
                 ).hostMeet();
+                else
+                      Alert(
+                              context: context,
+                              type: AlertType.error,
+                              title: 'Max Participants Reached into this Room')
+                          .show();
               } catch (e) {
                 print(e);
                 showCupertinoModalPopup(

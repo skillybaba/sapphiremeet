@@ -1,3 +1,4 @@
+import 'package:application/screens/settings.dart';
 import 'package:flutter/material.dart';
 import './screens/auth.dart';
 import './screens/home.dart';
@@ -20,6 +21,7 @@ void main() {
       '/contacts': (context) => ContactView(),
       '/chatpannel': (context) => ChatPannel(),
       '/caller': (context) => Call(),
+      '/setting':(context) => Settings(),
       
     },
   ));

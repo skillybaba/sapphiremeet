@@ -386,7 +386,12 @@ class _HomeState extends State<Home> {
             )),
         RaisedButton.icon(
             color: Colors.yellow[800],
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, '/setting',arguments: {
+                'data':pref.getStringList('your info'),
+                'url':this.dp,
+              });
+            },
             icon: Icon(
               Icons.settings,
               color: Colors.white,

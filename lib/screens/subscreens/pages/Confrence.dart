@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:application/services/conferenceservice.dart';
@@ -5,6 +7,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:toast/toast.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class Confrence extends StatefulWidget {
   List check;
@@ -97,6 +100,17 @@ class _ConfrenceState extends State<Confrence> {
     12,
     12,
     21,
+    'cdscdsc',
+    32323,
+    645,
+    809211,
+    329842,
+    738792,
+    38383292092,
+    494939,
+    'cdscdsc',
+    '4343',
+    434343,
   ];
   SharedPreferences pref;
   void getPref() async {
@@ -162,8 +176,9 @@ class _ConfrenceState extends State<Confrence> {
                                         content: RaisedButton(
                                           onPressed: () {
                                             FlutterClipboard.copy(
-                                              "Join into the sapphire meet with Meeting Code:"+
-                                                randoms[meetingname.text.length]
+                                                "Join into the sapphire meet with Meeting Code:" +
+                                                    randoms[meetingname
+                                                            .text.length]
                                                         .toString() +
                                                     meetingname.text);
                                             Toast.show('Copied', context);
@@ -237,10 +252,25 @@ class _ConfrenceState extends State<Confrence> {
             FlatButton.icon(
                 onPressed: () async {
                   try {
-                    await Conf_Service(
-                      roomid: controller.text.trim(),
-                      username: details[0].replaceAll("+", "") + " " + details[1],
-                    ).hostMeet();
+                    await Firebase.initializeApp();
+                    FirebaseFirestore ref = FirebaseFirestore.instance;
+                    var doc = ref.doc('meetings/SjVi5S7Qyj3iTqwFn6Od');
+                    var docdata = await doc.get();
+                    if (docdata.data()[controller.text.trim()]['current'] <=
+                        docdata.data()[controller.text.trim()]['max'])
+                      await Conf_Service(
+                        roomid: controller.text.trim(),
+                        username:
+                            details[0].replaceAll("+", "") + " " + details[1],
+                        type: 'join',
+                        confinfo:docdata.data(),
+                      ).hostMeet();
+                    else
+                      Alert(
+                              context: context,
+                              type: AlertType.error,
+                              title: 'Max Participants Reached into this Room')
+                          .show();
                   } catch (e) {
                     print(e);
                     showCupertinoModalPopup(

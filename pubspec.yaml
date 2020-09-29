@@ -49,7 +49,7 @@ dependencies:
   loading_overlay: ^0.2.1
   toast: ^0.1.5
   clipboard: ^0.1.2+8
-  
+  rflutter_alert: ^1.1.0
   
 
 dev_dependencies:
