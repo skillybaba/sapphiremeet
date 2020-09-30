@@ -5,6 +5,28 @@ This is the app id for the calling functionality.
 
 
 
- 
+ Sapphire Meet Plans
+BASIC 	PRO	Business	Enterprise
+Personal Meeting	Great For Small Teams	Small& Med Business 	Large enterprises
+Free	Rs 399/-	Rs 499/-	Rs899/-
+	Free Gift 	Free Gift 	Free Gift 
+Host up to 100 participants	Host up to 500 participants	Host up to 1,000 participants	Host up to 9,999 participants
+1 hour(60 mins) maximum group meetings	12 hours maximum group meetings	24 hours group meetings	Unlimited group meetings
+Unlimited 1:1 meetings	Unlimited 1:1 meetings 	Unlimited 1:1 meetings	Unlimited 1:1 meetings
+Free 1:1 chatting and group chatting	Free 1:1 chatting and group chatting	Free 1:1 chatting and group chatting	Free 1:1 chatting and group chatting
+Free Voice and Video Call	Free Voice and Video Call	Free Voice and Video Call	Free Voice and Video Call
+Free Video Conferencing Features	Free Video Conferencing Features	Free Video Conferencing Features	Free Video Conferencing Features
+-	Social Media Streaming 	Social Media Streaming	Social Media Streaming
+-			
+	Managed Domains	Managed Domains	Managed Domains
+-	-	Company Branding 	Company Branding
+Security	Security	Security	Security
+-	Calculator	Calculator	Calculator
+Online Support 	Online Support and Ticket Support 	Online and Call Support 	Online and Call Support
+Sign up for free	Buy Now 	Buy Now 	Contact Sales 
+NOTES
+•	Free Gift for India $ Free Coupons for Other Countries.
+•	Customized Email from Sapphire Meet (Your Name@sapphiremeet.in) will be given to Pro, Business and Enterprise only for private purpose. If anyone found guilty strict action will be taken against them. 
 
 
+"rzp_live_OJXiAs7A475Myu"

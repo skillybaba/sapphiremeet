@@ -18,6 +18,13 @@
 -dontwarn weborb.**
 -keep class weborb.** { *; }
 -keep class com.backendless.** { *; }
+-keepattributes *Annotation*
+-dontwarn com.razorpay.**
+-keep class com.razorpay.** {*;}
+-optimizations !method/inlining/
+-keepclasseswithmembers class * {
+  public void onPayment*(...);
+}
 
 # Only necessary if you downloaded the SDK jar directly instead of from maven.
 -keep class com.shaded.fasterxml.jackson.** { *; }

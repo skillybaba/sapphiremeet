@@ -55,7 +55,15 @@ class Conf_Service {
         await doc.update({
           this.roomid: {
             'current': 1,
-            'max': userefdata.data()['account'] == 'free' ? 100 : 'N/A'
+            'max': userefdata.data()['account'] == 'free'
+                ? 100
+                : userefdata.data()['account'] == 'pro'
+                    ? 500
+                    : userefdata.data()['account'] == 'bus'
+                        ? 1000
+                        : userefdata.data()['account'] == 'Ent'
+                            ? 100000
+                            : "N/A",
           }
         });
       }

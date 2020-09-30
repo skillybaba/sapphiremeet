@@ -7,7 +7,7 @@ import './screens/Loading.dart';
 import './screens/contacts.dart';
 import './screens/chatpannel.dart';
 import './screens/call.dart';
-
+import './screens/payment.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -21,8 +21,8 @@ void main() {
       '/contacts': (context) => ContactView(),
       '/chatpannel': (context) => ChatPannel(),
       '/caller': (context) => Call(),
-      '/setting':(context) => Settings(),
-      
+      '/setting': (context) => Settings(),
+      '/payments': (context) => Payment(),
     },
   ));
 }

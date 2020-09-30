@@ -50,6 +50,9 @@ dependencies:
   toast: ^0.1.5
   clipboard: ^0.1.2+8
   rflutter_alert: ^1.1.0
+  razorpay_flutter: ^1.2.2
+  url_launcher: ^5.7.2
+  
   
 
 dev_dependencies:
