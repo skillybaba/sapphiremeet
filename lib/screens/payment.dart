@@ -170,7 +170,7 @@ class _PaymentState extends State<Payment> {
                                       FlatButton(
                                           onPressed: () {
                                             service.dis = "Business Upgrage";
-                                            service.amount = 499;
+                                            service.amount = 49900;
                                             service.address = controller.text;
                                             service.next();
                                             Navigator.pop(context);
