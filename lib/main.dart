@@ -1,3 +1,4 @@
+import 'package:application/screens/calculator.dart';
 import 'package:application/screens/settings.dart';
 import 'package:flutter/material.dart';
 import './screens/auth.dart';
@@ -23,6 +24,7 @@ void main() {
       '/caller': (context) => Call(),
       '/setting': (context) => Settings(),
       '/payments': (context) => Payment(),
+      '/Calculator':(context)=> Calculator(),
     },
   ));
 }

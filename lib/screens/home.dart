@@ -12,7 +12,6 @@ import 'package:image_cropper/image_cropper.dart';
 import 'dart:io';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 
-
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
@@ -388,6 +387,19 @@ class _HomeState extends State<Home> {
         RaisedButton.icon(
             color: Colors.yellow[800],
             onPressed: () {
+              Navigator.pushNamed(context,'/Calculator');
+            },
+            icon: Icon(
+              Icons.calculate,
+              color: Colors.white,
+            ),
+            label: Text(
+              'C A L C U L A T O R',
+              style: TextStyle(color: Colors.white),
+            )),
+        RaisedButton.icon(
+            color: Colors.yellow[800],
+            onPressed: () {
               Navigator.pushNamed(context, '/setting', arguments: {
                 'data': pref.getStringList('your info'),
                 'url': this.dp,
@@ -404,9 +416,9 @@ class _HomeState extends State<Home> {
         RaisedButton.icon(
             color: Colors.yellow[800],
             onPressed: () {
-              Navigator.pushNamed(context,'/payments',arguments: {
-                'info':pref.getStringList('your info'),
-                'userdocid':pref.getString('userdocid'),
+              Navigator.pushNamed(context, '/payments', arguments: {
+                'info': pref.getStringList('your info'),
+                'userdocid': pref.getString('userdocid'),
               });
             },
             icon: Icon(

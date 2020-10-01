@@ -28,7 +28,12 @@ class Conf_Service {
   }
 
   hostMeet() async {
+    await Firebase.initializeApp();
     SharedPreferences inst = await SharedPreferences.getInstance();
+    FirebaseFirestore ref = FirebaseFirestore.instance;
+    var userref = ref.doc(inst.getString('userdocid'));
+    var userefdata = await userref.get();
+
     print(inst.getString('userdocid'));
     var options = JitsiMeetingOptions();
     options.room = this.roomid;
@@ -39,13 +44,11 @@ class Conf_Service {
     options.audioMuted = false;
     options.featureFlags
         .putIfAbsent(FeatureFlagEnum.CALENDAR_ENABLED, () => true);
+    if (userefdata.data()['account'] == 'free')
+      options.featureFlags
+          .putIfAbsent(FeatureFlagEnum.LIVE_STREAMING_ENABLED, () => false);
     await JitsiMeet.joinMeeting(options, listener: JitsiMeetingListener(
         onConferenceWillJoin: (({Map<dynamic, dynamic> message}) async {
-      await Firebase.initializeApp();
-
-      FirebaseFirestore ref = FirebaseFirestore.instance;
-      var userref = ref.doc(inst.getString('userdocid'));
-      var userefdata = await userref.get();
       print('hello');
       var doc = ref.doc('meetings/SjVi5S7Qyj3iTqwFn6Od');
       if (this.type == 'join') {

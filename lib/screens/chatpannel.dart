@@ -104,7 +104,6 @@ class _ChatPannelState extends State<ChatPannel> {
           prevlength = data1.length;
 
           this.message.add(ChatMessage(
-             
               text: data1[data1.length - 1]['val'][0],
               user: ChatUser(
                   name: data1[data1.length - 1]['val'][3].substring(3))));
@@ -358,66 +357,73 @@ class _ChatPannelState extends State<ChatPannel> {
                   }
                 },
                 messages: message,
-                onSend: (ChatMessage chatmessage) async {
-                  try {
-                    print(info);
-                    await Firebase.initializeApp();
-                    FirebaseFirestore firestore = FirebaseFirestore.instance;
+                onSend: (ChatMessage chatmessage) {
+                  Function msg = () async {
+                    String msg = chatmessage.text;
+                    String img = chatmessage.image;
+                    chatmessage.text = null;
+                    chatmessage.image = null;
+                    try {
+                      print(info);
+                      await Firebase.initializeApp();
+                      FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-                    var ref = firestore.doc(info[2]);
-                    var ref2 = firestore.doc(data['docid']);
-                    Map messagedata;
-                    Map messagedata1;
-                    await ref.get().then((value) {
-                      messagedata = value.data()[data['number']];
-                    });
-                    await ref2.get().then((value) {
-                      messagedata1 = value.data()[info[0]];
-                    });
-                    print(messagedata);
-                    // if (messagedata == null) {
-                    //   await ref.update({
-                    //     data['number']: {
-                    //       'name': data['number'],
-                    //       'docid': data['docid'],
-                    //       'message': []
-                    //     }
-                    //   });
-                    //   await ref2.update({
-                    //     info[0]: {
-                    //       'name': data['number'],
-                    //       'docid': data['docid'],
-                    //       'message': []
-                    //     }
-                    //   });
+                      var ref = firestore.doc(info[2]);
+                      var ref2 = firestore.doc(data['docid']);
+                      Map messagedata;
+                      Map messagedata1;
+                      await ref.get().then((value) {
+                        messagedata = value.data()[data['number']];
+                      });
+                      await ref2.get().then((value) {
+                        messagedata1 = value.data()[info[0]];
+                      });
+                      print(messagedata);
+                      // if (messagedata == null) {
+                      //   await ref.update({
+                      //     data['number']: {
+                      //       'name': data['number'],
+                      //       'docid': data['docid'],
+                      //       'message': []
+                      //     }
+                      //   });
+                      //   await ref2.update({
+                      //     info[0]: {
+                      //       'name': data['number'],
+                      //       'docid': data['docid'],
+                      //       'message': []
+                      //     }
+                      //   });
 
-                    messagedata['message'].add({
-                      'val': [
-                        chatmessage.text,
-                        chatmessage.image,
-                        chatmessage.user.uid,
-                        info[0],
-                        DateTime.now().toString(),
-                      ]
-                    });
-                    messagedata1['message'].add({
-                      'val': [
-                        chatmessage.text,
-                        chatmessage.image,
-                        chatmessage.user.uid,
-                        info[0],
-                        DateTime.now().toString(),
-                      ]
-                    });
-                    print(messagedata);
-                    await ref.update({data['number']: messagedata});
-                    await ref2.update({info[0]: messagedata1});
-                    setState(() {
-                      print('done');
-                    });
-                  } catch (e) {
-                    print(e);
-                  }
+                      messagedata['message'].add({
+                        'val': [
+                          msg,
+                          img,
+                          chatmessage.user.uid,
+                          info[1],
+                          DateTime.now().toString(),
+                        ]
+                      });
+                      messagedata1['message'].add({
+                        'val': [
+                          msg,
+                          img,
+                          chatmessage.user.uid,
+                          info[1],
+                          DateTime.now().toString(),
+                        ]
+                      });
+                      print(messagedata);
+                      await ref.update({data['number']: messagedata});
+                      await ref2.update({info[0]: messagedata1});
+                      setState(() {
+                        print('done');
+                      });
+                    } catch (e) {
+                      print(e);
+                    }
+                  };
+                  msg();
                 },
                 user: ChatUser(
                   firstName: 'vfdvanks',

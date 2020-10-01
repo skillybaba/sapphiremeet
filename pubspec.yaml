@@ -52,6 +52,7 @@ dependencies:
   rflutter_alert: ^1.1.0
   razorpay_flutter: ^1.2.2
   url_launcher: ^5.7.2
+  flutter_simple_calculator: ^1.0.4
   
   
 

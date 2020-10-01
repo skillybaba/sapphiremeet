@@ -8,6 +8,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.5.0-nullsafety"
+  auto_size_text:
+    dependency: transitive
+    description:
+      name: auto_size_text
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -141,6 +148,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.4"
+  expressions:
+    dependency: transitive
+    description:
+      name: expressions
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.5"
   fake_async:
     dependency: transitive
     description:
@@ -258,6 +272,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.4.0"
+  flutter_grid_button:
+    dependency: transitive
+    description:
+      name: flutter_grid_button
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.7"
   flutter_parsed_text:
     dependency: transitive
     description:
@@ -272,6 +293,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.8"
+  flutter_simple_calculator:
+    dependency: "direct main"
+    description:
+      name: flutter_simple_calculator
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.4"
   flutter_spinkit:
     dependency: "direct main"
     description:
@@ -429,6 +457,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
+  petitparser:
+    dependency: transitive
+    description:
+      name: petitparser
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.0"
   platform:
     dependency: transitive
     description:
