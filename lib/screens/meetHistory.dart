@@ -1,0 +1,108 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:clipboard/clipboard.dart';
+import 'package:toast/toast.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:application/services/conferenceservice.dart';
+
+class History extends StatefulWidget {
+  @override
+  _HistoryState createState() => _HistoryState();
+}
+
+class _HistoryState extends State<History> {
+  List data;
+  bool flag = false;
+  var details;
+  check() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+
+    await Firebase.initializeApp();
+    FirebaseFirestore fs = FirebaseFirestore.instance;
+    var ref = fs.doc(pref.getString('userdocid'));
+    var refdata = await ref.get();
+    data = refdata.data()['roomid'];
+    details = pref.getStringList('your info');
+    if (data == null) data = [];
+    setState(() {
+      flag = true;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!flag) check();
+    if (flag)
+      return Scaffold(
+          body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            backgroundColor: Colors.yellow[800],
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text('Meet history'),
+            ),
+          ),
+          SliverList(delegate:
+              SliverChildBuilderDelegate((BuildContext context, int index) {
+            if (index < data.length)
+              return ListTile(
+                  isThreeLine: true,
+                  onTap: () async {
+                    showCupertinoDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text(
+                                'Copy the Meeting Code and share this code to the People for joining into your room: ' +
+                                    data[index]),
+                            content: RaisedButton(
+                              onPressed: () {
+                                FlutterClipboard.copy(
+                                  "Join into the sapphire meet with Meeting Code:" +
+                                      data[index],
+                                );
+                                Toast.show('Copied', context);
+                              },
+                              child: Icon(Icons.share),
+                            ),
+                            actions: [
+                              FlatButton(
+                                onPressed: () async {
+                                  await Conf_Service(
+                                    roomid: data[index],
+                                    subject: "subject:",
+                                    username: details[0].replaceAll("+", "") +
+                                        " " +
+                                        details[1],
+                                  ).hostMeet();
+                                  Navigator.pop(context);
+                                },
+                                child: Text('Host a Meeting'),
+                              ),
+                            ],
+                          );
+                        });
+                  },
+                  subtitle: Text("Tap to rejoin Your Meet",
+                      style: TextStyle(color: Colors.yellow[800])),
+                  title: Text(
+                    data[index],
+                    style: TextStyle(
+                        color: Colors.yellow[800], fontWeight: FontWeight.bold),
+                  ),
+                  trailing: Icon(
+                    Icons.merge_type,
+                    color: Colors.yellow[800],
+                  ));
+          }))
+        ],
+      ));
+    else
+      return SpinKitDoubleBounce(
+        color: Colors.yellow[800],
+      );
+  }
+}

@@ -41,11 +41,12 @@ class _ChatPannelState extends State<ChatPannel> {
 
           for (var i in data1)
             this.message.add(ChatMessage(
+             createdAt: i['val'][5].toDate(),
                 quickReplies: i['val'][0] == 'hi'
                     ? QuickReplies(values: [Reply(title: 'hello')])
                     : null,
                 text: i['val'][0],
-                user: ChatUser(name: i['val'][3].substring(3))));
+                user: ChatUser(name: i['val'][3])));
           print(message);
         }
         setState(() {
@@ -59,35 +60,35 @@ class _ChatPannelState extends State<ChatPannel> {
   }
 
   bool checkcall = false;
-  void checkCall(context, data) async {
-    var check = data['check'];
-    checkcall = true;
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    var info = pref.getStringList('your info');
-    await Firebase.initializeApp();
-    var doc = FirebaseFirestore.instance;
-    var ref = doc.doc(info[2]);
-    while (check[0] == 1) {
-      var dataref = await ref.get();
-      var data1 = dataref.data();
-      print('allcool');
-      print(check);
-      if ((check[0] == 1) &&
-          ((data1['receving'] != null) && (data1['receving'])) &&
-          (((data1['calling'] == null) || (!data1['calling'])) &&
-              ((data1['connected'] == null) || (!data1['connected'])))) {
-        Navigator.pushNamed(context, '/caller', arguments: {
-          'number': data1['caller'][0],
-          'type': 'receving',
-          'recever': data1['caller'][2],
-          'caller': info[2],
-          'check': check,
-        });
+  // void checkCall(context, data) async {
+  //   var check = data['check'];
+  //   checkcall = true;
+  //   SharedPreferences pref = await SharedPreferences.getInstance();
+  //   var info = pref.getStringList('your info');
+  //   await Firebase.initializeApp();
+  //   var doc = FirebaseFirestore.instance;
+  //   var ref = doc.doc(info[2]);
+  //   while (check[0] == 1) {
+  //     var dataref = await ref.get();
+  //     var data1 = dataref.data();
+  //     print('allcool');
+  //     print(check);
+  //     if ((check[0] == 1) &&
+  //         ((data1['receving'] != null) && (data1['receving'])) &&
+  //         (((data1['calling'] == null) || (!data1['calling'])) &&
+  //             ((data1['connected'] == null) || (!data1['connected'])))) {
+  //       Navigator.pushNamed(context, '/caller', arguments: {
+  //         'number': data1['caller'][0],
+  //         'type': 'receving',
+  //         'recever': data1['caller'][2],
+  //         'caller': info[2],
+  //         'check': check,
+  //       });
 
-        check[0] = 2;
-      }
-    }
-  }
+  //       check[0] = 2;
+  //     }
+  //   }
+  // }
 
   int prevlength;
   void retrive() async {
@@ -104,9 +105,10 @@ class _ChatPannelState extends State<ChatPannel> {
           prevlength = data1.length;
 
           this.message.add(ChatMessage(
+            createdAt: data1[data1.length-1]['val'][4].toDate(),
               text: data1[data1.length - 1]['val'][0],
               user: ChatUser(
-                  name: data1[data1.length - 1]['val'][3].substring(3))));
+                  name: data1[data1.length - 1]['val'][3])));
         }
       });
     }
@@ -171,7 +173,7 @@ class _ChatPannelState extends State<ChatPannel> {
   @override
   Widget build(BuildContext context) {
     data = ModalRoute.of(context).settings.arguments;
-    if (!checkcall) checkCall(context, data);
+    // if (!checkcall) checkCall(context, data);
     if (!flag3) check();
     messages();
     return Scaffold(
@@ -292,8 +294,11 @@ class _ChatPannelState extends State<ChatPannel> {
         body: LoadingOverlay(
           child: StreamBuilder(builder: (context, snapshot) {
             if (flag) {
+              
               retrive();
               return DashChat(
+               
+                shouldShowLoadEarlier: true,
                 key: key,
                 onQuickReply: (chatmessage) async {
                   try {
@@ -334,7 +339,7 @@ class _ChatPannelState extends State<ChatPannel> {
                         null,
                         null,
                         info[0],
-                        DateTime.now().toString(),
+                        DateTime.now(),
                       ]
                     });
                     messagedata1['message'].add({
@@ -343,7 +348,7 @@ class _ChatPannelState extends State<ChatPannel> {
                         null,
                         null,
                         info[0],
-                        DateTime.now().toString(),
+                        DateTime.now(),
                       ]
                     });
                     print(messagedata);
@@ -401,7 +406,7 @@ class _ChatPannelState extends State<ChatPannel> {
                           img,
                           chatmessage.user.uid,
                           info[1],
-                          DateTime.now().toString(),
+                          DateTime.now()
                         ]
                       });
                       messagedata1['message'].add({
@@ -410,7 +415,7 @@ class _ChatPannelState extends State<ChatPannel> {
                           img,
                           chatmessage.user.uid,
                           info[1],
-                          DateTime.now().toString(),
+                          DateTime.now()
                         ]
                       });
                       print(messagedata);

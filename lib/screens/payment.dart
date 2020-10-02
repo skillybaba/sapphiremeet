@@ -164,7 +164,7 @@ class _PaymentState extends State<Payment> {
                           SizedBox(
                             height: 10,
                           ),
-                          Text('Rs 399/-',
+                          Text('Rs 399/month',
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 13,
@@ -290,7 +290,7 @@ class _PaymentState extends State<Payment> {
                           SizedBox(
                             height: 10,
                           ),
-                          Text('Rs 499/-',
+                          Text('Rs 499/month',
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 13,
@@ -413,7 +413,7 @@ class _PaymentState extends State<Payment> {
                           SizedBox(
                             height: 10,
                           ),
-                          Text('Rs899/-',
+                          Text('Rs899/month',
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 13,

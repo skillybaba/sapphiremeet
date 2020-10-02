@@ -20,6 +20,12 @@ class _CalculatorState extends State<Calculator> {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     var doc = firestore.doc(pref.getString('userdocid'));
     var docdata = await doc.get();
+    if (DateTime.now().isAfter(docdata.data()['time'].toDate() )) await doc.update({
+      'account':'free',
+      'time':DateTime.now().add(Duration(days: 1000)),
+      
+    });
+    
     this.docdata = docdata;
     print('done');
     setState(() {
@@ -29,8 +35,7 @@ class _CalculatorState extends State<Calculator> {
 
   @override
   Widget build(BuildContext context) {
-    if(!flag)
-    fun();
+    if (!flag) fun();
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -45,8 +50,10 @@ class _CalculatorState extends State<Calculator> {
               : Center(
                   child: Text(
                       "YOU ARE USING A FREE ACCOUNT SO YOU CANNOT USE THE THIS FEATURE",
-                      style:
-                          TextStyle(color: Colors.yellow[800], fontSize: 20,fontWeight: FontWeight.bold)))
+                      style: TextStyle(
+                          color: Colors.yellow[800],
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold)))
           : SpinKitRipple(color: Colors.yellow[800]),
     );
   }

@@ -49,7 +49,8 @@ class PaymentService {
       var doc = ref.doc(this.userdocid);
       doc.update({
         "account":
-            this.amount == 39900 ? 'pro' : this.amount == 49900 ? 'bus' : 'N/A'
+            this.amount == 39900 ? 'pro' : this.amount == 49900 ? 'bus' : 'N/A',
+            'time':DateTime.now().add(Duration(days: 30)),
       });
     });
    

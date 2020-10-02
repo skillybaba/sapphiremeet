@@ -256,36 +256,31 @@ class _ConfrenceState extends State<Confrence> {
                     FirebaseFirestore ref = FirebaseFirestore.instance;
                     var doc = ref.doc('meetings/SjVi5S7Qyj3iTqwFn6Od');
                     var docdata = await doc.get();
-                    if (docdata.data()[controller.text.trim()]['current'] <=
-                        docdata.data()[controller.text.trim()]['max'])
-                      await Conf_Service(
-                        roomid: controller.text.trim(),
-                        username:
-                            details[0].replaceAll("+", "") + " " + details[1],
-                        type: 'join',
-                        confinfo:docdata.data(),
-                      ).hostMeet();
-                    else
+                    if (docdata.data()[controller.text] == null)
                       Alert(
-                              context: context,
-                              type: AlertType.error,
-                              title: 'Max Participants Reached into this Room')
-                          .show();
+                          context: context,
+                          type: AlertType.error,
+                          title: "Sorry No room registered on this name").show();
+                    else {
+                      if (docdata.data()[controller.text.trim()]['current'] <=
+                          docdata.data()[controller.text.trim()]['max'])
+                        await Conf_Service(
+                          roomid: controller.text.trim(),
+                          username:
+                              details[0].replaceAll("+", "") + " " + details[1],
+                          type: 'join',
+                          confinfo: docdata.data(),
+                        ).hostMeet();
+                      else
+                        Alert(
+                                context: context,
+                                type: AlertType.error,
+                                title:
+                                    'Max Participants Reached into this Room')
+                            .show();
+                    }
                   } catch (e) {
                     print(e);
-                    showCupertinoModalPopup(
-                        context: context,
-                        builder: (context) {
-                          return Container(
-                              color: Colors.yellow,
-                              child: Text(
-                                'Enter the Meeting code',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.white,
-                                ),
-                              ));
-                        });
                   }
                 },
                 icon:

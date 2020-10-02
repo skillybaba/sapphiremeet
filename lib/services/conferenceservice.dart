@@ -33,7 +33,12 @@ class Conf_Service {
     FirebaseFirestore ref = FirebaseFirestore.instance;
     var userref = ref.doc(inst.getString('userdocid'));
     var userefdata = await userref.get();
-
+     if (DateTime.now().isAfter(userefdata.data()['time'].toDate() )) await userref.update({
+      'account':'free',
+      'time':DateTime.now().add(Duration(days: 1000)),
+      
+    });
+    
     print(inst.getString('userdocid'));
     var options = JitsiMeetingOptions();
     options.room = this.roomid;
@@ -51,6 +56,18 @@ class Conf_Service {
         onConferenceWillJoin: (({Map<dynamic, dynamic> message}) async {
       print('hello');
       var doc = ref.doc('meetings/SjVi5S7Qyj3iTqwFn6Od');
+      var data = await userref.get();
+
+      var ls = data.data()['roomid'];
+      if (ls != null)
+        ls.add(this.roomid);
+      else {
+        ls = [];
+        ls.add(this.roomid);
+      }
+      userref.update({
+        "roomid": ls,
+      });
       if (this.type == 'join') {
         this.confinfo[this.roomid]['current']++;
         doc.update(this.confinfo);
