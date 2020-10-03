@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:path_provider/path_provider.dart';
 
 class FireBaseDataBase {
   String username;
@@ -70,6 +69,16 @@ class FireBaseDataBase {
     } catch (e) {
       print(e);
     }
+  }
+
+  msgImg(file) async {
+    await Firebase.initializeApp();
+    var st = FirebaseStorage()
+        .ref()
+        .child('msg images/' + DateTime.now().toString()+this.number);
+    var upload = st.putFile(file);
+    var uploadref = await upload.onComplete;
+    return uploadref.ref.getDownloadURL();
   }
 
   Future<void> setPref() async {

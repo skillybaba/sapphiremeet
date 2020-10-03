@@ -33,12 +33,13 @@ class Conf_Service {
     FirebaseFirestore ref = FirebaseFirestore.instance;
     var userref = ref.doc(inst.getString('userdocid'));
     var userefdata = await userref.get();
-     if (DateTime.now().isAfter(userefdata.data()['time'].toDate() )) await userref.update({
-      'account':'free',
-      'time':DateTime.now().add(Duration(days: 1000)),
-      
-    });
-    
+    if ((userefdata.data()['time'] != null) &&
+        (DateTime.now().isAfter(userefdata.data()['time'].toDate())))
+      await userref.update({
+        'account': 'free',
+        'time': DateTime.now().add(Duration(days: 1000)),
+      });
+
     print(inst.getString('userdocid'));
     var options = JitsiMeetingOptions();
     options.room = this.roomid;
@@ -49,6 +50,10 @@ class Conf_Service {
     options.audioMuted = false;
     options.featureFlags
         .putIfAbsent(FeatureFlagEnum.CALENDAR_ENABLED, () => true);
+    options.featureFlags.addAll({
+      FeatureFlagEnum.WELCOME_PAGE_ENABLED: true,
+    });
+
     if (userefdata.data()['account'] == 'free')
       options.featureFlags
           .putIfAbsent(FeatureFlagEnum.LIVE_STREAMING_ENABLED, () => false);

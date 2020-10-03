@@ -1,4 +1,3 @@
-import 'package:application/models/chatmodels.dart';
 import 'package:application/models/statusmodel.dart';
 import 'package:application/services/imageselectservice.dart';
 import 'package:application/services/satutsservice.dart';
@@ -167,7 +166,8 @@ class _StatusState extends State<Status> {
                                     currentuser.link,
                                     radius: 30,
                                   )
-                            : SpinKitThreeBounce(color: Colors.yellow[800]),
+                            :setstatus?Icon(Icons.data_usage_rounded,
+                                    color: Colors.yellow[800], size: 60):SpinKitThreeBounce(color: Colors.yellow[800]),
                         SizedBox(
                           width: 10,
                         ),

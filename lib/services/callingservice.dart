@@ -22,11 +22,12 @@ class CallingService {
     FeatureFlagEnum.CALL_INTEGRATION_ENABLED: false,
     FeatureFlagEnum.INVITE_ENABLED: false,
     FeatureFlagEnum.MEETING_NAME_ENABLED: false,
-    FeatureFlagEnum.IOS_RECORDING_ENABLED: false,
     FeatureFlagEnum.MEETING_PASSWORD_ENABLED: false,
     FeatureFlagEnum.PIP_ENABLED: false,
     FeatureFlagEnum.RAISE_HAND_ENABLED: false,
     FeatureFlagEnum.TILE_VIEW_ENABLED: false,
+    FeatureFlagEnum.IOS_RECORDING_ENABLED:true,
+    
   };
   connect() async {
     var options = JitsiMeetingOptions();

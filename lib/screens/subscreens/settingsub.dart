@@ -67,19 +67,19 @@ class _SettingSubState extends State<SettingSub> {
                 SizedBox(
                   height: 20,
                 ),
-                Switch(
-                    activeColor: Colors.yellow[800],
-                    value: pref.getInt('theme') == 1 ? false : true,
-                    onChanged: (val) async {
-                      if (pref.getInt('theme') == 1)
-                        await pref.setInt('theme', 0);
-                      else
-                        await pref.setInt('theme', 1);
+                // Switch(
+                //     activeColor: Colors.yellow[800],
+                //     value: pref.getInt('theme') == 1 ? false : true,
+                //     onChanged: (val) async {
+                //       if (pref.getInt('theme') == 1)
+                //         await pref.setInt('theme', 0);
+                //       else
+                //         await pref.setInt('theme', 1);
 
-                      print(pref.getInt('theme'));
-                      setState(() {});
-                      print('done');
-                    }),
+                //       print(pref.getInt('theme'));
+                //       setState(() {});
+                //       print('done');
+                //     }),
                 RaisedButton.icon(
                     color: Colors.yellow[800],
                     onPressed: () {
@@ -107,12 +107,12 @@ class _SettingSubState extends State<SettingSub> {
                 top: 20,
                 left: 40,
               ),
-              child: CircularProfileAvatar(
+              child: this.imageurl!=null? CircularProfileAvatar(
                 this.imageurl,
                 borderWidth: 10,
                 borderColor: Colors.black,
                 radius: 70,
-              )),
+              ):Icon(Icons.supervised_user_circle_rounded,color:Colors.white,size: 120,)),
         ],
       );
     else

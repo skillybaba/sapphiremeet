@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:dash_chat/dash_chat.dart';
@@ -6,6 +7,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:toast/toast.dart';
+import '../services/imageselectservice.dart';
+import '../services/firebasedatabse.dart';
 
 class ChatPannel extends StatefulWidget {
   @override
@@ -40,13 +43,32 @@ class _ChatPannelState extends State<ChatPannel> {
           this.message = [];
 
           for (var i in data1)
-            this.message.add(ChatMessage(
-             createdAt: i['val'][5].toDate(),
-                quickReplies: i['val'][0] == 'hi'
-                    ? QuickReplies(values: [Reply(title: 'hello')])
-                    : null,
-                text: i['val'][0],
-                user: ChatUser(name: i['val'][3])));
+            if (i['val'][1] != null)
+              this.message.add(ChatMessage(
+                  image: i['val'][1],
+                  text: 'images',
+                  createdAt: i['val'][4].toDate(),
+                  quickReplies: i['val'][0] == 'hi'
+                      ? QuickReplies(values: [Reply(title: 'hello')])
+                      : null,
+                  user: ChatUser(name: i['val'][3])));
+            else if (i['val'][2] != null)
+              this.message.add(ChatMessage(
+                  video: i['val'][2],
+                  text: 'images',
+                  createdAt: i['val'][4].toDate(),
+                  quickReplies: i['val'][0] == 'hi'
+                      ? QuickReplies(values: [Reply(title: 'hello')])
+                      : null,
+                  user: ChatUser(name: i['val'][3])));
+            else
+              this.message.add(ChatMessage(
+                  createdAt: i['val'][4].toDate(),
+                  quickReplies: i['val'][0] == 'hi'
+                      ? QuickReplies(values: [Reply(title: 'hello')])
+                      : null,
+                  text: i['val'][0],
+                  user: ChatUser(name: i['val'][3])));
           print(message);
         }
         setState(() {
@@ -103,12 +125,23 @@ class _ChatPannelState extends State<ChatPannel> {
       setState(() {
         if (prevlength != data1.length) {
           prevlength = data1.length;
-
-          this.message.add(ChatMessage(
-            createdAt: data1[data1.length-1]['val'][4].toDate(),
-              text: data1[data1.length - 1]['val'][0],
-              user: ChatUser(
-                  name: data1[data1.length - 1]['val'][3])));
+          if (data1[data1.length - 1]['val'][1] != null)
+            this.message.add(ChatMessage(
+                image: data1[data1.length - 1]['val'][1],
+                createdAt: data1[data1.length - 1]['val'][4].toDate(),
+                text: 'images',
+                user: ChatUser(name: data1[data1.length - 1]['val'][3])));
+          else if (data1[data1.length - 1]['val'][2] != null)
+            this.message.add(ChatMessage(
+                video: data1[data1.length - 1]['val'][2],
+                createdAt: data1[data1.length - 1]['val'][4].toDate(),
+                text: 'images',
+                user: ChatUser(name: data1[data1.length - 1]['val'][3])));
+          else
+            this.message.add(ChatMessage(
+                createdAt: data1[data1.length - 1]['val'][4].toDate(),
+                text: data1[data1.length - 1]['val'][0],
+                user: ChatUser(name: data1[data1.length - 1]['val'][3])));
         }
       });
     }
@@ -133,9 +166,7 @@ class _ChatPannelState extends State<ChatPannel> {
         data['number']: {
           'name': data['number'],
           'docid': data['docid'],
-          'avtar': docdata2.data()['downloadablelink'] != null
-              ? docdata2.data()['downloadablelink']
-              : null,
+          'avtar': docdata2.data()['DP'] != null ? docdata2.data()['DP'] : null,
           'message': []
         }
       });
@@ -143,21 +174,17 @@ class _ChatPannelState extends State<ChatPannel> {
         info[0]: {
           'name': info[1],
           'docid': info[2],
-          'avtar': docdata.data()['downloadablelink'] != null
-              ? docdata.data()['downloadablelink']
-              : null,
+          'avtar': docdata.data()['DP'] != null ? docdata.data()['DP'] : null,
           'message': []
         }
       });
     } else {
       var map1 = docdata.data()[data['number']];
       var map2 = docdata2.data()[info[0]];
-      map1['avtar'] = docdata2.data()['downloadablelink'] != null
-          ? docdata2.data()['downloadablelink']
-          : null;
-      map2['avtar'] = docdata.data()['downloadablelink'] != null
-          ? docdata.data()['downloadablelink']
-          : null;
+      map1['avtar'] =
+          docdata2.data()['DP'] != null ? docdata2.data()['DP'] : null;
+      map2['avtar'] =
+          docdata.data()['DP'] != null ? docdata.data()['DP'] : null;
       ref.update({data['number']: map1});
       ref2.update({info[0]: map2});
     }
@@ -273,13 +300,6 @@ class _ChatPannelState extends State<ChatPannel> {
               SizedBox(
                 width: 10,
               ),
-              IconButton(
-                icon: Icon(Icons.attach_file),
-                onPressed: () async {
-                  await Future.delayed(Duration(seconds: 3));
-                  print('kjcds');
-                },
-              ),
               SizedBox(width: 10)
             ],
             leading: FlatButton(
@@ -294,10 +314,185 @@ class _ChatPannelState extends State<ChatPannel> {
         body: LoadingOverlay(
           child: StreamBuilder(builder: (context, snapshot) {
             if (flag) {
-              
               retrive();
               return DashChat(
-               
+                trailing: [
+                  IconButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text('Select the Media type'),
+                              actions: [
+                                FlatButton(
+                                    child: Text('Image from gallery'),
+                                    onPressed: () async {
+                                      Navigator.pop(context);
+                                      var image =
+                                          await ImageSelect(context: context)
+                                              .image();
+                                      var url = await FireBaseDataBase(
+                                              number: info[0])
+                                          .msgImg(image);
+                                      await Firebase.initializeApp();
+                                      FirebaseFirestore firestore =
+                                          FirebaseFirestore.instance;
+
+                                      var ref = firestore.doc(info[2]);
+                                      var ref2 = firestore.doc(data['docid']);
+                                      Map messagedata;
+                                      Map messagedata1;
+                                      await ref.get().then((value) {
+                                        messagedata =
+                                            value.data()[data['number']];
+                                      });
+                                      await ref2.get().then((value) {
+                                        messagedata1 = value.data()[info[0]];
+                                      });
+
+                                      messagedata['message'].add({
+                                        'val': [
+                                          null,
+                                          url,
+                                          null,
+                                          info[1],
+                                          DateTime.now(),
+                                        ]
+                                      });
+                                      messagedata1['message'].add({
+                                        'val': [
+                                          null,
+                                          url,
+                                          null,
+                                          info[1],
+                                          DateTime.now(),
+                                        ]
+                                      });
+                                      print(messagedata);
+                                      await ref.update(
+                                          {data['number']: messagedata});
+                                      await ref2
+                                          .update({info[0]: messagedata1});
+                                      setState(() {
+                                        print('done');
+                                      });
+                                    }),
+                                FlatButton(
+                                  child: Text('Image form camera'),
+                                  onPressed: () async {
+                                    Navigator.pop(context);
+                                    var image = await ImageSelect(
+                                            context: context,
+                                            selecttype: 'camera')
+                                        .image();
+                                    var url =
+                                        await FireBaseDataBase(number: info[0])
+                                            .msgImg(image);
+                                    await Firebase.initializeApp();
+                                    FirebaseFirestore firestore =
+                                        FirebaseFirestore.instance;
+
+                                    var ref = firestore.doc(info[2]);
+                                    var ref2 = firestore.doc(data['docid']);
+                                    Map messagedata;
+                                    Map messagedata1;
+                                    await ref.get().then((value) {
+                                      messagedata =
+                                          value.data()[data['number']];
+                                    });
+                                    await ref2.get().then((value) {
+                                      messagedata1 = value.data()[info[0]];
+                                    });
+
+                                    messagedata['message'].add({
+                                      'val': [
+                                        null,
+                                        url,
+                                        null,
+                                        info[1],
+                                        DateTime.now(),
+                                      ]
+                                    });
+                                    messagedata1['message'].add({
+                                      'val': [
+                                        null,
+                                        url,
+                                        null,
+                                        info[1],
+                                        DateTime.now(),
+                                      ]
+                                    });
+                                    print(messagedata);
+                                    await ref
+                                        .update({data['number']: messagedata});
+                                    await ref2.update({info[0]: messagedata1});
+                                    setState(() {
+                                      print('done');
+                                    });
+                                  },
+                                ),
+                                FlatButton(
+                                  child: Text('Videos'),
+                                  onPressed: () async {
+                                    Navigator.pop(context);
+                                    var video = await ImageSelect(
+                                            context: context,
+                                            selecttype: 'video')
+                                        .image();
+                                    var url =
+                                        await FireBaseDataBase(number: info[0])
+                                            .msgImg(video);
+                                    await Firebase.initializeApp();
+                                    FirebaseFirestore firestore =
+                                        FirebaseFirestore.instance;
+
+                                    var ref = firestore.doc(info[2]);
+                                    var ref2 = firestore.doc(data['docid']);
+                                    Map messagedata;
+                                    Map messagedata1;
+                                    await ref.get().then((value) {
+                                      messagedata =
+                                          value.data()[data['number']];
+                                    });
+                                    await ref2.get().then((value) {
+                                      messagedata1 = value.data()[info[0]];
+                                    });
+
+                                    messagedata['message'].add({
+                                      'val': [
+                                        null,
+                                        null,
+                                        url,
+                                        info[1],
+                                        DateTime.now(),
+                                      ]
+                                    });
+                                    messagedata1['message'].add({
+                                      'val': [
+                                        null,
+                                        url,
+                                        null,
+                                        info[1],
+                                        DateTime.now(),
+                                      ]
+                                    });
+                                    print(messagedata);
+                                    await ref
+                                        .update({data['number']: messagedata});
+                                    await ref2.update({info[0]: messagedata1});
+                                    setState(() {
+                                      print('done');
+                                    });
+                                  },
+                                )
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      icon: Icon(Icons.image))
+                ],
                 shouldShowLoadEarlier: true,
                 key: key,
                 onQuickReply: (chatmessage) async {
@@ -314,7 +509,7 @@ class _ChatPannelState extends State<ChatPannel> {
                       messagedata = value.data()[data['number']];
                     });
                     await ref2.get().then((value) {
-                      messagedata = value.data()[info[0]];
+                      messagedata1 = value.data()[info[0]];
                     });
                     print(messagedata);
                     // if (messagedata == null) {
@@ -338,7 +533,7 @@ class _ChatPannelState extends State<ChatPannel> {
                         chatmessage.title,
                         null,
                         null,
-                        info[0],
+                        info[1],
                         DateTime.now(),
                       ]
                     });
@@ -347,7 +542,7 @@ class _ChatPannelState extends State<ChatPannel> {
                         chatmessage.title,
                         null,
                         null,
-                        info[0],
+                        info[1],
                         DateTime.now(),
                       ]
                     });
@@ -401,22 +596,10 @@ class _ChatPannelState extends State<ChatPannel> {
                       //   });
 
                       messagedata['message'].add({
-                        'val': [
-                          msg,
-                          img,
-                          chatmessage.user.uid,
-                          info[1],
-                          DateTime.now()
-                        ]
+                        'val': [msg, img, null, info[1], DateTime.now()]
                       });
                       messagedata1['message'].add({
-                        'val': [
-                          msg,
-                          img,
-                          chatmessage.user.uid,
-                          info[1],
-                          DateTime.now()
-                        ]
+                        'val': [msg, img, null, info[1], DateTime.now()]
                       });
                       print(messagedata);
                       await ref.update({data['number']: messagedata});

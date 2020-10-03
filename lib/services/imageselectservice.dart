@@ -6,7 +6,7 @@ import 'package:image_picker/image_picker.dart';
 class ImageSelect {
   var context;
   var selecttype;
-  ImageSelect({context, selecttype='gallery'}) {
+  ImageSelect({context, selecttype = 'gallery'}) {
     this.context = context;
     this.selecttype = selecttype;
   }
@@ -15,7 +15,12 @@ class ImageSelect {
     var image;
     if (this.selecttype == 'camera')
       image = await picker.getImage(source: ImageSource.camera);
-    else
+    else if (this.selecttype == 'video') {
+      var video = await picker.getVideo(source: ImageSource.gallery);
+      
+
+      return File(video.path);
+    } else
       image = await picker.getImage(source: ImageSource.gallery);
 
     var crop = await ImageCropper.cropImage(
