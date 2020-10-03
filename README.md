@@ -1,16 +1,37 @@
-# application
+# Sapphire Meet
+<img src = "https://github.com/kanzd/finalcom/blob/master/web_hi_res_512.png" width="30%" >
 
-A new Flutter project.
+Confrence Calling Application
 
-## Getting Started
+## Preview
 
-This project is a starting point for a Flutter application.
+<img src = "https://github.com/kanzd/finalcom/blob/master/WhatsApp%20Image%202020-09-24%20at%205.05.00%20PM.jpeg" width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<img src = "https://github.com/kanzd/finalcom/blob/master/WhatsApp%20Image%202020-09-24%20at%208.57.30%20PM.jpeg" width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<img src = "https://github.com/kanzd/finalcom/blob/master/WhatsApp%20Image%202020-09-24%20at%208.20.30%20PM(4).jpeg" width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Dependency
+1. country_code_picker
+1. firebase_auth
+1. firebase_core
+1. cloud_firestore
+1. firebase_analytics
+1. dotted_line
+1. permission_handler
+1. contacts_service
+1. flutter_datetime_picker
+1. shared_preferences
+1. flutter_spinkit
+1. firebase_storage
+1. dash_chat
+1. image_picker
+1. image_cropper
+1. path_provider
+1. circular_profile_avatar
+1. jitsi_meet
+1. loading_overlay
+1. toast
+1. clipboard
+1. rflutter_alert
+1. razorpay_flutter
+1. url_launcher
+1. flutter_simple_calculator
