@@ -20,6 +20,7 @@ class _ChatPannelState extends State<ChatPannel> {
   var info;
   bool isloading = false;
   bool flag = false;
+  String avtar, ctavtar;
   GlobalKey<DashChatState> key = GlobalKey<DashChatState>();
   List<ChatMessage> message = [];
   messages() async {
@@ -41,7 +42,8 @@ class _ChatPannelState extends State<ChatPannel> {
         if (chats.containsKey(data['number'])) {
           var data1 = chats[data['number']]['message'];
           this.message = [];
-
+          ctavtar = chats[data['number']]['avtar'];
+          avtar = chats['DP'];
           for (var i in data1)
             if (i['val'][1] != null)
               this.message.add(ChatMessage(
@@ -51,7 +53,9 @@ class _ChatPannelState extends State<ChatPannel> {
                   quickReplies: i['val'][0] == 'hi'
                       ? QuickReplies(values: [Reply(title: 'hello')])
                       : null,
-                  user: ChatUser(name: i['val'][3])));
+                  user: ChatUser(
+                      avatar: i['val'][3] == info[1] ? avtar : ctavtar,
+                      name: i['val'][3])));
             else if (i['val'][2] != null)
               this.message.add(ChatMessage(
                   video: i['val'][2],
@@ -60,7 +64,9 @@ class _ChatPannelState extends State<ChatPannel> {
                   quickReplies: i['val'][0] == 'hi'
                       ? QuickReplies(values: [Reply(title: 'hello')])
                       : null,
-                  user: ChatUser(name: i['val'][3])));
+                  user: ChatUser(
+                      avatar: i['val'][3] == info[1] ? avtar : ctavtar,
+                      name: i['val'][3])));
             else
               this.message.add(ChatMessage(
                   createdAt: i['val'][4].toDate(),
@@ -68,7 +74,9 @@ class _ChatPannelState extends State<ChatPannel> {
                       ? QuickReplies(values: [Reply(title: 'hello')])
                       : null,
                   text: i['val'][0],
-                  user: ChatUser(name: i['val'][3])));
+                  user: ChatUser(
+                      avatar: i['val'][3] == info[1] ? avtar : ctavtar,
+                      name: i['val'][3])));
           print(message);
         }
         setState(() {
@@ -130,18 +138,30 @@ class _ChatPannelState extends State<ChatPannel> {
                 image: data1[data1.length - 1]['val'][1],
                 createdAt: data1[data1.length - 1]['val'][4].toDate(),
                 text: 'images',
-                user: ChatUser(name: data1[data1.length - 1]['val'][3])));
+                user: ChatUser(
+                    avatar: data1[data.length - 1]['val'][3] == info[1]
+                        ? avtar
+                        : ctavtar,
+                    name: data1[data1.length - 1]['val'][3])));
           else if (data1[data1.length - 1]['val'][2] != null)
             this.message.add(ChatMessage(
                 video: data1[data1.length - 1]['val'][2],
                 createdAt: data1[data1.length - 1]['val'][4].toDate(),
                 text: 'images',
-                user: ChatUser(name: data1[data1.length - 1]['val'][3])));
+                user: ChatUser(
+                    avatar: data1[data.length - 1]['val'][3] == info[1]
+                        ? avtar
+                        : ctavtar,
+                    name: data1[data1.length - 1]['val'][3])));
           else
             this.message.add(ChatMessage(
                 createdAt: data1[data1.length - 1]['val'][4].toDate(),
                 text: data1[data1.length - 1]['val'][0],
-                user: ChatUser(name: data1[data1.length - 1]['val'][3])));
+                user: ChatUser(
+                    avatar: data1[data.length - 1]['val'][3] == info[1]
+                        ? avtar
+                        : ctavtar,
+                    name: data1[data1.length - 1]['val'][3])));
         }
       });
     }
@@ -316,6 +336,49 @@ class _ChatPannelState extends State<ChatPannel> {
             if (flag) {
               retrive();
               return DashChat(
+                messageDecorationBuilder: (ChatMessage msg, bool isUser) {
+                  return BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                    color: msg.user.name == info[1]
+                        ? Colors.yellow[800]
+                        : Colors.white, // example
+                  );
+                },
+                messageImageBuilder: (url, [chat]) {
+                  return Image.network(
+                    url,
+                    height: 250,
+                  );
+                },
+                
+                messageTextBuilder: (message, [chat]) {
+                  return Text(
+                    message,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: chat.user.name == info[1]
+                            ? Colors.white
+                            : Colors.yellow[800]),
+                  );
+                },
+                dateBuilder: (date) {
+                  return Text(date, style: TextStyle(color: Colors.grey[400]));
+                },
+                onLongPressMessage: (ChatMessage message) {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return Image.network(message.image);
+                    },
+                  );
+                },
+                onPressAvatar: (ChatUser user) {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Image.network(user.avatar);
+                      });
+                },
                 trailing: [
                   IconButton(
                       onPressed: () {

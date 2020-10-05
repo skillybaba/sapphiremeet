@@ -55,9 +55,9 @@ class _ChatState extends State<Chat> {
                     (e != 'caller') &&
                     (e != 'channelid') &&
                     (e != 'callhis') &&
-                    (e != 'downloadablelink')&&(
-                      e!='status'
-                    ))
+                    (e != 'downloadablelink') &&
+                    (e != 'status') &&
+                    (e != 'time'))
                 ? ChatModel(
                     username: e,
                     number: e,
@@ -67,16 +67,17 @@ class _ChatState extends State<Chat> {
             .toList();
 
         print(chatlist);
-        chatlist.remove('null');
-        chatlist.remove('null');
-        chatlist.remove('null');
-        chatlist.remove('null');
-        chatlist.remove('null');
-        chatlist.remove('null');
-        chatlist.remove('null');
-        chatlist.remove('null');
-        chatlist.remove('null');
-        chatlist.remove('null');
+        // chatlist.remove('null');
+        // chatlist.remove('null');
+        // chatlist.remove('null');
+        // chatlist.remove('null');
+        // chatlist.remove('null');
+        // chatlist.remove('null');
+        // chatlist.remove('null');
+        // chatlist.remove('null');
+        // chatlist.remove('null');
+        // chatlist.remove('null');
+        while (chatlist.contains('null')) chatlist.remove('null');
 
         print(chatlist);
 

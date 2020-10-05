@@ -8,49 +8,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:414973538233:android:a001078978b094b0369068",
-        "android_client_info": {
-          "package_name": "com.example.application"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "414973538233-sifujmcjj62cm8etllhranahp95ff7uf.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.application",
-            "certificate_hash": "090577b114919887f3a1cd534f7a4060e8d8c439"
-          }
-        },
-        {
-          "client_id": "414973538233-tdb5h4kfga6vddfolnh5qlg3tgmt6h4n.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCRrryclMgXefuEIw6Pt_iMM0tagyWU8UA"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "414973538233-tdb5h4kfga6vddfolnh5qlg3tgmt6h4n.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:414973538233:android:14327a894aa96303369068",
         "android_client_info": {
           "package_name": "com.sapphiremeet.sapphiremeet"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "414973538233-lud082ajr6dff307n47e2uucvt3iciqt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sapphiremeet.sapphiremeet",
+            "certificate_hash": "467ca04cb5126865fee1760f1ed4d1e23ca84178"
+          }
+        },
         {
           "client_id": "414973538233-j5jor4g3mpppekqfrq7m8jkkv4qhek6q.apps.googleusercontent.com",
           "client_type": 1,
@@ -75,6 +46,13 @@
             {
               "client_id": "414973538233-tdb5h4kfga6vddfolnh5qlg3tgmt6h4n.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "414973538233-lgean2cctnul828sq77k8ef7gqg765bl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sapphiremeet.sapphiremeet"
+              }
             }
           ]
         }

@@ -1,4 +1,6 @@
+import 'package:application/screens/aboutus.dart';
 import 'package:application/screens/calculator.dart';
+import 'package:application/screens/contactus.dart';
 import 'package:application/screens/meetHistory.dart';
 import 'package:application/screens/settings.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +34,8 @@ void main() {
         '/payments': (context) => Payment(),
         '/Calculator': (context) => Calculator(),
         "/History":(context)=> History(),
+        '/contactus':(context)=> Contactus(),
+        '/aboutus' :(context) => Aboutus(),
       },
     ));
 }

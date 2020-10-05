@@ -22,7 +22,9 @@ class StatusService {
     var dbref = db.doc(docid);
     var docref = await dbref.get();
     var data = docref.data();
-    dbref.update({'status': await uploadref.ref.getDownloadURL()});
+    dbref.update({'status': await uploadref.ref.getDownloadURL(),
+    'time':DateTime.now().add(Duration(days: 1)),
+    });
     return true;
   }
 

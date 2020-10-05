@@ -3,6 +3,7 @@ import 'package:application/services/imageselectservice.dart';
 import 'package:application/services/satutsservice.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'dart:ui';
@@ -31,6 +32,7 @@ class _StatusState extends State<Status> {
       statuslist = [list, docid, names];
       print(statuslist);
       int i = 0;
+      await Firebase.initializeApp();
       FirebaseFirestore ref = FirebaseFirestore.instance;
 
       while (i < statuslist[0].length) {
@@ -73,22 +75,40 @@ class _StatusState extends State<Status> {
     });
   }
 
+  bool newflag = false;
+  timed() async {
+    await Firebase.initializeApp();
+    FirebaseFirestore ref = FirebaseFirestore.instance;
+    var doc = ref.doc(prefs.getStringList('your info')[2]);
+    var docdata = await doc.get();
+    if ((docdata.data()['time'] != null) &&
+        (DateTime.now().isAfter(docdata.data()['time'].toDate()))) {
+      await doc.update({
+        'status': null,
+      });
+      setState(() {
+        newflag = true;
+      });
+    }
+  }
+
   var setstatus = true;
   var flag = false;
   @override
   Widget build(BuildContext context) {
     if (flagfinal)
       return Center(
-        widthFactor: 10.0,
+          widthFactor: 10.0,
           child: Text(
-        'Fetch the Contacts from the below floating button First',
-        style: TextStyle(
-            color: Colors.yellow[800],
-            fontSize: 20,
-            fontWeight: FontWeight.bold),
-      ));
+            'Fetch the Contacts from the below floating button First',
+            style: TextStyle(
+                color: Colors.yellow[800],
+                fontSize: 20,
+                fontWeight: FontWeight.bold),
+          ));
     if (current) currentModel();
     if (!flag) makeModels();
+    if (!newflag) timed();
     if (flag)
       return CustomScrollView(
         slivers: [
@@ -166,8 +186,10 @@ class _StatusState extends State<Status> {
                                     currentuser.link,
                                     radius: 30,
                                   )
-                            :setstatus?Icon(Icons.data_usage_rounded,
-                                    color: Colors.yellow[800], size: 60):SpinKitThreeBounce(color: Colors.yellow[800]),
+                            : setstatus
+                                ? Icon(Icons.data_usage_rounded,
+                                    color: Colors.yellow[800], size: 60)
+                                : SpinKitThreeBounce(color: Colors.yellow[800]),
                         SizedBox(
                           width: 10,
                         ),
@@ -196,22 +218,22 @@ class _StatusState extends State<Status> {
             else if (index < models.length)
               return FlatButton(
                   onPressed: () async {
-                    if(models[index].link!=null)
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            content: Image.network(models[index].link),
-                            title: Text(models[index].name),
-                            actions: [
-                              FlatButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text('Close'))
-                            ],
-                          );
-                        });
+                    if (models[index].link != null)
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              content: Image.network(models[index].link),
+                              title: Text(models[index].name),
+                              actions: [
+                                FlatButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text('Close'))
+                              ],
+                            );
+                          });
                   },
                   child: Container(
                       padding: EdgeInsets.all(20),

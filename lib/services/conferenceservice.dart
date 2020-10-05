@@ -52,8 +52,10 @@ class Conf_Service {
         .putIfAbsent(FeatureFlagEnum.CALENDAR_ENABLED, () => true);
     options.featureFlags.addAll({
       FeatureFlagEnum.WELCOME_PAGE_ENABLED: true,
+      FeatureFlagEnum.INVITE_ENABLED:false,
+      FeatureFlagEnum.TOOLBOX_ALWAYS_VISIBLE:false,
     });
-
+    
     if (userefdata.data()['account'] == 'free')
       options.featureFlags
           .putIfAbsent(FeatureFlagEnum.LIVE_STREAMING_ENABLED, () => false);

@@ -53,6 +53,7 @@ dependencies:
   razorpay_flutter: ^1.2.2
   url_launcher: ^5.7.2
   flutter_simple_calculator: ^1.0.4
+  share_extend: "^1.1.9"
   
   
 
@@ -79,6 +80,11 @@ flutter:
     - assests/images/Logos/
     - assests/images/
     - assests/images/Logos/Sapphire_Meet_Logo-removebg.png
+    - assests/images/facebook.png
+    - assests/images/instagram.png
+    - assests/images/linkedin.png
+    - assests/images/twitter.jpg
+    - assests/images/logo.png
 
 
 

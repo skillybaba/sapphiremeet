@@ -36,7 +36,7 @@ class CallingService {
     options.room = this.channel;
     options.featureFlags.addAll(this.feature);
     options.videoMuted = true;
-
+  
     await JitsiMeet.joinMeeting(options, listener: JitsiMeetingListener(
         onConferenceTerminated: ({Map<dynamic, dynamic> message}) async {
       await Firebase.initializeApp();

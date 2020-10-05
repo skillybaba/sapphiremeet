@@ -233,6 +233,7 @@ class _HomeState extends State<Home> {
                                     ),
                                     FlatButton(
                                         onPressed: () async {
+                                          Navigator.pop(context);
                                           ImagePicker picker = ImagePicker();
                                           if (await Permission.photos
                                               .request()
@@ -364,7 +365,9 @@ class _HomeState extends State<Home> {
         ),
         RaisedButton.icon(
             color: Colors.yellow[800],
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, '/aboutus');
+            },
             icon: Icon(
               Icons.info_outline,
               color: Colors.white,
@@ -375,7 +378,9 @@ class _HomeState extends State<Home> {
             )),
         RaisedButton.icon(
             color: Colors.yellow[800],
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, '/contactus');
+            },
             icon: Icon(
               Icons.contact_support_sharp,
               color: Colors.white,
@@ -387,7 +392,7 @@ class _HomeState extends State<Home> {
         RaisedButton.icon(
             color: Colors.yellow[800],
             onPressed: () {
-              Navigator.pushNamed(context,'/Calculator');
+              Navigator.pushNamed(context, '/Calculator');
             },
             icon: Icon(
               Icons.calculate,

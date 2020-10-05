@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:application/services/conferenceservice.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:share_extend/share_extend.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:toast/toast.dart';
@@ -32,7 +33,7 @@ class _ConfrenceState extends State<Confrence> {
   }
 
   TextEditingController meetingname = TextEditingController();
-  TextEditingController subject = TextEditingController();
+  TextEditingController pass = TextEditingController();
   List randoms = [
     1212,
     212342,
@@ -120,6 +121,9 @@ class _ConfrenceState extends State<Confrence> {
 
   String butval = 'next';
   String nameidval = '';
+  DateTime datetime;
+  TimeOfDay time;
+ 
   @override
   Widget build(BuildContext context) {
     if (pref == null) getPref();
@@ -140,20 +144,47 @@ class _ConfrenceState extends State<Confrence> {
                       return AlertDialog(
                         title: Text('Enter Meeting Details'),
                         content: Container(
+                          height: 330,
                           child: Column(
                             children: [
                               TextField(
                                 controller: meetingname,
                                 decoration: InputDecoration(
-                                    hintText: 'Enter the Nameid'),
-                              ),
-                              TextField(
-                                controller: subject,
-                                decoration: InputDecoration(
-                                    hintText: 'What is your subject of meet?'),
+                                    hintText: 'Enter the topic'),
                               ),
                               SizedBox(
                                 height: 30,
+                              ),
+                              TextField(
+                                controller: pass,
+                                decoration: InputDecoration(
+                                    hintText: 'Enter the Passcode'),
+                              ),
+                              SizedBox(
+                                height: 30,
+                              ),
+                              FlatButton.icon(
+                                onPressed: () async {
+                                  datetime = await showDatePicker(
+                                      context: context,
+                                      initialDate: DateTime(2020),
+                                      firstDate: DateTime(2020),
+                                      lastDate: DateTime(2100));
+                                },
+                                icon: Icon(Icons.date_range),
+                                label: Text('Enter Date'),
+                              ),
+                              SizedBox(
+                                height: 30,
+                              ),
+                              FlatButton.icon(
+                                onPressed: () async {
+                                  time = await showTimePicker(
+                                      context: context,
+                                      initialTime: TimeOfDay.now());
+                                },
+                                icon: Icon(Icons.timelapse_outlined),
+                                label: Text('Enter Time'),
                               ),
                               Text(nameidval),
                             ],
@@ -168,24 +199,24 @@ class _ConfrenceState extends State<Confrence> {
                                     builder: (context) {
                                       return AlertDialog(
                                         title: Text(
-                                          'Copy the Meeting Code and share this code to the People for joining into your room: ' +
-                                              randoms[meetingname.text.length]
-                                                  .toString() +
-                                              meetingname.text,
+                                          '''Invite by clicking on the share button ''' 
+                                              
                                         ),
-                                        content: RaisedButton(
-                                          onPressed: () {
-                                            FlutterClipboard.copy(
-                                                "Join into the sapphire meet with Meeting Code:" +
-                                                    randoms[meetingname
-                                                            .text.length]
-                                                        .toString() +
-                                                    meetingname.text);
-                                            Toast.show('Copied', context);
-                                          },
-                                          child: Icon(Icons.share),
-                                        ),
+                                      
                                         actions: [
+                                          IconButton(
+                                              icon: Icon(Icons.share_outlined),
+                                              onPressed: () {
+                                                ShareExtend.share(
+                                                    '''${pref.getStringList('your info')[1]}  is inviting you to a scheduled Sapphire Meet . 
+                Topic:${meetingname.text}
+                Date:${datetime.day} ${datetime.month} ${datetime.year}
+               Time: ${time.hour}:${time.minute}  
+                Join Sapphire Meet
+               Meeting ID: ${randoms[meetingname.text.length].toString() + meetingname.text}
+                Passcode: ${pass.text}''',
+                                                    'text');
+                                              }),
                                           FlatButton(
                                             onPressed: () async {
                                               await Conf_Service(
@@ -194,7 +225,7 @@ class _ConfrenceState extends State<Confrence> {
                                                         .toString() +
                                                     meetingname.text,
                                                 subject:
-                                                    "subject:" + subject.text,
+                                                    "subject:" + meetingname.text,
                                                 username: details[0]
                                                         .replaceAll("+", "") +
                                                     " " +
@@ -258,9 +289,10 @@ class _ConfrenceState extends State<Confrence> {
                     var docdata = await doc.get();
                     if (docdata.data()[controller.text] == null)
                       Alert(
-                          context: context,
-                          type: AlertType.error,
-                          title: "Sorry No room registered on this name").show();
+                              context: context,
+                              type: AlertType.error,
+                              title: "Sorry No room registered on this name")
+                          .show();
                     else {
                       if (docdata.data()[controller.text.trim()]['current'] <=
                           docdata.data()[controller.text.trim()]['max'])
