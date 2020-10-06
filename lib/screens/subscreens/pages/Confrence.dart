@@ -123,14 +123,15 @@ class _ConfrenceState extends State<Confrence> {
   String nameidval = '';
   DateTime datetime;
   TimeOfDay time;
- 
+
   @override
   Widget build(BuildContext context) {
     if (pref == null) getPref();
 
     if (pref != null) {
       details = pref.getStringList('your info');
-      return Container(
+      return SingleChildScrollView(
+          child: Container(
         child: Column(
           children: [
             SizedBox(
@@ -199,10 +200,7 @@ class _ConfrenceState extends State<Confrence> {
                                     builder: (context) {
                                       return AlertDialog(
                                         title: Text(
-                                          '''Invite by clicking on the share button ''' 
-                                              
-                                        ),
-                                      
+                                            '''Invite by clicking on the share button And Enter the Same passcode which you've enter in previous step to complete the Encrption'''),
                                         actions: [
                                           IconButton(
                                               icon: Icon(Icons.share_outlined),
@@ -214,24 +212,32 @@ class _ConfrenceState extends State<Confrence> {
                Time: ${time.hour}:${time.minute}  
                 Join Sapphire Meet
                Meeting ID: ${randoms[meetingname.text.length].toString() + meetingname.text}
-                Passcode: ${pass.text}''',
-                                                    'text');
+                Passcode: ${pass.text}''', 'text');
                                               }),
                                           FlatButton(
                                             onPressed: () async {
-                                              await Conf_Service(
-                                                roomid: randoms[meetingname
-                                                            .text.length]
-                                                        .toString() +
-                                                    meetingname.text,
-                                                subject:
-                                                    "subject:" + meetingname.text,
-                                                username: details[0]
-                                                        .replaceAll("+", "") +
-                                                    " " +
-                                                    details[1],
-                                              ).hostMeet();
-                                              Navigator.pop(context);
+                                              try {
+                                                await Conf_Service(
+                                                  roomid: randoms[meetingname
+                                                              .text.length]
+                                                          .toString() +
+                                                      meetingname.text,
+                                                  subject: "subject:" +
+                                                      meetingname.text,
+                                                  username: details[0]
+                                                          .replaceAll("+", "") +
+                                                      " " +
+                                                      details[1],
+                                                ).hostMeet();
+                                                Navigator.pop(context);
+                                              } catch (e) {
+                                                print(e);
+                                                Alert(
+                                                        context: context,
+                                                        title:
+                                                            'No Space Allowed in topic')
+                                                    .show();
+                                              }
                                             },
                                             child: Text('Host a Meeting'),
                                           ),
@@ -324,7 +330,7 @@ class _ConfrenceState extends State<Confrence> {
                         fontWeight: FontWeight.bold))),
           ],
         ),
-      );
+      ));
     } else
       return SpinKitRipple(color: Colors.yellow[800]);
   }

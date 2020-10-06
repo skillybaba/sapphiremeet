@@ -35,11 +35,11 @@ class _StatusState extends State<Status> {
       await Firebase.initializeApp();
       FirebaseFirestore ref = FirebaseFirestore.instance;
 
-      while (i < statuslist[0].length) {
+      while (i < statuslist[2].length) {
         var dbref = ref.doc(statuslist[1][i]);
         var docref = await dbref.get();
         var data = docref.data()['status'];
-        if (!number.contains(statuslist[0][i]))
+        
           models.add(StatusModel(
               name: statuslist[2][i],
               docid: statuslist[1][i],

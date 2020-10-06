@@ -10,6 +10,7 @@ import 'package:application/services/authvals.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 
 class Home extends StatefulWidget {
@@ -78,13 +79,16 @@ class _HomeState extends State<Home> {
                           decoration: BoxDecoration(shape: BoxShape.circle),
                           child: FlatButton(
                               onPressed: () async {
-                                await showDialog(
+                                await showCupertinoDialog(
                                     context: context,
-                                    child: Center(
-                                        child: Dialog(
-                                            child: Column(
+                                    builder:(context) =>
+                                    
+                                       AlertDialog(
+                                            content:  Container(
+                                      height: 140,
+                                     child: Column(
                                       children: [
-                                        SizedBox(height: 180),
+                                        SizedBox(height: 20),
                                         FlatButton(
                                             onPressed: () async {
                                               Navigator.pop(context);

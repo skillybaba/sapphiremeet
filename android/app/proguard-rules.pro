@@ -15,9 +15,6 @@
 -dontwarn org.shaded.apache.**
 -dontwarn org.ietf.jgss.**
 -dontwarn com.backendless.**
--dontwarn weborb.**
--keep class weborb.** { *; }
--keep class com.backendless.** { *; }
 -keepattributes *Annotation*
 -dontwarn com.razorpay.**
 -keep class com.razorpay.** {*;}

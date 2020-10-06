@@ -131,7 +131,7 @@ class _ChatPannelState extends State<ChatPannel> {
     if (data2.containsKey(data['number'])) {
       var data1 = data2[data['number']]['message'];
       setState(() {
-        if (prevlength != data1.length) {
+        if (prevlength < data1.length) {
           prevlength = data1.length;
           if (data1[data1.length - 1]['val'][1] != null)
             this.message.add(ChatMessage(
@@ -180,6 +180,7 @@ class _ChatPannelState extends State<ChatPannel> {
     messagedata = docdata.data()[data['number']];
     var docdata2 = await ref2.get();
 
+    avtar = docdata.data()['DP'];
     print(messagedata);
     if (messagedata == null) {
       await ref.update({
@@ -222,7 +223,7 @@ class _ChatPannelState extends State<ChatPannel> {
     data = ModalRoute.of(context).settings.arguments;
     // if (!checkcall) checkCall(context, data);
     if (!flag3) check();
-    messages();
+    if (!flag) messages();
     return Scaffold(
         appBar: AppBar(
             actions: [
@@ -350,7 +351,6 @@ class _ChatPannelState extends State<ChatPannel> {
                     height: 250,
                   );
                 },
-                
                 messageTextBuilder: (message, [chat]) {
                   return Text(
                     message,
@@ -392,12 +392,23 @@ class _ChatPannelState extends State<ChatPannel> {
                                     child: Text('Image from gallery'),
                                     onPressed: () async {
                                       Navigator.pop(context);
+
                                       var image =
                                           await ImageSelect(context: context)
                                               .image();
                                       var url = await FireBaseDataBase(
                                               number: info[0])
                                           .msgImg(image);
+                                          
+                                      setState(() {
+                                        message.add(ChatMessage(
+                                            text: 'image',
+                                            image: url,
+                                            user: ChatUser(
+                                              avatar: avtar!=null?avtar:null,
+                                              name: info[1],
+                                            )));
+                                      });
                                       await Firebase.initializeApp();
                                       FirebaseFirestore firestore =
                                           FirebaseFirestore.instance;
@@ -452,6 +463,15 @@ class _ChatPannelState extends State<ChatPannel> {
                                     var url =
                                         await FireBaseDataBase(number: info[0])
                                             .msgImg(image);
+                                    
+                                      message.add(ChatMessage(
+                                          text: 'image',
+                                          image: url,
+                                          user: ChatUser(
+                                            avatar: avtar!=null?avtar:null,
+                                            name: info[1],
+                                          )));
+                               
                                     await Firebase.initializeApp();
                                     FirebaseFirestore firestore =
                                         FirebaseFirestore.instance;
@@ -490,9 +510,9 @@ class _ChatPannelState extends State<ChatPannel> {
                                     await ref
                                         .update({data['number']: messagedata});
                                     await ref2.update({info[0]: messagedata1});
-                                    setState(() {
+                                    
                                       print('done');
-                                    });
+                            
                                   },
                                 ),
                                 FlatButton(
@@ -506,6 +526,15 @@ class _ChatPannelState extends State<ChatPannel> {
                                     var url =
                                         await FireBaseDataBase(number: info[0])
                                             .msgImg(video);
+                              
+                                      message.add(ChatMessage(
+                                          text: 'video',
+                                          image: url,
+                                          user: ChatUser(
+                                            avatar: avtar!=null?avtar:null,
+                                            name: info[1],
+                                          )));
+                                  
                                     await Firebase.initializeApp();
                                     FirebaseFirestore firestore =
                                         FirebaseFirestore.instance;
@@ -568,6 +597,7 @@ class _ChatPannelState extends State<ChatPannel> {
                     var ref2 = firestore.doc(data['docid']);
                     Map messagedata;
                     Map messagedata1;
+
                     await ref.get().then((value) {
                       messagedata = value.data()[data['number']];
                     });
@@ -624,9 +654,15 @@ class _ChatPannelState extends State<ChatPannel> {
                   Function msg = () async {
                     String msg = chatmessage.text;
                     String img = chatmessage.image;
-                    chatmessage.text = null;
-                    chatmessage.image = null;
+
+                    chatmessage.createdAt = DateTime.now();
+                    chatmessage.user.name = info[1];
+                    if (avtar != null) chatmessage.user.avatar = avtar;
                     try {
+                      
+                        this.message.add(chatmessage);
+                   
+
                       print(info);
                       await Firebase.initializeApp();
                       FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -635,12 +671,15 @@ class _ChatPannelState extends State<ChatPannel> {
                       var ref2 = firestore.doc(data['docid']);
                       Map messagedata;
                       Map messagedata1;
+                     
                       await ref.get().then((value) {
+                        avtar = value.data()['DP'];
                         messagedata = value.data()[data['number']];
                       });
                       await ref2.get().then((value) {
                         messagedata1 = value.data()[info[0]];
                       });
+
                       print(messagedata);
                       // if (messagedata == null) {
                       //   await ref.update({

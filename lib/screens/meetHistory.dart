@@ -28,7 +28,9 @@ class _HistoryState extends State<History> {
     details = pref.getStringList('your info');
     if (data == null) data = [];
     setState(() {
+      
       flag = true;
+      data=data.reversed.toList();
     });
   }
 
@@ -51,40 +53,12 @@ class _HistoryState extends State<History> {
               return ListTile(
                   isThreeLine: true,
                   onTap: () async {
-                    showCupertinoDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Text(
-                                'Copy the Meeting Code and share this code to the People for joining into your room: ' +
-                                    data[index]),
-                            content: RaisedButton(
-                              onPressed: () {
-                                FlutterClipboard.copy(
-                                  "Join into the sapphire meet with Meeting Code:" +
-                                      data[index],
-                                );
-                                Toast.show('Copied', context);
-                              },
-                              child: Icon(Icons.share),
-                            ),
-                            actions: [
-                              FlatButton(
-                                onPressed: () async {
-                                  await Conf_Service(
-                                    roomid: data[index],
-                                    subject: "subject:",
-                                    username: details[0].replaceAll("+", "") +
-                                        " " +
-                                        details[1],
-                                  ).hostMeet();
-                                  Navigator.pop(context);
-                                },
-                                child: Text('Host a Meeting'),
-                              ),
-                            ],
-                          );
-                        });
+                    await Conf_Service(
+                      roomid: data[index],
+                      subject: "subject:",
+                      username:
+                          details[0].replaceAll("+", "") + " " + details[1],
+                    ).hostMeet();
                   },
                   subtitle: Text("Tap to rejoin Your Meet",
                       style: TextStyle(color: Colors.yellow[800])),
