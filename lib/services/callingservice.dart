@@ -18,7 +18,7 @@ class CallingService {
   }
   Map<FeatureFlagEnum, bool> feature = {
     FeatureFlagEnum.ADD_PEOPLE_ENABLED: false,
-    FeatureFlagEnum.CALENDAR_ENABLED: false,
+    FeatureFlagEnum.WELCOME_PAGE_ENABLED: false,
     FeatureFlagEnum.CALL_INTEGRATION_ENABLED: false,
     FeatureFlagEnum.INVITE_ENABLED: false,
     FeatureFlagEnum.MEETING_NAME_ENABLED: false,
@@ -26,9 +26,24 @@ class CallingService {
     FeatureFlagEnum.PIP_ENABLED: false,
     FeatureFlagEnum.RAISE_HAND_ENABLED: false,
     FeatureFlagEnum.TILE_VIEW_ENABLED: false,
-    FeatureFlagEnum.IOS_RECORDING_ENABLED:true,
-    
+    FeatureFlagEnum.RECORDING_ENABLED: false,
   };
+  check() async {
+    while (true) {
+      await Firebase.initializeApp();
+      var doc = FirebaseFirestore.instance.doc(this.caller);
+      var doc2 = FirebaseFirestore.instance.doc(this.recever);
+      var data1ref = await doc.get();
+      var data2ref = await doc2.get();
+      var data1 = data1ref.data();
+      var data2 = data2ref.data();
+      if ((!data1['connect']) && (!data2['connected'])) {
+        JitsiMeet.closeMeeting();
+        break;
+      }
+    }
+  }
+
   connect() async {
     var options = JitsiMeetingOptions();
     print(this.number);
@@ -37,17 +52,22 @@ class CallingService {
     options.featureFlags.addAll(this.feature);
     options.videoMuted = true;
   
-    await JitsiMeet.joinMeeting(options, listener: JitsiMeetingListener(
-        onConferenceTerminated: ({Map<dynamic, dynamic> message}) async {
-      await Firebase.initializeApp();
-      var doc = FirebaseFirestore.instance.doc(this.caller);
-      var doc2 = FirebaseFirestore.instance.doc(this.recever);
-      var data1ref = await doc.get();
-      var data2ref = await doc2.get();
-      var data1 = data1ref.data();
-      var data2 = data2ref.data();
-      doc.update({'connected': false});
-      doc2.update({'connected': false});
-    }));
+    await JitsiMeet.joinMeeting(options,
+        listener: JitsiMeetingListener(
+            onConferenceJoined: ({Map<dynamic, dynamic> message}) {
+          check();
+        }, onConferenceTerminated: ({Map<dynamic, dynamic> message}) async {
+          await Firebase.initializeApp();
+          var doc = FirebaseFirestore.instance.doc(this.caller);
+          var doc2 = FirebaseFirestore.instance.doc(this.recever);
+          var data1ref = await doc.get();
+          var data2ref = await doc2.get();
+          var data1 = data1ref.data();
+          var data2 = data2ref.data();
+
+          doc.update({'connected': false});
+          doc2.update({'connected': false});
+          JitsiMeet.removeAllListeners();
+        }));
   }
 }

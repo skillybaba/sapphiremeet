@@ -65,7 +65,7 @@ class FireBaseDataBase {
       await prefs.setStringList('contact docid', docid);
       await prefs.setStringList('contact name', name1);
       await prefs.setBool('contact fetched', true);
-      return [list, docid, name1];
+      return [list.toSet().toList(), docid.toSet().toList(), name1.toSet().toList()];
     } catch (e) {
       print(e);
     }

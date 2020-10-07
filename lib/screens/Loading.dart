@@ -42,7 +42,7 @@ class _LoadingState extends State<Loading> {
       color: Colors.white,
       child: Center(
         
-        child: Image.asset('assests/images/logo.png'),
+        child: Image.asset('assests/images/logo.png',height: 70,),
       ),
     );
   }

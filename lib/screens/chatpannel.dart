@@ -278,11 +278,13 @@ class _ChatPannelState extends State<ChatPannel> {
                       'number': info[0],
                       'name': info[1],
                       'docid': info[2],
+                      'avtar':avtar,
                     });
                     setState(() {
                       isloading = false;
                     });
                     Navigator.pushNamed(context, '/caller', arguments: {
+                      'image':ctavtar,
                       'number': data['number'],
                       'type': 'calling',
                       'recever': data['docid'],
@@ -300,6 +302,7 @@ class _ChatPannelState extends State<ChatPannel> {
                   } else {
                     Navigator.pushNamed(context, '/caller', arguments: {
                       'number': data['number'],
+                      'image':ctavtar,
                       'type': 'buzy',
                       'recever': data['docid'],
                       'caller': info[2],

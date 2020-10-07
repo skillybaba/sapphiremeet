@@ -17,10 +17,13 @@ class _ContactViewState extends State<ContactView> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       print((prefs.containsKey('contact fetched')));
       if ((prefs.containsKey('contact fetched') && (!flag1))) {
-        List names = prefs.getStringList('contact name');
-        List docid = prefs.getStringList('contact docid');
-        List list = prefs.getStringList('contact list');
+        List names = prefs.getStringList('contact name').toSet().toList();
+        List docid = prefs.getStringList('contact docid').toSet().toList();
+        List list = prefs.getStringList('contact list').toSet().toList();
         print('$list, $docid, $names');
+      
+        int k = 0;
+
         contacts = [list, docid, names];
       } else {
         contacts = await FireBaseDataBase().fetchContact();
@@ -36,9 +39,8 @@ class _ContactViewState extends State<ContactView> {
 
   fun(String number, String docid, String name) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    if(!pref.containsKey(number))
-    await pref.setStringList(number, [docid, name]);
-    
+    if (!pref.containsKey(number))
+      await pref.setStringList(number, [docid, name]);
   }
 
   @override
@@ -88,8 +90,8 @@ class _ContactViewState extends State<ContactView> {
                         contacts[2][index]);
                     print(contacts[1][index]);
                     return Container(
-                      margin: EdgeInsets.all(10),
-                      color: Colors.yellow[800],
+                        margin: EdgeInsets.all(10),
+                        color: Colors.yellow[800],
                         padding: EdgeInsets.all(10),
                         child: FlatButton.icon(
                             onPressed: () {

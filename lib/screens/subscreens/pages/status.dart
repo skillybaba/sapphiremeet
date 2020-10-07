@@ -25,9 +25,9 @@ class _StatusState extends State<Status> {
     List number = [];
     prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey('contact fetched')) {
-      List names = prefs.getStringList('contact name');
-      List docid = prefs.getStringList('contact docid');
-      List list = prefs.getStringList('contact list');
+      List names = prefs.getStringList('contact name').toSet().toList();
+      List docid = prefs.getStringList('contact docid').toSet().toList();
+      List list = prefs.getStringList('contact list').toSet().toList();
 
       statuslist = [list, docid, names];
       print(statuslist);
@@ -35,18 +35,18 @@ class _StatusState extends State<Status> {
       await Firebase.initializeApp();
       FirebaseFirestore ref = FirebaseFirestore.instance;
 
-      while (i < statuslist[2].length) {
+      while (i < statuslist[1].length) {
         var dbref = ref.doc(statuslist[1][i]);
         var docref = await dbref.get();
         var data = docref.data()['status'];
-        
+     
           models.add(StatusModel(
               name: statuslist[2][i],
               docid: statuslist[1][i],
               link: data != null ? data : null,
               number: statuslist[0][i]));
         print(number);
-        number.add(statuslist[0][i]);
+        
 
         i++;
       }
@@ -215,15 +215,15 @@ class _StatusState extends State<Status> {
                       ],
                     ),
                   ));
-            else if (index < models.length)
+            else if (index-1 < models.length)
               return FlatButton(
                   onPressed: () async {
-                    if (models[index].link != null)
+                    if (models[index-1].link != null)
                       showDialog(
                           context: context,
                           builder: (context) {
                             return AlertDialog(
-                              content: Image.network(models[index].link),
+                              content: Image.network(models[index-1].link),
                               title: Text(models[index].name),
                               actions: [
                                 FlatButton(
@@ -243,18 +243,18 @@ class _StatusState extends State<Status> {
                           SizedBox(
                             width: 60,
                           ),
-                          models[index].link == null
+                          models[index-1].link == null
                               ? Icon(Icons.data_usage,
                                   size: 40, color: Colors.yellow[800])
                               : CircularProfileAvatar(
-                                  models[index].link,
+                                  models[index-1].link,
                                   radius: 20,
                                 ),
                           SizedBox(
                             width: 30,
                           ),
                           Text(
-                            '${models[index].name}',
+                            '${models[index-1].name}',
                             style: TextStyle(
                                 fontSize: 16, color: Colors.yellow[800]),
                           ),

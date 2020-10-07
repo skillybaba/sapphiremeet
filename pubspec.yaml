@@ -54,6 +54,7 @@ dependencies:
   url_launcher: ^5.7.2
   flutter_simple_calculator: ^1.0.4
   share_extend: "^1.1.9"
+  audioplayers: ^0.16.1
   
   
 

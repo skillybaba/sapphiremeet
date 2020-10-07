@@ -1,6 +1,7 @@
 import 'package:application/services/firebasedatabse.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:application/models/chatmodels.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -110,6 +111,7 @@ class _ChatState extends State<Chat> {
         Navigator.popAndPushNamed(context, '/caller', arguments: {
           'number': data1['caller'][0],
           'type': 'receving',
+          'image': data1['caller'][3],
           'recever': data1['caller'][2],
           'caller': info[2],
           'check': check,
@@ -165,6 +167,7 @@ class _ChatState extends State<Chat> {
                 // print(dataman[chatlist[index].number]['docid']);
                 //  print(index);
                 return FlatButton(
+                   
                     onPressed: () {
                       check[0] = 1;
                       Navigator.popAndPushNamed(context, '/chatpannel',
@@ -200,7 +203,7 @@ class _ChatState extends State<Chat> {
                               Text(
                                 '$name',
                                 style: TextStyle(
-                                    fontSize: 20,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white),
                               ),

@@ -3,6 +3,7 @@ import 'package:toast/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class Call extends StatefulWidget {
   @override
@@ -11,6 +12,20 @@ class Call extends StatefulWidget {
 
 class _CallState extends State<Call> {
   Map info;
+  bool audioflag = true;
+  audio() async {
+    AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+    if (info['type'] == 'receving') {
+      while (audioflag)
+        await audioPlayer.play(
+            'https://firebasestorage.googleapis.com/v0/b/sapphire-meet.appspot.com/o/ringtone%2FUniversal-Hollywood-Phone-Ringtone.wav?alt=media&token=c30fd9be-3b47-4b86-b317-8f889712ce43');
+    } else {
+      while (audioflag)
+        await audioPlayer.play(
+            'https://firebasestorage.googleapis.com/v0/b/sapphire-meet.appspot.com/o/ringtone%2Fsalamisound-1020075-phone-call-sign-type-siemens.mp3?alt=media&token=34ed04be-5211-473f-acb5-d4d0f5f46740');
+    }
+  }
+
   void action(info, context, [end = false]) async {
     await null;
     await Firebase.initializeApp();
@@ -22,6 +37,7 @@ class _CallState extends State<Call> {
     var data = val.data();
     var val2 = await ref2.get();
     var data2 = val2.data();
+
     if (end) {
       await ref.update({
         'connected': false,
@@ -61,7 +77,9 @@ class _CallState extends State<Call> {
 
       if (data['connected']) {
         CallingService(data['channelid'],
-                caller: info['caller'], recever: info['recever'],number: info['number'])
+                caller: info['caller'],
+                recever: info['recever'],
+                number: info['number'])
             .connect();
         if (info['check'][0] == 3) {
           info['check'][0] = 0;
@@ -75,9 +93,15 @@ class _CallState extends State<Call> {
     }
   }
 
+  void dispose() {
+    super.dispose();
+    audioflag = false;
+  }
+
   bool nn = false;
   @override
   Widget build(BuildContext context) {
+    audio();
     info = ModalRoute.of(context).settings.arguments;
     if (!nn) checkall(info);
     nn = true;
@@ -155,7 +179,8 @@ class _CallState extends State<Call> {
 
                           CallingService(data['channelid'],
                                   caller: info['caller'],
-                                  recever: info['recever'],number: info['number'])
+                                  recever: info['recever'],
+                                  number: info['number'])
                               .connect();
                           ref.update({
                             'connected': true,
