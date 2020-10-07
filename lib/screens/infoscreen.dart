@@ -39,7 +39,7 @@ class _InfoScreenState extends State<InfoScreen> {
                   setState(() {
                     dob = date;
                   });
-                }, currentTime: dob);
+                }, currentTime: dob,minTime: DateTime(1947));
               },
               icon: Icon(
                 Icons.date_range,

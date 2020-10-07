@@ -3,7 +3,7 @@ import 'package:toast/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:just_audio/just_audio.dart';
 
 class Call extends StatefulWidget {
   @override
@@ -13,18 +13,21 @@ class Call extends StatefulWidget {
 class _CallState extends State<Call> {
   Map info;
   bool audioflag = true;
+  var player = AudioPlayer();
   audio() async {
-    AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
     if (info['type'] == 'receving') {
-      while (audioflag)
-        await audioPlayer.play(
-            'https://firebasestorage.googleapis.com/v0/b/sapphire-meet.appspot.com/o/ringtone%2FUniversal-Hollywood-Phone-Ringtone.wav?alt=media&token=c30fd9be-3b47-4b86-b317-8f889712ce43');
+      await player.setLoopMode(LoopMode.one);
+     await player.setAsset('assests/audio/rec.wav');
+      await player.play();
     } else {
-      while (audioflag)
-        await audioPlayer.play(
-            'https://firebasestorage.googleapis.com/v0/b/sapphire-meet.appspot.com/o/ringtone%2Fsalamisound-1020075-phone-call-sign-type-siemens.mp3?alt=media&token=34ed04be-5211-473f-acb5-d4d0f5f46740');
+      await player.setLoopMode(LoopMode.one);
+       await player.setAsset('assests/audio/send.wav');
+       
+     await player.play();
+     
+      }
     }
-  }
+  
 
   void action(info, context, [end = false]) async {
     await null;
@@ -96,13 +99,15 @@ class _CallState extends State<Call> {
   void dispose() {
     super.dispose();
     audioflag = false;
+    player.dispose();
+     
   }
 
   bool nn = false;
   @override
   Widget build(BuildContext context) {
-    audio();
     info = ModalRoute.of(context).settings.arguments;
+    audio();
     if (!nn) checkall(info);
     nn = true;
     action(info, context);

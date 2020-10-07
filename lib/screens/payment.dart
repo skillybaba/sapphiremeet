@@ -52,15 +52,15 @@ class _PaymentState extends State<Payment> {
                         "✬✬ FREE GIFT ON  ✬✬",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Colors.yellow[800],
-                            fontSize: 20),
+                            color: Colors.red[300],
+                            fontSize: 22),
                       ),
                       Text(
                         "✬✬ EVERY UPGRADATION ✬✬ ",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Colors.yellow[800],
-                            fontSize: 20),
+                            color: Colors.red[300],
+                            fontSize: 22),
                       ),
                       SizedBox(
                         height: 20,

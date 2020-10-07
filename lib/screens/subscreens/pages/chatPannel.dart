@@ -1,4 +1,3 @@
-import 'package:application/services/firebasedatabse.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -80,15 +79,14 @@ class _ChatState extends State<Chat> {
         // chatlist.remove('null');
         while (chatlist.contains('null')) chatlist.remove('null');
 
-        print(chatlist);
-
+     
         length = data.length;
-        print(dataman);
+      
       }
     });
 
     flag = false;
-    print('donw');
+    
   }
 
   bool checkcall = false;
@@ -103,7 +101,7 @@ class _ChatState extends State<Chat> {
       var dataref = await ref.get();
       var data1 = dataref.data();
       print('allcool');
-      print(check);
+     
       if ((check[0] == 0) &&
           ((data1['receving'] != null) && (data1['receving'])) &&
           (((data1['calling'] == null) || (!data1['calling'])) &&
@@ -179,7 +177,7 @@ class _ChatState extends State<Chat> {
                           });
                     },
                     child: Container(
-                      padding: EdgeInsets.all(20),
+                      padding: EdgeInsets.all(10),
                       margin: EdgeInsets.all(5),
                       decoration: BoxDecoration(
                           color: Colors.yellow[800],

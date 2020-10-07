@@ -22,6 +22,7 @@ class _CallingState extends State<Calling> {
   }
   List info;
   bool isloading = false;
+  var reflist;
   List<CallingModel> callinglist = <CallingModel>[];
   Future<bool> getData() async {
     await Firebase.initializeApp();
@@ -32,18 +33,24 @@ class _CallingState extends State<Calling> {
     var getvals = await doc.get();
     var data = getvals.data()['callhis'];
     callinglist = [];
-
+    reflist = {};
     if (data != null)
       for (var i in data) {
-        callinglist.add(CallingModel(
-            name: i['name'],
-            docid: i['docid'],
-            number: i['number'],
-            type: i['type']));
+        if (!reflist.keys.contains(i['number']))
+          callinglist.add(CallingModel(
+              name: i['name'],
+              docid: i['docid'],
+              number: i['number'],
+              type: i['type']));
+        if (reflist.containsKey(i['number']))
+          reflist[i['number']]++;
+        else
+          reflist[i['number']] = 1;
+       
       }
     setState(() {
       if (!flag) flag = true;
-      print('done');
+     
     });
     return true;
   }
@@ -63,29 +70,32 @@ class _CallingState extends State<Calling> {
           slivers: [
             SliverList(delegate:
                 SliverChildBuilderDelegate((BuildContext context, int index) {
+              
               if (index < callinglist.length) {
+               
                 return FlatButton(
                     onPressed: () {},
                     child: Container(
-                      padding: EdgeInsets.all(30),
+                      padding: EdgeInsets.all(20),
                       margin: EdgeInsets.all(5),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(40),
                           color: Colors.yellow[800]),
                       child: Row(
                         children: [
-                          Icon(
-                            Icons.account_circle_outlined,
-                            size: 30,
-                            color: Colors.white,
-                          ),
                           SizedBox(
-                            width: 40,
+                            width: 10,
                           ),
                           Text(
                             "${callinglist[index].name}",
-                            style: TextStyle(fontSize: 21, color: Colors.white),
+                            style: TextStyle(fontSize: 16, color: Colors.white),
                           ),
+                           SizedBox(
+                            width: 30,
+                          ),
+                           Text(reflist[callinglist[index].number].toString()+' Call',
+                              style: TextStyle(color: Colors.white,fontSize: 15,)),
+                         
                           SizedBox(
                             width: 10,
                           ),
@@ -93,6 +103,7 @@ class _CallingState extends State<Calling> {
                             child: Icon(
                               Icons.call,
                               color: Colors.white,
+                              size:15,
                             ),
                             onPressed: () async {
                               setState(() {
@@ -183,8 +194,8 @@ class _CallingState extends State<Calling> {
                                       (callinglist[index].number + info[2])
                                 });
                                 setState(() {
-                      isloading = false;
-                    });
+                                  isloading = false;
+                                });
                               }
                             },
                           )

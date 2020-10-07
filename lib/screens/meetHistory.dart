@@ -3,8 +3,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:clipboard/clipboard.dart';
-import 'package:toast/toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:application/services/conferenceservice.dart';
 
@@ -28,9 +26,8 @@ class _HistoryState extends State<History> {
     details = pref.getStringList('your info');
     if (data == null) data = [];
     setState(() {
-      
       flag = true;
-      data=data.reversed.toList();
+      data = data.reversed.toList();
     });
   }
 
@@ -42,6 +39,22 @@ class _HistoryState extends State<History> {
           body: CustomScrollView(
         slivers: [
           SliverAppBar(
+            actions: [
+              FlatButton(
+                  onPressed: () async {
+                    data = [];
+                    setState(() {});
+                    await Firebase.initializeApp();
+                    SharedPreferences pref =
+                        await SharedPreferences.getInstance();
+                    FirebaseFirestore fs = FirebaseFirestore.instance;
+                    var ref = fs.doc(pref.getString('userdocid'));
+                    ref.update({
+                      'roomid': [],
+                    });
+                  },
+                  child: Icon(Icons.delete,color: Colors.white,))
+            ],
             backgroundColor: Colors.yellow[800],
             flexibleSpace: FlexibleSpaceBar(
               title: Text('Meet history'),

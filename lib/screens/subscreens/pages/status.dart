@@ -223,8 +223,19 @@ class _StatusState extends State<Status> {
                           context: context,
                           builder: (context) {
                             return AlertDialog(
-                              content: Image.network(models[index-1].link),
-                              title: Text(models[index].name),
+                              content: Image.network(models[index-1].link,loadingBuilder: (context,child,loading){
+                                  if (loading == null) {
+                                      return Center(child: child);
+                                    }
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                          value: loading
+                                                  .cumulativeBytesLoaded /
+                                              loading
+                                                  .expectedTotalBytes),
+                                    );
+                              },),
+                              title: Text(models[index-1].name),
                               actions: [
                                 FlatButton(
                                     onPressed: () {

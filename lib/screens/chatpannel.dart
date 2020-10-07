@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:dash_chat/dash_chat.dart';
@@ -24,8 +23,7 @@ class _ChatPannelState extends State<ChatPannel> {
   GlobalKey<DashChatState> key = GlobalKey<DashChatState>();
   List<ChatMessage> message = [];
   messages() async {
-    print(data['number']);
-    print(data['docid']);
+    
     if (!flag) {
       try {
         data = ModalRoute.of(context).settings.arguments;
@@ -34,11 +32,11 @@ class _ChatPannelState extends State<ChatPannel> {
 
         SharedPreferences pref = await SharedPreferences.getInstance();
         info = pref.getStringList('your info');
-        print(info);
+       
         var doc = firestore.doc(info[2]);
         var data1 = await doc.get();
         Map chats = data1.data();
-        print(chats);
+       
         if (chats.containsKey(data['number'])) {
           var data1 = chats[data['number']]['message'];
           this.message = [];
@@ -77,12 +75,12 @@ class _ChatPannelState extends State<ChatPannel> {
                   user: ChatUser(
                       avatar: i['val'][3] == info[1] ? avtar : ctavtar,
                       name: i['val'][3])));
-          print(message);
+          
         }
         setState(() {
           flag = true;
         });
-        print('kan');
+      
       } catch (e) {
         print(e);
       }
@@ -532,7 +530,7 @@ class _ChatPannelState extends State<ChatPannel> {
                               
                                       message.add(ChatMessage(
                                           text: 'video',
-                                          image: url,
+                                          video: url,
                                           user: ChatUser(
                                             avatar: avtar!=null?avtar:null,
                                             name: info[1],

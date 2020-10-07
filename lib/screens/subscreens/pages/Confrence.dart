@@ -168,7 +168,7 @@ class _ConfrenceState extends State<Confrence> {
                                 onPressed: () async {
                                   datetime = await showDatePicker(
                                       context: context,
-                                      initialDate: DateTime(2020),
+                                      initialDate: DateTime.now(),
                                       firstDate: DateTime(2020),
                                       lastDate: DateTime(2100));
                                 },
@@ -205,14 +205,23 @@ class _ConfrenceState extends State<Confrence> {
                                           IconButton(
                                               icon: Icon(Icons.share_outlined),
                                               onPressed: () {
-                                                ShareExtend.share(
-                                                    '''${pref.getStringList('your info')[1]}  is inviting you to a scheduled Sapphire Meet . 
+                                                try {
+                                                  ShareExtend.share(
+                                                      '''${pref.getStringList('your info')[1]}  is inviting you to a scheduled Sapphire Meet . 
                 Topic:${meetingname.text}
                 Date:${datetime.day} ${datetime.month} ${datetime.year}
                Time: ${time.hour}:${time.minute}  
                 Join Sapphire Meet
                Meeting ID: ${randoms[meetingname.text.length].toString() + meetingname.text}
                 Passcode: ${pass.text}''', 'text');
+                                                } catch (e) {
+                                                  Alert(
+                                                          context: context,
+                                                          type: AlertType.error,
+                                                          title:
+                                                              "Date Or Time is Not given in previous step.Kindly check")
+                                                      .show();
+                                                }
                                               }),
                                           FlatButton(
                                             onPressed: () async {
