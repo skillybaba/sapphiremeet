@@ -32,7 +32,7 @@ class _AboutusState extends State<Aboutus> {
          Text("INDIA",style: TextStyle(color: Colors.green),)
          ],),
          SizedBox(height: 20,),
-         Text('Copyright 2020 ©   Version 1.3.0 '),
+         Text('Copyright 2020 ©   Version 1.4.0 '),
          
       ],),
     )));

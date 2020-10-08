@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:circular_profile_avatar/circular_profile_avatar.dart';
+import 'package:flutter_gradient_colors/flutter_gradient_colors.dart';
 
 class Call extends StatefulWidget {
   @override
@@ -17,17 +19,15 @@ class _CallState extends State<Call> {
   audio() async {
     if (info['type'] == 'receving') {
       await player.setLoopMode(LoopMode.one);
-     await player.setAsset('assests/audio/rec.wav');
+      await player.setAsset('assests/audio/rec.wav');
       await player.play();
     } else {
       await player.setLoopMode(LoopMode.one);
-       await player.setAsset('assests/audio/send.wav');
-       
-     await player.play();
-     
-      }
+      await player.setAsset('assests/audio/send.wav');
+      await player.setVolume(0.001);
+      await player.play();
     }
-  
+  }
 
   void action(info, context, [end = false]) async {
     await null;
@@ -42,20 +42,20 @@ class _CallState extends State<Call> {
     var data2 = val2.data();
 
     if (end) {
-      await ref.update({
+      ref.update({
         'connected': false,
         'calling': false,
         'receving': false,
       });
       if ((data2['connected'] == null) || (!data2['connected']))
-        await ref2.update({
+        ref2.update({
           'connected': false,
           'calling': false,
           'receving': false,
         });
     } else if (info['type'] == 'buzy') {
       print(data);
-      await ref.update({
+      ref.update({
         'calling': false,
       });
       print('done');
@@ -100,7 +100,6 @@ class _CallState extends State<Call> {
     super.dispose();
     audioflag = false;
     player.dispose();
-     
   }
 
   bool nn = false;
@@ -112,8 +111,9 @@ class _CallState extends State<Call> {
     nn = true;
     action(info, context);
     return Scaffold(
-      backgroundColor: Colors.yellow[600],
+      
       body: Container(
+        decoration: BoxDecoration(gradient: SweepGradient(stops: [0.0,0.25,0.5,0.75,1],colors: [Colors.blue,Colors.yellow,Colors.green,Colors.red,Colors.blue],)),
         child: Column(
           children: [
             SizedBox(
@@ -123,25 +123,28 @@ class _CallState extends State<Call> {
                 ? Text(
                     'Unknown',
                     style: TextStyle(fontSize: 20),
+
                   )
-                : Text(info['number']),
+                : Text(info['number'],style: TextStyle(color: Colors.white,fontSize: 30,fontWeight: FontWeight.bold),),
+                SizedBox(height: 30,),
+                Text('Ringing....',style: TextStyle(color: Colors.white),),
             SizedBox(
-              height: 10,
+              height: 50,
             ),
             info['image'] == null
                 ? Icon(Icons.account_circle_rounded, size: 140)
-                : Image.file(info['image']),
+                :  CircularProfileAvatar(info['image'],radius: 130,borderWidth:2 ,borderColor: Colors.black,),
             SizedBox(
-              height: 30,
+              height: 50,
             ),
             Row(
               children: [
                 info != null && info['type'] == 'receving'
                     ? SizedBox(
-                        width: 90,
+                        width: 100,
                       )
                     : SizedBox(
-                        width: 160,
+                        width: 180,
                       ),
                 IconButton(
                     icon: Icon(

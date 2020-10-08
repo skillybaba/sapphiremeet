@@ -101,15 +101,15 @@ class _ChatState extends State<Chat> {
       var dataref = await ref.get();
       var data1 = dataref.data();
       print('allcool');
-     
+    
       if ((check[0] == 0) &&
           ((data1['receving'] != null) && (data1['receving'])) &&
           (((data1['calling'] == null) || (!data1['calling'])) &&
               ((data1['connected'] == null) || (!data1['connected'])))) {
-        Navigator.popAndPushNamed(context, '/caller', arguments: {
+        Navigator.pushNamed(context, '/caller', arguments: {
           'number': data1['caller'][0],
           'type': 'receving',
-          'image': data1['caller'][3],
+          
           'recever': data1['caller'][2],
           'caller': info[2],
           'check': check,

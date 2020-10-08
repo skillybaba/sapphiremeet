@@ -21,13 +21,14 @@ class _ContactViewState extends State<ContactView> {
         List docid = prefs.getStringList('contact docid').toSet().toList();
         List list = prefs.getStringList('contact list').toSet().toList();
         print('$list, $docid, $names');
-      
+
         int k = 0;
 
         contacts = [list, docid, names];
       } else {
         contacts = await FireBaseDataBase().fetchContact();
       }
+     
       setState(() {
         flag = true;
       });

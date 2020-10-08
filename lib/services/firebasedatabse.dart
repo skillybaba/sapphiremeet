@@ -48,12 +48,15 @@ class FireBaseDataBase {
       var datacon = ref.docs.forEach((element) {
         for (var i in contact) {
           i.phones.any((element1) {
-            if ((element1.value.replaceAll(' ', '') ==
-                    element.data()['number']) ||
-                (name[element1.value] != null)) {
-              docid.add(element.data()['Doc Id']);
-              name1.add(element.data()['username']);
-              list.add(element.data()['number']);
+            if (element.data()['number'] != null) {
+              if (element
+                      .data()['number']
+                      .contains(element1.value.replaceAll(' ', '')) ||
+                  (name[element1.value] != null)) {
+                docid.add(element.data()['Doc Id']);
+                name1.add(element.data()['username']);
+                list.add(element.data()['number']);
+              }
             }
             return true;
           });
@@ -65,7 +68,11 @@ class FireBaseDataBase {
       await prefs.setStringList('contact docid', docid);
       await prefs.setStringList('contact name', name1);
       await prefs.setBool('contact fetched', true);
-      return [list.toSet().toList(), docid.toSet().toList(), name1.toSet().toList()];
+      return [
+        list.toSet().toList(),
+        docid.toSet().toList(),
+        name1.toSet().toList()
+      ];
     } catch (e) {
       print(e);
     }
@@ -75,7 +82,7 @@ class FireBaseDataBase {
     await Firebase.initializeApp();
     var st = FirebaseStorage()
         .ref()
-        .child('msg images/' + DateTime.now().toString()+this.number);
+        .child('msg images/' + DateTime.now().toString() + this.number);
     var upload = st.putFile(file);
     var uploadref = await upload.onComplete;
     return uploadref.ref.getDownloadURL();

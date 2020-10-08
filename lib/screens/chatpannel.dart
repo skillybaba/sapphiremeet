@@ -270,13 +270,14 @@ class _ChatPannelState extends State<ChatPannel> {
                       'number': data['number'],
                       'name': data['name'],
                       'docid': data['docid'],
+                      
                     });
                     recever.add({
                       'type': 'receving',
                       'number': info[0],
                       'name': info[1],
                       'docid': info[2],
-                      'avtar':avtar,
+                      
                     });
                     setState(() {
                       isloading = false;

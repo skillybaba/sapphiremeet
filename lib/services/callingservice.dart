@@ -29,18 +29,35 @@ class CallingService {
     FeatureFlagEnum.RECORDING_ENABLED: false,
   };
   check() async {
-    while (true) {
+    try {
+      while (true) {
+        await Firebase.initializeApp();
+        var doc = FirebaseFirestore.instance.doc(this.caller);
+        var doc2 = FirebaseFirestore.instance.doc(this.recever);
+        var data1ref = await doc.get();
+        var data2ref = await doc2.get();
+        var data1 = data1ref.data();
+        var data2 = data2ref.data();
+        if (((data1['connected'] == null) || (!data1['connected'])) &&
+            (data1['connected'] || (!data2['connected']))) {
+          JitsiMeet.closeMeeting();
+          break;
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  fun() async {
+    try {
       await Firebase.initializeApp();
       var doc = FirebaseFirestore.instance.doc(this.caller);
       var doc2 = FirebaseFirestore.instance.doc(this.recever);
-      var data1ref = await doc.get();
-      var data2ref = await doc2.get();
-      var data1 = data1ref.data();
-      var data2 = data2ref.data();
-      if ((!data1['connect']) && (!data2['connected'])) {
-        JitsiMeet.closeMeeting();
-        break;
-      }
+      doc.update({'connected': false});
+      doc2.update({'connected': false});
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -51,23 +68,13 @@ class CallingService {
     options.room = this.channel;
     options.featureFlags.addAll(this.feature);
     options.videoMuted = true;
-  
+
     await JitsiMeet.joinMeeting(options,
         listener: JitsiMeetingListener(
             onConferenceJoined: ({Map<dynamic, dynamic> message}) {
           check();
-        }, onConferenceTerminated: ({Map<dynamic, dynamic> message}) async {
-          await Firebase.initializeApp();
-          var doc = FirebaseFirestore.instance.doc(this.caller);
-          var doc2 = FirebaseFirestore.instance.doc(this.recever);
-          var data1ref = await doc.get();
-          var data2ref = await doc2.get();
-          var data1 = data1ref.data();
-          var data2 = data2ref.data();
-
-          doc.update({'connected': false});
-          doc2.update({'connected': false});
-          JitsiMeet.removeAllListeners();
+        }, onConferenceTerminated: ({Map<dynamic, dynamic> message}) {
+          fun();
         }));
   }
 }
