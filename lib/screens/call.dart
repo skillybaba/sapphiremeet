@@ -24,7 +24,7 @@ class _CallState extends State<Call> {
     } else {
       await player.setLoopMode(LoopMode.one);
       await player.setAsset('assests/audio/send.wav');
-      await player.setVolume(0.001);
+      await player.setVolume(0.02);
       await player.play();
     }
   }
@@ -111,9 +111,18 @@ class _CallState extends State<Call> {
     nn = true;
     action(info, context);
     return Scaffold(
-      
       body: Container(
-        decoration: BoxDecoration(gradient: SweepGradient(stops: [0.0,0.25,0.5,0.75,1],colors: [Colors.blue,Colors.yellow,Colors.green,Colors.red,Colors.blue],)),
+        decoration: BoxDecoration(
+            gradient: SweepGradient(
+          stops: [0.0, 0.25, 0.5, 0.75, 1],
+          colors: [
+            Colors.blue,
+            Colors.yellow,
+            Colors.green,
+            Colors.red,
+            Colors.blue
+          ],
+        )),
         child: Column(
           children: [
             SizedBox(
@@ -123,17 +132,32 @@ class _CallState extends State<Call> {
                 ? Text(
                     'Unknown',
                     style: TextStyle(fontSize: 20),
-
                   )
-                : Text(info['number'],style: TextStyle(color: Colors.white,fontSize: 30,fontWeight: FontWeight.bold),),
-                SizedBox(height: 30,),
-                Text('Ringing....',style: TextStyle(color: Colors.white),),
+                : Text(
+                    info['number'],
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold),
+                  ),
+            SizedBox(
+              height: 30,
+            ),
+            Text(
+              'Ringing....',
+              style: TextStyle(color: Colors.white),
+            ),
             SizedBox(
               height: 50,
             ),
             info['image'] == null
                 ? Icon(Icons.account_circle_rounded, size: 140)
-                :  CircularProfileAvatar(info['image'],radius: 130,borderWidth:2 ,borderColor: Colors.black,),
+                : CircularProfileAvatar(
+                    info['image'],
+                    radius: 130,
+                    borderWidth: 2,
+                    borderColor: Colors.black,
+                  ),
             SizedBox(
               height: 50,
             ),
