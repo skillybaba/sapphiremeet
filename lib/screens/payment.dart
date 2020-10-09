@@ -53,14 +53,14 @@ class _PaymentState extends State<Payment> {
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.red[300],
-                            fontSize: 22),
+                            fontSize: 20),
                       ),
                       Text(
                         "✬✬ EVERY UPGRADATION ✬✬ ",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.red[300],
-                            fontSize: 22),
+                            fontSize: 20),
                       ),
                       SizedBox(
                         height: 20,
