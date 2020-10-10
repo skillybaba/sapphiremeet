@@ -6,7 +6,7 @@ Confrence Calling Application
 ## Preview
 
 <img src = "https://github.com/skillybaba/sapphiremeet/blob/master/ss/1%20(1).jpeg" width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<img src = "https://github.com/skillybaba/sapphiremeet/blob/master/ss/2.jpeg-09-24%20at%208.57.30%20PM.jpeg" width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<img src = "https://github.com/skillybaba/sapphiremeet/blob/master/ss/2.jpeg" width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <img src = "https://github.com/skillybaba/sapphiremeet/blob/master/ss/3.jpeg" width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <img src = "https://github.com/skillybaba/sapphiremeet/blob/master/ss/4.jpeg" width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <img src = "https://github.com/skillybaba/sapphiremeet/blob/master/ss/5.jpeg" width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
