@@ -5,9 +5,14 @@ Confrence Calling Application
 
 ## Preview
 
-<img src = "https://github.com/kanzd/finalcom/blob/master/WhatsApp%20Image%202020-09-24%20at%205.05.00%20PM.jpeg" width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<img src = "https://github.com/kanzd/finalcom/blob/master/WhatsApp%20Image%202020-09-24%20at%208.57.30%20PM.jpeg" width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<img src = "https://github.com/kanzd/finalcom/blob/master/WhatsApp%20Image%202020-09-24%20at%208.20.30%20PM(4).jpeg" width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<img src = "https://github.com/skillybaba/sapphiremeet/blob/master/ss/1%20(1).jpeg" width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<img src = "https://github.com/skillybaba/sapphiremeet/blob/master/ss/2.jpeg-09-24%20at%208.57.30%20PM.jpeg" width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<img src = "https://github.com/skillybaba/sapphiremeet/blob/master/ss/3.jpeg" width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<img src = "https://github.com/skillybaba/sapphiremeet/blob/master/ss/4.jpeg" width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<img src = "https://github.com/skillybaba/sapphiremeet/blob/master/ss/5.jpeg" width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<img src = "https://github.com/skillybaba/sapphiremeet/blob/master/ss/6.jpeg" width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<img src = "https://github.com/skillybaba/sapphiremeet/blob/master/ss/7.jpeg" width="30%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
 
 ## Dependency
 1. country_code_picker
@@ -35,3 +40,6 @@ Confrence Calling Application
 1. razorpay_flutter
 1. url_launcher
 1. flutter_simple_calculator
+1. share_extend
+1. just_audio
+1. flutter_gradient_colors
