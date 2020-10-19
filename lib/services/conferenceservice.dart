@@ -42,20 +42,17 @@ class Conf_Service {
 
     print(inst.getString('userdocid'));
     var options = JitsiMeetingOptions();
-    
+
     print(this.roomid);
     options.room = this.roomid;
+    options.serverURL = 'https://sapphiremeet.in/';
     options.subject = this.subject;
     options.userDisplayName = this.username;
     options.userEmail = this.email;
     options.videoMuted = false;
     options.audioMuted = false;
 
-    options.featureFlags.addAll({
-     
-      FeatureFlagEnum.INVITE_ENABLED: false,
-      FeatureFlagEnum.TOOLBOX_ALWAYS_VISIBLE: false,
-    });
+  
 
     if (userefdata.data()['account'] == 'free')
       options.featureFlags
