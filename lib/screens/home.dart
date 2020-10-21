@@ -65,261 +65,253 @@ class _HomeState extends State<Home> {
     return Scaffold(
       key: key,
       drawer: Drawer(
-          child: Column(children: [
+          child: SingleChildScrollView(
+              child: Column(children: [
         UserAccountsDrawerHeader(
           decoration: BoxDecoration(
             color: Colors.yellow[800],
           ),
-          accountName: Text(pref.getStringList('your info')[1],style: TextStyle(fontSize:16),),
-          accountEmail: Text(pref.getStringList('your info')[0],style:TextStyle(fontSize: 14)),
-          currentAccountPicture:  
-                  dp != null
-                      ? Container(
-                         
-                          child: FlatButton(
-                              onPressed: () async {
-                                await showCupertinoDialog(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                        content: Container(
-                                            height: 140,
-                                            child: Column(
-                                              children: [
-                                                SizedBox(height: 20),
-                                                FlatButton(
-                                                    onPressed: () async {
-                                                      Navigator.pop(context);
-                                                      var crop =
-                                                          await ImageSelect(
-                                                                  context:
-                                                                      context)
-                                                              .image();
- setState((){dpcheck=true;});
-                                                      await FireBaseDataBase(
-                                                              number: pref
-                                                                  .getStringList(
-                                                                      'your info')[0])
-                                                          .addDP(
-                                                        crop,
-                                                      );
-                                                      setState(() {
-                                                        ff = false;
-                                                        flag = false;
-                                                        dpcheck=false;
-                                                      });
-                                                    },
-                                                    child: Text("From Gallery",
-                                                        style: TextStyle(
-                                                            color: Colors.amber,
-                                                            fontSize: 21,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold))),
-                                                FlatButton(
-                                                    onPressed: () async {
-                                                      Navigator.pop(context);
-                                                      var crop =
-                                                          await ImageSelect(
-                                                                  context:
-                                                                      context,
-                                                                  selecttype:
-                                                                      'camera')
-                                                              .image();
-                                                      setState(() {
-                                                        dpcheck = true;
-                                                      });
-                                                      await FireBaseDataBase(
-                                                              number: pref
-                                                                  .getStringList(
-                                                                      'your info')[0])
-                                                          .addDP(
-                                                        crop,
-                                                      );
+          accountName: Text(
+            pref.getStringList('your info')[1],
+            style: TextStyle(fontSize: 16),
+          ),
+          accountEmail: Text(pref.getStringList('your info')[0],
+              style: TextStyle(fontSize: 14)),
+          currentAccountPicture: dp != null
+              ? Container(
+                  child: FlatButton(
+                      onPressed: () async {
+                        await showCupertinoDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                                content: Container(
+                                    height: 140,
+                                    child: Column(
+                                      children: [
+                                        SizedBox(height: 20),
+                                        FlatButton(
+                                            onPressed: () async {
+                                              Navigator.pop(context);
+                                              var crop = await ImageSelect(
+                                                      context: context)
+                                                  .image();
+                                              setState(() {
+                                                dpcheck = true;
+                                              });
+                                              await FireBaseDataBase(
+                                                      number:
+                                                          pref.getStringList(
+                                                              'your info')[0])
+                                                  .addDP(
+                                                crop,
+                                              );
+                                              setState(() {
+                                                ff = false;
+                                                flag = false;
+                                                dpcheck = false;
+                                              });
+                                            },
+                                            child: Text("From Gallery",
+                                                style: TextStyle(
+                                                    color: Colors.amber,
+                                                    fontSize: 21,
+                                                    fontWeight:
+                                                        FontWeight.bold))),
+                                        FlatButton(
+                                            onPressed: () async {
+                                              Navigator.pop(context);
+                                              var crop = await ImageSelect(
+                                                      context: context,
+                                                      selecttype: 'camera')
+                                                  .image();
+                                              setState(() {
+                                                dpcheck = true;
+                                              });
+                                              await FireBaseDataBase(
+                                                      number:
+                                                          pref.getStringList(
+                                                              'your info')[0])
+                                                  .addDP(
+                                                crop,
+                                              );
 
-                                                      setState(() {
-                                                        ff = false;
-                                                        flag = false;
-                                                        this.i++;
-                                                      });
-                                                    },
-                                                    child: Text(
-                                                      "From Camera",
-                                                      style: TextStyle(
-                                                          color: Colors.amber,
-                                                          fontSize: 21,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    )),
-                                              ],
-                                            ))));
-                              },
-                              child: dpcheck == false
-                                  ? CircularProfileAvatar('',
-                                  radius: 60,
-                                      key: Key(this.i.toString()),
-                                      child: Image(
-                                        
-                                        image: NetworkImage(dp),
-                                      ))
-                                  : SpinKitPulse(color: Colors.white)))
-                      : IconButton(
-                          onPressed: () async {
-                            Navigator.pop(context);
-                            await showCupertinoDialog(
-                                context: context,
-                                    builder: (context) => AlertDialog( 
-                                   
-                                       content:Column(
-                                  children: [
-                                    SizedBox(
-                                      height: 200,
-                                    ),
-                                    FlatButton(
-                                        onPressed: () async {
-                                          Navigator.pop(context);
-                                          var crop = await ImageSelect(
-                                                  context: context)
+                                              setState(() {
+                                                ff = false;
+                                                flag = false;
+                                                this.i++;
+                                              });
+                                            },
+                                            child: Text(
+                                              "From Camera",
+                                              style: TextStyle(
+                                                  color: Colors.amber,
+                                                  fontSize: 21,
+                                                  fontWeight: FontWeight.bold),
+                                            )),
+                                      ],
+                                    ))));
+                      },
+                      child: dpcheck == false
+                          ? CircularProfileAvatar('',
+                              radius: 60,
+                              key: Key(this.i.toString()),
+                              child: Image(
+                                image: NetworkImage(dp),
+                              ))
+                          : SpinKitPulse(color: Colors.white)))
+              : IconButton(
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    await showCupertinoDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                                content: Column(
+                              children: [
+                                SizedBox(
+                                  height: 200,
+                                ),
+                                FlatButton(
+                                    onPressed: () async {
+                                      Navigator.pop(context);
+                                      var crop =
+                                          await ImageSelect(context: context)
                                               .image();
-                                               setState((){dpcheck=true;});
-                                          await FireBaseDataBase(
-                                                  number: pref.getStringList(
-                                                      'your info')[0])
-                                              .addDP(
-                                            crop,
-                                          );
-                                          setState(() {
-                                            ff = false;
-                                            dpcheck=false;
-                                            flag = false;
-                                          });
-                                        },
-                                        child: Text("From Gallery",
-                                            style: TextStyle(
-                                                color: Colors.amber,
-                                                fontSize: 21,
-                                                fontWeight: FontWeight.bold))),
-                                    FlatButton(
-                                        onPressed: () async {
-                                          Navigator.pop(context);
-                                          var crop = await ImageSelect(
-                                                  context: context,
-                                                  selecttype: 'camera')
-                                              .image();
-                                               setState((){dpcheck=true;});
-                                          await FireBaseDataBase(
-                                                  number: pref.getStringList(
-                                                      'your info')[0])
-                                              .addDP(
-                                            crop,
-                                          );
+                                      setState(() {
+                                        dpcheck = true;
+                                      });
+                                      await FireBaseDataBase(
+                                              number: pref.getStringList(
+                                                  'your info')[0])
+                                          .addDP(
+                                        crop,
+                                      );
+                                      setState(() {
+                                        ff = false;
+                                        dpcheck = false;
+                                        flag = false;
+                                      });
+                                    },
+                                    child: Text("From Gallery",
+                                        style: TextStyle(
+                                            color: Colors.amber,
+                                            fontSize: 21,
+                                            fontWeight: FontWeight.bold))),
+                                FlatButton(
+                                    onPressed: () async {
+                                      Navigator.pop(context);
+                                      var crop = await ImageSelect(
+                                              context: context,
+                                              selecttype: 'camera')
+                                          .image();
+                                      setState(() {
+                                        dpcheck = true;
+                                      });
+                                      await FireBaseDataBase(
+                                              number: pref.getStringList(
+                                                  'your info')[0])
+                                          .addDP(
+                                        crop,
+                                      );
 
-                                          setState(() {
-                                            ff = false;
-                                            flag = false;
-                                            dpcheck=false;
-                                          });
-                                        },
-                                        child: Text("From Camera",
-                                            style: TextStyle(
-                                                color: Colors.amber,
-                                                fontSize: 21,
-                                                fontWeight: FontWeight.bold))),
-                                  ],
-                                )));
-                          },
-                          icon: dpcheck == false
-                              ? Icon(Icons.account_circle)
-                              : SpinKitPulse(color: Colors.white),
-                          iconSize: 80,
-                          color: Colors.white,
-                        ),
-               
-              ),
-      
-       ListTile(
+                                      setState(() {
+                                        ff = false;
+                                        flag = false;
+                                        dpcheck = false;
+                                      });
+                                    },
+                                    child: Text("From Camera",
+                                        style: TextStyle(
+                                            color: Colors.amber,
+                                            fontSize: 21,
+                                            fontWeight: FontWeight.bold))),
+                              ],
+                            )));
+                  },
+                  icon: dpcheck == false
+                      ? Icon(Icons.account_circle)
+                      : SpinKitPulse(color: Colors.white),
+                  iconSize: 80,
+                  color: Colors.white,
+                ),
+        ),
+        ListTile(
             subtitle: Text('click to see about us'),
             onTap: () {
               Navigator.pushNamed(context, '/aboutus');
             },
             leading: Icon(
               Icons.info_outline,
-             
             ),
             title: Text(
               'ABOUT US',
-              
             )),
-      ListTile(
-            subtitle:Text('click here'),
+        ListTile(
+            subtitle: Text('click here'),
             onTap: () {
               Navigator.pushNamed(context, '/contactus');
             },
             leading: Icon(
               Icons.contact_support_sharp,
-              
             ),
             title: Text(
               'CONTACT US',
-            
             )),
-      ListTile(
+        ListTile(
             subtitle: Text('click here to use calculator'),
             onTap: () {
               Navigator.pushNamed(context, '/Calculator');
             },
             leading: Icon(
               Icons.calculate,
-              
             ),
             title: Text(
               'CALCULATOR',
-              
             )),
-      ListTile(
+        ListTile(
             subtitle: Text('click here to inspect settings'),
             onTap: () {
               Navigator.pushNamed(context, '/setting', arguments: {
                 'data': pref.getStringList('your info'),
-        'url': this.dp,
+                'url': this.dp,
               });
             },
             leading: Icon(
-     Icons.settings,
-              
+              Icons.settings,
             ),
             title: Text(
               'SETTINGS',
-              
             )),
-      ListTile(
+        ListTile(
+          title: Text('SAPPHIRE-WEB'),
+          subtitle: Text('get code to login to the sapphire-web'),
+          leading: Icon(Icons.network_wifi),
+          onTap: () {
+            Navigator.pushNamed(context, '/web');
+          },
+        ),
+        ListTile(
             subtitle: Text('click here to upgrade'),
             onTap: () {
               Navigator.pushNamed(context, '/payments', arguments: {
                 'info': pref.getStringList('your info'),
-        'userdocid': pref.getString('userdocid'),
+                'userdocid': pref.getString('userdocid'),
               });
             },
             leading: Icon(
-    Icons.upgrade_outlined,
-              
+              Icons.upgrade_outlined,
             ),
-            title : Text(
+            title: Text(
               'UPGRADE',
-              
             )),
-      ListTile(
-        subtitle: Text('click here to logout'),
-             onTap: logout,
-         
-         leading:Icon(Icons.logout),
-           
-
+        ListTile(
+          subtitle: Text('click here to logout'),
+          onTap: logout,
+          leading: Icon(Icons.logout),
           title: Text(
             "LOGOUT",
-            
- ),
+          ),
         ),
-      ])),
+      ]))),
       appBar: AppBar(
         actions: [
           FlatButton(
@@ -420,4 +412,3 @@ class _HomeState extends State<Home> {
     );
   }
 }
-     
