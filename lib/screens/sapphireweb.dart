@@ -20,7 +20,7 @@ class _SapphirewebState extends State<Sapphireweb> {
     var doccode = pref.getString('userdocid').split('/');
     print(doccode);
     var codedata =
-        code[1] + doccode[1] + DateTime.now().toString().split(' ')[0]+ DateTime.now().toString().split(' ')[1];
+        code[1] + doccode[1] + DateTime.now().toString().split(' ')[0]+ DateTime.now().toString().split('.')[0];
     print(codedata);
     doc.update({
       codedata: pref.getString('userdocid'),
