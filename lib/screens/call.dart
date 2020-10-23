@@ -86,7 +86,7 @@ class _CallState extends State<Call> {
             .connect();
         if (info['check'][0] == 3) {
           info['check'][0] = 0;
-          Navigator.popAndPushNamed(context, '/home');
+          Navigator.pop(context);
         } else {
           info['check'][0] = 1;
           Navigator.pop(context);

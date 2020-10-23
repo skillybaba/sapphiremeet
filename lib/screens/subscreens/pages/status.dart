@@ -81,6 +81,7 @@ class _StatusState extends State<Status> {
     FirebaseFirestore ref = FirebaseFirestore.instance;
     var doc = ref.doc(prefs.getStringList('your info')[2]);
     var docdata = await doc.get();
+    print(docdata.data()['time']);
     if ((docdata.data()['time'] != null) &&
         (DateTime.now().isAfter(docdata.data()['time'].toDate()))) {
       await doc.update({
@@ -114,6 +115,7 @@ class _StatusState extends State<Status> {
         slivers: [
           SliverList(delegate:
               SliverChildBuilderDelegate((BuildContext context, int index) {
+                print(models[index]);
             if (index == 0)
               return FlatButton(
                   onPressed: () {
@@ -215,7 +217,7 @@ class _StatusState extends State<Status> {
                       ],
                     ),
                   ));
-            else if (index-1 < models.length)
+            else if ((index-1 < models.length)&&(models[index-1].link!=null))
               return FlatButton(
                   onPressed: () async {
                     if (models[index-1].link != null)
