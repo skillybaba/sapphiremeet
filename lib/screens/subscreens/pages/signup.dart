@@ -14,7 +14,7 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SingleChildScrollView(child:Container(
         child: Column(
       children: [
         SizedBox(height: 90),
@@ -36,7 +36,7 @@ class _SignUpState extends State<SignUp> {
           child: TextField(
             controller: controller,
             autocorrect: true,
-            keyboardType: TextInputType.number,
+           
             decoration: InputDecoration(
                 labelText: 'Enter the Meeting Code',
                 border: OutlineInputBorder(
@@ -85,6 +85,6 @@ class _SignUpState extends State<SignUp> {
             label:
                 Text('JOIN NOW', style: TextStyle(color: Colors.yellow[800])))
       ],
-    ));
+    )));
   }
 }

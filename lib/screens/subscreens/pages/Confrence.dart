@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:toast/toast.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'dart:math';
 
 class Confrence extends StatefulWidget {
   List check;
@@ -126,6 +127,8 @@ class _ConfrenceState extends State<Confrence> {
 
   @override
   Widget build(BuildContext context) {
+    var random = Random();
+    int rand = random.nextInt(10000);
     if (pref == null) getPref();
 
     if (pref != null) {
@@ -212,7 +215,7 @@ class _ConfrenceState extends State<Confrence> {
                 Date:${datetime.day} ${datetime.month} ${datetime.year}
                Time: ${time.hour}:${time.minute}  
                 Join Sapphire Meet
-               Meeting ID: ${randoms[meetingname.text.length].toString() + meetingname.text}
+               Meeting ID: ${randoms[meetingname.text.length].toString() + meetingname.text+rand.toString()}
                 Passcode: ${pass.text}''', 'text');
                                                 } catch (e) {
                                                   Alert(
@@ -230,7 +233,7 @@ class _ConfrenceState extends State<Confrence> {
                                                   roomid: randoms[meetingname
                                                               .text.length]
                                                           .toString() +
-                                                      meetingname.text,
+                                                      meetingname.text+rand.toString(),
                                                   subject: "subject:" +
                                                       meetingname.text,
                                                   username: details[0]

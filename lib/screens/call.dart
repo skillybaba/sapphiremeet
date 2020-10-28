@@ -227,10 +227,10 @@ class _CallState extends State<Call> {
 
                           if (info['check'][0] == 3) {
                             info['check'][0] = 0;
-                            Navigator.popAndPushNamed(context, '/home');
+                            Navigator.popAndPushNamed(context,'/home');
                           } else {
                             info['check'][0] = 1;
-                            Navigator.pop(context);
+                           Navigator.popAndPushNamed(context,'/home');
                           }
                         })
                     : SizedBox(),

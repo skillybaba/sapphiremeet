@@ -5,6 +5,7 @@ import 'package:jitsi_meet/feature_flag/feature_flag_enum.dart';
 import 'package:jitsi_meet/jitsi_meeting_listener.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+
 class Conf_Service {
   String roomid;
   String subject;
@@ -45,7 +46,7 @@ class Conf_Service {
 
     print(this.roomid);
     options.room = this.roomid;
-    options.serverURL = 'https://sapphiremeet.in/';
+    options.serverURL = 'https://h121ran717133kan4xweyzacassacv.sapphiremeet.in/';
     options.subject = this.subject;
     options.userDisplayName = this.username;
     options.userEmail = this.email;
