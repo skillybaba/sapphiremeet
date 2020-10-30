@@ -57,6 +57,7 @@ class _SignUpState extends State<SignUp> {
                   roomid: controller.text.trim(),
                   username: 'Random Person',
                   type:'join',
+                  confinfo: docdata.data(),
                 ).hostMeet();
                 else
                       Alert(
@@ -72,7 +73,7 @@ class _SignUpState extends State<SignUp> {
                       return Container(
                           color: Colors.yellow,
                           child: Text(
-                            'Enter the Meeting code',
+                            'invalid meeting code',
                             style: TextStyle(
                               fontSize: 20,
                               color: Colors.white,

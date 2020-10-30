@@ -86,7 +86,7 @@ class _ContactViewState extends State<ContactView> {
               ),
               SliverList(delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
-                  if (index < contacts[0].length) {
+                  if (index < contacts[0].length-1) {
                     fun(contacts[0][index], contacts[1][index],
                         contacts[2][index]);
                     print(contacts[1][index]);

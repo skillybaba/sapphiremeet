@@ -39,13 +39,12 @@ class _StatusState extends State<Status> {
         var dbref = ref.doc(statuslist[1][i]);
         var docref = await dbref.get();
         var data = docref.data()['status'];
-     
-          models.add(StatusModel(
-              name: statuslist[2][i],
-              docid: statuslist[1][i],
-              link: data != null ? data : null,
-              number: statuslist[0][i]));
-        print(number);
+
+        models.add(StatusModel(
+            name: statuslist[2][i],
+            docid: statuslist[1][i],
+            link: data != null ? data : null,
+            number: statuslist[0][i]));
         
 
         i++;
@@ -76,22 +75,22 @@ class _StatusState extends State<Status> {
   }
 
   bool newflag = false;
-  timed() async {
-    await Firebase.initializeApp();
-    FirebaseFirestore ref = FirebaseFirestore.instance;
-    var doc = ref.doc(prefs.getStringList('your info')[2]);
-    var docdata = await doc.get();
-    print(docdata.data()['time']);
-    if ((docdata.data()['time'] != null) &&
-        (DateTime.now().isAfter(docdata.data()['time'].toDate()))) {
-      await doc.update({
-        'status': null,
-      });
-      setState(() {
-        newflag = true;
-      });
-    }
-  }
+  // timed() async {
+  //   await Firebase.initializeApp();
+  //   FirebaseFirestore ref = FirebaseFirestore.instance;
+  //   var doc = ref.doc(prefs.getStringList('your info')[2]);
+  //   var docdata = await doc.get();
+  //   print(docdata.data()['time']);
+  //   if ((docdata.data()['time'] != null) &&
+  //       (DateTime.now().isAfter(docdata.data()['time'].toDate()))) {
+  //     await doc.update({
+  //       'status': null,
+  //     });
+  //     setState(() {
+  //       newflag = true;
+  //     });
+  //   }
+  // }
 
   var setstatus = true;
   var flag = false;
@@ -109,13 +108,12 @@ class _StatusState extends State<Status> {
           ));
     if (current) currentModel();
     if (!flag) makeModels();
-    if (!newflag) timed();
+    // if (!newflag) timed();
     if (flag)
       return CustomScrollView(
         slivers: [
           SliverList(delegate:
               SliverChildBuilderDelegate((BuildContext context, int index) {
-                print(models[index]);
             if (index == 0)
               return FlatButton(
                   onPressed: () {
@@ -217,27 +215,29 @@ class _StatusState extends State<Status> {
                       ],
                     ),
                   ));
-            else if ((index-1 < models.length)&&(models[index-1].link!=null))
-              return FlatButton(
+            else if ((index - 1 < models.length))
+
+              return models[index-1].link!=null?FlatButton(
                   onPressed: () async {
-                    if (models[index-1].link != null)
+                    if (models[index - 1].link != null)
                       showDialog(
                           context: context,
                           builder: (context) {
                             return AlertDialog(
-                              content: Image.network(models[index-1].link,loadingBuilder: (context,child,loading){
+                              content: Image.network(
+                                models[index - 1].link,
+                                loadingBuilder: (context, child, loading) {
                                   if (loading == null) {
-                                      return Center(child: child);
-                                    }
-                                    return Center(
-                                      child: CircularProgressIndicator(
-                                          value: loading
-                                                  .cumulativeBytesLoaded /
-                                              loading
-                                                  .expectedTotalBytes),
-                                    );
-                              },),
-                              title: Text(models[index-1].name),
+                                    return Center(child: child);
+                                  }
+                                  return Center(
+                                    child: CircularProgressIndicator(
+                                        value: loading.cumulativeBytesLoaded /
+                                            loading.expectedTotalBytes),
+                                  );
+                                },
+                              ),
+                              title: Text(models[index - 1].name),
                               actions: [
                                 FlatButton(
                                     onPressed: () {
@@ -256,23 +256,23 @@ class _StatusState extends State<Status> {
                           SizedBox(
                             width: 60,
                           ),
-                          models[index-1].link == null
+                          models[index - 1].link == null
                               ? Icon(Icons.data_usage,
                                   size: 40, color: Colors.yellow[800])
                               : CircularProfileAvatar(
-                                  models[index-1].link,
+                                  models[index - 1].link,
                                   radius: 20,
                                 ),
                           SizedBox(
                             width: 30,
                           ),
                           Text(
-                            '${models[index-1].name}',
+                            '${models[index - 1].name}',
                             style: TextStyle(
                                 fontSize: 16, color: Colors.yellow[800]),
                           ),
                         ],
-                      )));
+                      ))):SizedBox(height: 0,);
           })),
         ],
       );
