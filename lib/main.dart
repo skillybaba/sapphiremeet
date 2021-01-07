@@ -13,7 +13,7 @@ import './screens/contacts.dart';
 import './screens/chatpannel.dart';
 import './screens/call.dart';
 import './screens/payment.dart';
-
+import "./screens/chatpannele.dart" as editedChat;
 
 
 void main() {
@@ -29,7 +29,7 @@ void main() {
         '/home': (context) => Home(),
         '/info': (context) => InfoScreen(),
         '/contacts': (context) => ContactView(),
-        '/chatpannel': (context) => ChatPannel(),
+        '/chatpannel': (context) => editedChat.ChatPannel(),
         '/caller': (context) => Call(),
         '/setting': (context) => Settings(),
         '/payments': (context) => Payment(),

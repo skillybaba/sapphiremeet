@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:application/services/firebasedatabse.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import "../services/firebasemedia.dart";
 
 class ContactView extends StatefulWidget {
   @override
@@ -37,7 +38,7 @@ class _ContactViewState extends State<ContactView> {
       print(e);
     }
   }
-
+  var info;
   fun(String number, String docid, String name) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     if (!pref.containsKey(number))
@@ -95,7 +96,10 @@ class _ContactViewState extends State<ContactView> {
                         color: Colors.yellow[800],
                         padding: EdgeInsets.all(10),
                         child: FlatButton.icon(
-                            onPressed: () {
+                            onPressed: ()async {
+                              SharedPreferences pref = await SharedPreferences.getInstance();
+                              info = pref.getStringList('your info');
+                              FirebaseMedia.addUser(info[2],contacts[1][index], info[0], contacts[0][index]);
                               Navigator.popAndPushNamed(context, '/chatpannel',
                                   arguments: {
                                     'number': contacts[0][index],

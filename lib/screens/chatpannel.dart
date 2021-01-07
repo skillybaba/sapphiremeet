@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:dash_chat/dash_chat.dart';
@@ -47,7 +48,7 @@ class _ChatPannelState extends State<ChatPannel> {
               this.message.add(ChatMessage(
                   image: i['val'][1],
                   text: 'images',
-                  createdAt: i['val'][4].toDate(),
+                  
                   quickReplies: i['val'][0] == 'hi'
                       ? QuickReplies(values: [Reply(title: 'hello')])
                       : null,
@@ -58,7 +59,7 @@ class _ChatPannelState extends State<ChatPannel> {
               this.message.add(ChatMessage(
                   video: i['val'][2],
                   text: 'images',
-                  createdAt: i['val'][4].toDate(),
+                  
                   quickReplies: i['val'][0] == 'hi'
                       ? QuickReplies(values: [Reply(title: 'hello')])
                       : null,
@@ -67,7 +68,7 @@ class _ChatPannelState extends State<ChatPannel> {
                       name: i['val'][3])));
             else
               this.message.add(ChatMessage(
-                  createdAt: i['val'][4].toDate(),
+                  
                   quickReplies: i['val'][0] == 'hi'
                       ? QuickReplies(values: [Reply(title: 'hello')])
                       : null,
@@ -117,15 +118,21 @@ class _ChatPannelState extends State<ChatPannel> {
   //     }
   //   }
   // }
-
+  StreamSubscription<DocumentSnapshot> snap;
   int prevlength;
+  bool retriveflag = true;
   void retrive() async {
+
+    await this.messages();
+  
     prevlength = message.length;
     await Firebase.initializeApp();
     FirebaseFirestore firestore = FirebaseFirestore.instance;
+     SharedPreferences pref = await SharedPreferences.getInstance();
+        info = pref.getStringList('your info');
     var doc = firestore.doc(info[2]);
-    var docref = await doc.get();
-    var data2 = docref.data();
+    snap=doc.snapshots().listen((event) {
+       var data2 = event.data();
     if (data2.containsKey(data['number'])) {
       var data1 = data2[data['number']]['message'];
       setState(() {
@@ -134,7 +141,7 @@ class _ChatPannelState extends State<ChatPannel> {
           if (data1[data1.length - 1]['val'][1] != null)
             this.message.add(ChatMessage(
                 image: data1[data1.length - 1]['val'][1],
-                createdAt: data1[data1.length - 1]['val'][4].toDate(),
+               
                 text: 'images',
                 user: ChatUser(
                     avatar: data1[data.length - 1]['val'][3] == info[1]
@@ -144,7 +151,7 @@ class _ChatPannelState extends State<ChatPannel> {
           else if (data1[data1.length - 1]['val'][2] != null)
             this.message.add(ChatMessage(
                 video: data1[data1.length - 1]['val'][2],
-                createdAt: data1[data1.length - 1]['val'][4].toDate(),
+               
                 text: 'images',
                 user: ChatUser(
                     avatar: data1[data.length - 1]['val'][3] == info[1]
@@ -153,7 +160,7 @@ class _ChatPannelState extends State<ChatPannel> {
                     name: data1[data1.length - 1]['val'][3])));
           else
             this.message.add(ChatMessage(
-                createdAt: data1[data1.length - 1]['val'][4].toDate(),
+               
                 text: data1[data1.length - 1]['val'][0],
                 user: ChatUser(
                     avatar: data1[data.length - 1]['val'][3] == info[1]
@@ -163,6 +170,8 @@ class _ChatPannelState extends State<ChatPannel> {
         }
       });
     }
+     });
+   this.retriveflag=false;
   }
 
   bool flag3 = false;
@@ -170,7 +179,8 @@ class _ChatPannelState extends State<ChatPannel> {
     data = ModalRoute.of(context).settings.arguments;
     await Firebase.initializeApp();
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-
+ SharedPreferences pref = await SharedPreferences.getInstance();
+        info = pref.getStringList('your info');
     var ref = firestore.doc(info[2]);
     var ref2 = firestore.doc(data['docid']);
     Map messagedata;
@@ -214,14 +224,20 @@ class _ChatPannelState extends State<ChatPannel> {
 
   void initState() {
     super.initState();
-  }
 
+  }
+  void dispose()
+  {
+    super.dispose();
+    this.snap.cancel();
+  }
   @override
   Widget build(BuildContext context) {
     data = ModalRoute.of(context).settings.arguments;
     // if (!checkcall) checkCall(context, data);
-    if (!flag3) check();
-    if (!flag) messages();
+    // if (!flag3) check();
+    // if (!flag) messages();
+    if(retriveflag)  this.retrive();
     return Scaffold(
         appBar: AppBar(
             actions: [
@@ -336,8 +352,8 @@ class _ChatPannelState extends State<ChatPannel> {
             backgroundColor: Colors.yellow[800]),
         body: LoadingOverlay(
           child: StreamBuilder(builder: (context, snapshot) {
-            if (flag) {
-              retrive();
+            if (!this.retriveflag) {
+              
               return DashChat(
                 messageDecorationBuilder: (ChatMessage msg, bool isUser) {
                   return BoxDecoration(
@@ -656,14 +672,15 @@ class _ChatPannelState extends State<ChatPannel> {
                   Function msg = () async {
                     String msg = chatmessage.text;
                     String img = chatmessage.image;
-
+                      SharedPreferences pref = await SharedPreferences.getInstance();
+                     info = pref.getStringList('your info');
                     chatmessage.createdAt = DateTime.now();
                     chatmessage.user.name = info[1];
                     if (avtar != null) chatmessage.user.avatar = avtar;
                     try {
                       
-                        this.message.add(chatmessage);
-                   
+                       
+                  
 
                       print(info);
                       await Firebase.initializeApp();
@@ -674,14 +691,12 @@ class _ChatPannelState extends State<ChatPannel> {
                       Map messagedata;
                       Map messagedata1;
                      
-                      await ref.get().then((value) {
-                        avtar = value.data()['DP'];
-                        messagedata = value.data()[data['number']];
-                      });
-                      await ref2.get().then((value) {
-                        messagedata1 = value.data()[info[0]];
-                      });
-
+                      var data1 = await ref.get();
+                       avtar = data1.data()['DP'];
+                        messagedata = data1.data()[data['number']];
+                     var data2= await ref2.get();
+                       messagedata1 = data2.data()[info[0]];
+ 
                       print(messagedata);
                       // if (messagedata == null) {
                       //   await ref.update({
@@ -698,7 +713,7 @@ class _ChatPannelState extends State<ChatPannel> {
                       //       'message': []
                       //     }
                       //   });
-
+                    
                       messagedata['message'].add({
                         'val': [msg, img, null, info[1], DateTime.now()]
                       });
@@ -706,8 +721,8 @@ class _ChatPannelState extends State<ChatPannel> {
                         'val': [msg, img, null, info[1], DateTime.now()]
                       });
                       print(messagedata);
-                      await ref.update({data['number']: messagedata});
-                      await ref2.update({info[0]: messagedata1});
+                       ref.update({data['number']: messagedata});
+                       ref2.update({info[0]: messagedata1});
                       setState(() {
                         print('done');
                       });

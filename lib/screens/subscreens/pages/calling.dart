@@ -5,7 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:loading_overlay/loading_overlay.dart';
-
+import "dart:async";
 class Calling extends StatefulWidget {
   List check;
   Calling({List check}) {
@@ -22,6 +22,7 @@ class _CallingState extends State<Calling> {
   }
   List info;
   bool isloading = false;
+
   var reflist;
   List<CallingModel> callinglist = <CallingModel>[];
   Future<bool> getData() async {
@@ -30,8 +31,8 @@ class _CallingState extends State<Calling> {
     info = pref.getStringList('your info');
     var ref = FirebaseFirestore.instance;
     var doc = ref.doc(info[2]);
-    var getvals = await doc.get();
-    var data = getvals.data()['callhis'];
+    this.snap = doc.snapshots().listen((event) {  
+     var data = event.data()['callhis'];
     callinglist = [];
     reflist = {};
     if (data != null)
@@ -52,18 +53,59 @@ class _CallingState extends State<Calling> {
       if (!flag) flag = true;
      
     });
+    });
+   
     return true;
   }
+  StreamSubscription<DocumentSnapshot> snap;
+    StreamSubscription<DocumentSnapshot> snap2;
+  void checkCall(context) async {
+    this.call=false;
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    info = pref.getStringList('your info');
+    await Firebase.initializeApp();
+    var doc = FirebaseFirestore.instance;
+    var ref = doc.doc(info[2]);
+   this.snap2=ref.snapshots().listen((event) { 
+       var data1 = event.data();
+      print('allcool');
+    
+      if (
+          ((data1['receving'] != null) && (data1['receving'])) &&
+          (((data1['calling'] == null) || (!data1['calling'])) &&
+              ((data1['connected'] == null) || (!data1['connected'])))) {
+        Navigator.pushNamed(context, '/caller', arguments: {
+          'number': data1['caller'][0],
+          'type': 'receving',
+          
+          'recever': data1['caller'][2],
+          'caller': info[2],
+          'check': check,
+          'channelid': data1['channelid']
+        });
 
+        check[0] = 3;
+      }});
+     
+    
+  }
+  bool call=true;
   bool flag = false;
   void initState() {
     super.initState();
-    check[0] = 32323;
+    
+ 
+    getData();
   }
-
+ void dispose()
+ {
+  super.dispose();
+  this.snap.cancel();
+  this.snap2.cancel();
+ }
   @override
   Widget build(BuildContext context) {
-    getData();
+  if(this.call)this.checkCall(context);
     if (flag)
       return LoadingOverlay(
         child: CustomScrollView(
