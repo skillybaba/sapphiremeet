@@ -27,7 +27,7 @@ class _SapphirewebState extends State<Sapphireweb> {
       codedata: pref.getString('userdocid'),
       
     });
-    sub.cancel();
+  
     Toast.show('Logged_in', context);
     
     

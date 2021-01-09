@@ -103,6 +103,7 @@ bool loading=false;
                   var firestore = FirebaseFirestore.instance;
                   var doc = firestore.doc(data['docid']);
                   var doc2 = firestore.doc(info[2]);
+                  
                   var ref2 = await doc.get();
                   var data2 = ref2.data();
                   var ref = await doc2.get();
@@ -122,25 +123,7 @@ bool loading=false;
                       'channelid':
                           (data['number'].substring(1) + info[0].substring(1))
                     });
-                    List caller = data1['callhis'];
-                    List recever = data2['callhis'];
-                    print(recever);
-                    if (caller == null) caller = [];
-                    if (recever == null) recever = [];
-                    caller.add({
-                      'type': 'calling',
-                      'number': data['number'],
-                      'name': data['name'],
-                      'docid': data['docid'],
-                      
-                    });
-                    recever.add({
-                      'type': 'receving',
-                      'number': info[0],
-                      'name': info[1],
-                      'docid': info[2],
-                      
-                    });
+                  
                     setState(() {
                       isloading = false;
                     });
@@ -154,12 +137,20 @@ bool loading=false;
                           (data['number'].substring(1) + info[0].substring(1)),
                       'check': [2],
                     });
-                    doc.update({
-                      'callhis': recever,
+                    doc.collection("calling").add({
+ 'type': 'receving',
+                      'number': info[0],
+                      'name': info[1],
+                      'docid': info[2],
                     });
-                    doc2.update({
-                      'callhis': caller,
+                    doc2.collection('calling').add({
+                       'type': 'calling',
+                      'number': data['number'],
+                      'name': data['name'],
+                      'docid': data['docid'],
+                      
                     });
+                   
                   } else {
                     Navigator.pushNamed(context, '/caller', arguments: {
                       'number': data['number'],

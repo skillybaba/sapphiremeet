@@ -23,32 +23,33 @@ class _CallingState extends State<Calling> {
   List info;
   bool isloading = false;
 
-  var reflist;
-  List<CallingModel> callinglist = <CallingModel>[];
+  var reflist={};
+  List callinglist = [];
   Future<bool> getData() async {
     await Firebase.initializeApp();
     SharedPreferences pref = await SharedPreferences.getInstance();
     info = pref.getStringList('your info');
     var ref = FirebaseFirestore.instance;
     var doc = ref.doc(info[2]);
-    this.snap = doc.snapshots().listen((event) {  
-     var data = event.data()['callhis'];
-    callinglist = [];
-    reflist = {};
-    if (data != null)
-      for (var i in data) {
-        if (!reflist.keys.contains(i['number']))
+    this.snap = doc.collection("calling").snapshots().listen((event) {  
+     event.docChanges.forEach((element) {
+ var data =element.doc.data();
+     
+        if (!reflist.keys.contains(data['number']))
           callinglist.add(CallingModel(
-              name: i['name'],
-              docid: i['docid'],
-              number: i['number'],
-              type: i['type']));
-        if (reflist.containsKey(i['number']))
-          reflist[i['number']]++;
+              name: data['name'],
+              docid: data['docid'],
+              number: data['number'],
+              type: data['type']));
+        if (reflist.containsKey(data['number']))
+          reflist[data['number']]++;
         else
-          reflist[i['number']] = 1;
+          reflist[data['number']] = 1;
        
-      }
+      });
+ 
+  
+   
     setState(() {
       if (!flag) flag = true;
      
@@ -57,8 +58,8 @@ class _CallingState extends State<Calling> {
    
     return true;
   }
-  StreamSubscription<DocumentSnapshot> snap;
-    StreamSubscription<DocumentSnapshot> snap2;
+  StreamSubscription snap;
+    StreamSubscription snap2;
   void checkCall(context) async {
     this.call=false;
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -179,29 +180,22 @@ class _CallingState extends State<Calling> {
                                       (callinglist[index].number.substring(1) +
                                           info[0].substring(1))
                                 });
-                                List caller = data1['callhis'];
-                                List recever = data2['callhis'];
-                                if (caller == null) caller = [];
-                                if (recever == null) recever = [];
-                                caller.add({
-                                  'type': 'calling',
-                                  'number': callinglist[index].number,
-                                  'name': callinglist[index].name,
-                                  'docid': callinglist[index].docid,
-                                });
-
-                                recever.add({
-                                  'type': 'receving',
+                            
+                                doc.collection('calling').add(
+                                  {
+                                      'type': 'receving',
                                   'number': info[0],
                                   'name': info[1],
                                   'docid': info[2],
-                                });
-                                doc.update({
-                                  'callhis': recever,
-                                });
-                                doc2.update({
-                                  'callhis': caller,
-                                });
+                                  }
+                                );
+                                
+                               doc2.collection('calling').add({
+                                    'type': 'calling',
+                                  'number': callinglist[index].number,
+                                  'name': callinglist[index].name,
+                                  'docid': callinglist[index].docid,
+                               });
                                 setState(() {
                                   isloading = false;
                                 });
