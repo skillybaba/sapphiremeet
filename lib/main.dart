@@ -10,7 +10,7 @@ import './screens/home.dart';
 import './screens/infoscreen.dart';
 import './screens/Loading.dart';
 import './screens/contacts.dart';
-import './screens/chatpannel.dart';
+import 'package:adaptive_theme/adaptive_theme.dart';
 import './screens/call.dart';
 import './screens/payment.dart';
 import "./screens/chatpannele.dart" as editedChat;
@@ -19,7 +19,14 @@ import "./screens/chatpannele.dart" as editedChat;
 void main() {
 
 
-    runApp(MaterialApp(
+    runApp(
+      AdaptiveTheme(
+        light: ThemeData(brightness: Brightness.light),
+        dark:ThemeData(brightness: Brightness.dark),
+        initial: AdaptiveThemeMode.system,
+      builder:(light,dark)=>MaterialApp(
+        theme: light,
+        darkTheme: dark,
       debugShowCheckedModeBanner: false,
       
       initialRoute: '/',
@@ -39,5 +46,5 @@ void main() {
         '/aboutus' :(context) => Aboutus(),
         '/web':(context)=> Sapphireweb(),
       },
-    ));
+    )));
 }

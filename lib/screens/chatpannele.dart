@@ -10,6 +10,7 @@ import 'package:toast/toast.dart';
 import '../services/imageselectservice.dart';
 import '../services/firebasedatabse.dart';
 import '../models/Usermodel.dart';
+import 'package:adaptive_theme/adaptive_theme.dart';
 import "../services/firebasemedia.dart";
 
 class ChatPannel extends StatefulWidget {
@@ -19,10 +20,13 @@ class ChatPannel extends StatefulWidget {
 
 class _ChatPannelState extends State<ChatPannel> {
   Map data;
+
+
   var info;
   bool isloading = false;
   bool flag = false;
   GlobalKey<DashChatState> key = GlobalKey<DashChatState>();
+  AdaptiveThemeMode thememode;
   List<ChatMessage> message = [];
  
   bool firsttime=false;
@@ -31,6 +35,14 @@ class _ChatPannelState extends State<ChatPannel> {
   Map chats={};
   Map useravatar = {};
   var snap;
+  void initState()
+  {
+    super.initState();
+      (()async{
+      this.thememode = await AdaptiveTheme.getThemeMode();
+
+    })();
+  }
   getAvatar() async{
     await Firebase.initializeApp();
     FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -78,9 +90,9 @@ class _ChatPannelState extends State<ChatPannel> {
     
        chats[data['time']]={
           "user":{
-    "name":info[1],
-    'docid':data['docid'],
-    'avatar':data['avatar'],
+    "name":data['user']['name'],
+    'docid':data['user']['docid'],
+    'avatar':data['user']['avatar'],
 
   },
   'text':data['text'],
@@ -212,10 +224,12 @@ bool loading=false;
       title:Text(data['name']),backgroundColor: Colors.yellow[800],leading: IconButton(icon:Icon(Icons.arrow_left),onPressed: (){
       Navigator.popAndPushNamed(context, '/home');
     },)),body:LoadingOverlay(isLoading:this.loading ,child:DashChat(
+      key:key,
+        alwaysShowSend: true,
            messageDecorationBuilder: (ChatMessage msg, bool isUser) {
                   return BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(30)),
-                    color: msg.user.name == info[1]
+                    color:msg.user.name==info[1]
                         ? Colors.yellow[800]
                         : Colors.white, // example
                   );
@@ -226,6 +240,9 @@ bool loading=false;
                     height: 250,
                   );
                 },
+      inputTextStyle: TextStyle(color: Colors.black),
+      inputContainerStyle: BoxDecoration(color: this.thememode.isDark?Colors.grey:Colors.white),
+         
                 messageTextBuilder: (message, [chat]) {
                   return Text(
                     message,
@@ -255,7 +272,7 @@ bool loading=false;
                       });
                 },
       trailing: [
-      IconButton(icon: Icon(Icons.attach_file),onPressed: (){
+      IconButton(icon: Icon(Icons.attach_file,color:Colors.yellow[800]),onPressed: (){
         showDialog(context: context,
           builder: (context){
             return AlertDialog(

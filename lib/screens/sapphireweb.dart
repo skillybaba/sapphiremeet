@@ -35,6 +35,8 @@ class _SapphirewebState extends State<Sapphireweb> {
   
     
   }
+
+
   QRViewController controller;
   StreamSubscription<Barcode> sub;
   @override

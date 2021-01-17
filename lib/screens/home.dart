@@ -10,6 +10,7 @@ import 'package:application/services/authvals.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 
 class Home extends StatefulWidget {
@@ -18,6 +19,11 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  var dark =Icons.nightlight_round;
+  var light = Icons.view_day_rounded;
+  var icon;
+  AdaptiveThemeMode thememode ;
+
   List check = [0];
   GlobalKey<ScaffoldState> key = GlobalKey<ScaffoldState>();
   PageController controller = PageController(initialPage: 2);
@@ -35,6 +41,7 @@ class _HomeState extends State<Home> {
 
   void initState() {
     super.initState();
+   
     prefs();
   }
 
@@ -59,8 +66,14 @@ class _HomeState extends State<Home> {
   bool dpcheck = false;
   bool ff = true;
   int i = 0;
+  bool theme=true;
   @override
   Widget build(BuildContext context) {
+     if(this.theme)
+     (()async{
+      this.thememode = await AdaptiveTheme.getThemeMode();
+      this.theme=false;
+    })();
     if (!flag) getDp();
     return Scaffold(
       key: key,
@@ -309,6 +322,23 @@ class _HomeState extends State<Home> {
             title: Text(
               'UPGRADE',
             )),
+               ListTile(
+          subtitle: Text('Switch Theme'),
+          onTap: () async{
+
+            AdaptiveTheme.of(context).toggleThemeMode();
+            setState(() {
+              icon = this.thememode.isDark?dark:light;
+              this.theme=true;
+            });
+            
+          },
+          leading:this.thememode.isDark?Icon(dark):Icon(light),
+
+          title: Text(
+            "Change Theme",
+          ),
+        ),
         ListTile(
           subtitle: Text('click here to logout'),
           onTap: logout,
