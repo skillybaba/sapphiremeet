@@ -57,6 +57,7 @@ dependencies:
   just_audio: ^0.5.2
   flutter_gradient_colors: ^1.0.0
   qr_code_scanner: ^0.2.1
+  adaptive_theme: ^1.1.0
   
   
   

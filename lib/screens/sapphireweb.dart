@@ -16,6 +16,7 @@ class Sapphireweb extends StatefulWidget {
 class _SapphirewebState extends State<Sapphireweb> {
   GlobalKey qrKey = GlobalKey();
   void func(BuildContext context,codedata) async {
+  
     await Firebase.initializeApp();
     var firestore = FirebaseFirestore.instance;
     var doc = firestore.doc('web/0ysJuZ64RshAHyBnbMqc');

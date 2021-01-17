@@ -27,8 +27,44 @@ class _ChatPannelState extends State<ChatPannel> {
  
   bool firsttime=false;
   bool retrive=true;
+  bool retrivedp = false;
   Map chats={};
+  Map useravatar = {};
   var snap;
+  getAvatar() async{
+    await Firebase.initializeApp();
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+        SharedPreferences pref = await SharedPreferences.getInstance();
+        info = pref.getStringList('your info');
+        
+    var doc1 = firestore.doc(info[2]);
+    var doc2 = firestore.doc(data['docid']);
+    var dataref = await doc2.get();
+    var data2=dataref.data();
+    if(pref.containsKey('dp'))
+    {
+      var datanumber=data2[info[0]];
+      datanumber["avatar"]=pref.getString('dp');
+      useravatar['user1']=pref.getString('dp');
+     doc2.update({info[0]:datanumber});
+
+    }
+    if(data2.containsKey("DP"))
+    {
+      var doc1data = await doc1.get();
+      var datanumber=doc1data.data();
+      var update = datanumber[data['number']];
+      update["avatar"]=data2['DP'];
+      useravatar['user2']=data2['DP'];
+     doc1.update({
+        data['number']:update
+      });
+
+    }
+    this.retrivedp=true;
+
+    // pref.setString(data['number'],);
+  }
   messageRetrive() async{
     await Firebase.initializeApp();
     FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -44,7 +80,7 @@ class _ChatPannelState extends State<ChatPannel> {
           "user":{
     "name":info[1],
     'docid':data['docid'],
-    'avatar':null,
+    'avatar':data['avatar'],
 
   },
   'text':data['text'],
@@ -59,14 +95,14 @@ if(testlength==0){
    var list =   chats.keys.toList();
    list.sort();
    list.forEach((element) { 
-     this.message.add(ChatMessage(video: chats[element]['video']??null,image: chats[element]['image']??null,createdAt: chats[element]['time'].toDate(),text: chats[element]['text'],user:ChatUser(name:chats[element]['user']['name'])));
+     this.message.add(ChatMessage(video: chats[element]['video']??null,image: chats[element]['image']??null,createdAt: chats[element]['time'].toDate(),text: chats[element]['text'],user:ChatUser(name:chats[element]['user']['name'],avatar: chats[element]['user']['avatar'])));
    });
 
 }
 else{
   var data = event.docChanges.first.doc.data();
   
-  this.message.add(ChatMessage(video: data['video']??null,image: data['image']??null,createdAt: data['time'].toDate(),text:data['text'],user:ChatUser(name:data['user']['name'])));
+  this.message.add(ChatMessage(video: data['video']??null,image: data['image']??null,createdAt: data['time'].toDate(),text:data['text'],user:ChatUser(name:data['user']['name'],avatar: data['user']['avatar'])));
 
 }
 setState(() {
@@ -85,9 +121,9 @@ bool loading=false;
   @override
   Widget build(BuildContext context) {
     this.data = ModalRoute.of(context).settings.arguments;
-   
+  if(!this.retrivedp) getAvatar();
     if(this.retrive) messageRetrive();
-    if(!this.retrive)
+    if((!this.retrive)||(this.retrivedp))
     return Scaffold(appBar: AppBar(actions: [IconButton(icon: Icon(Icons.call),onPressed: ()async {
 
                   setState(() {
@@ -175,7 +211,50 @@ bool loading=false;
     },)],
       title:Text(data['name']),backgroundColor: Colors.yellow[800],leading: IconButton(icon:Icon(Icons.arrow_left),onPressed: (){
       Navigator.popAndPushNamed(context, '/home');
-    },)),body:LoadingOverlay(isLoading:this.loading ,child:DashChat(trailing: [
+    },)),body:LoadingOverlay(isLoading:this.loading ,child:DashChat(
+           messageDecorationBuilder: (ChatMessage msg, bool isUser) {
+                  return BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                    color: msg.user.name == info[1]
+                        ? Colors.yellow[800]
+                        : Colors.white, // example
+                  );
+                },
+                messageImageBuilder: (url, [chat]) {
+                  return Image.network(
+                    url,
+                    height: 250,
+                  );
+                },
+                messageTextBuilder: (message, [chat]) {
+                  return Text(
+                    message,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: chat.user.name == info[1]
+                            ? Colors.white
+                            : Colors.yellow[800]),
+                  );
+                },
+                dateBuilder: (date) {
+                  return Text(date, style: TextStyle(color: Colors.grey[400]));
+                },
+                onLongPressMessage: (ChatMessage message) {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return Image.network(message.image,height: 100,);
+                    },
+                  );
+                },
+                onPressAvatar: (ChatUser user) {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Image.network(user.avatar,height: 100,);
+                      });
+                },
+      trailing: [
       IconButton(icon: Icon(Icons.attach_file),onPressed: (){
         showDialog(context: context,
           builder: (context){
@@ -270,7 +349,7 @@ bool loading=false;
   "user":{
     "name":info[1],
     'docid':data['docid'],
-    'avatar':null,
+    'avatar':useravatar.containsKey("user1")?useravatar['user1']:null,
 
   },
   'text':message.text,
@@ -282,7 +361,7 @@ bool loading=false;
  "user":{
     "name":info[1],
     'docid':data['docid'],
-    'avatar':null,
+    'avatar':useravatar.containsKey("user1")?useravatar['user1']:null,
     
 
   },

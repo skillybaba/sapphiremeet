@@ -85,10 +85,17 @@ class _HomeState extends State<Home> {
                             context: context,
                             builder: (context) => AlertDialog(
                                 content: Container(
-                                    height: 140,
+                                    height: 200,
                                     child: Column(
                                       children: [
                                         SizedBox(height: 20),
+                                        FlatButton(onPressed: ()async{
+                                          showDialog(context: context,builder: (context)=>AlertDialog(content: Image.network(dp),));
+                                        },child:Text("View Image",style: TextStyle(
+                                                    color: Colors.amber,
+                                                    fontSize: 21,
+                                                    fontWeight:
+                                                        FontWeight.bold))),
                                         FlatButton(
                                             onPressed: () async {
                                               Navigator.pop(context);
@@ -127,14 +134,15 @@ class _HomeState extends State<Home> {
                                               setState(() {
                                                 dpcheck = true;
                                               });
-                                              await FireBaseDataBase(
+                                              var link = await FireBaseDataBase(
                                                       number:
                                                           pref.getStringList(
                                                               'your info')[0])
                                                   .addDP(
                                                 crop,
                                               );
-
+                                             SharedPreferences pref2 = await SharedPreferences.getInstance();
+                                             await pref2.setString('dp', link);
                                               setState(() {
                                                 ff = false;
                                                 flag = false;
@@ -152,12 +160,8 @@ class _HomeState extends State<Home> {
                                     ))));
                       },
                       child: dpcheck == false
-                          ? CircularProfileAvatar('',
-                              radius: 60,
-                              key: Key(this.i.toString()),
-                              child: Image(
-                                image: NetworkImage(dp),
-                              ))
+                          ? CircularProfileAvatar(dp,
+                             )
                           : SpinKitPulse(color: Colors.white)))
               : IconButton(
                   onPressed: () async {
@@ -179,12 +183,14 @@ class _HomeState extends State<Home> {
                                       setState(() {
                                         dpcheck = true;
                                       });
-                                      await FireBaseDataBase(
+                                     var link= await FireBaseDataBase(
                                               number: pref.getStringList(
                                                   'your info')[0])
                                           .addDP(
                                         crop,
                                       );
+                                       SharedPreferences pref2 = await SharedPreferences.getInstance();
+                                             await pref2.setString('dp', link);
                                       setState(() {
                                         ff = false;
                                         dpcheck = false;

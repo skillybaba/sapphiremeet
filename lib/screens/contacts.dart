@@ -99,7 +99,7 @@ class _ContactViewState extends State<ContactView> {
                             onPressed: ()async {
                               SharedPreferences pref = await SharedPreferences.getInstance();
                               info = pref.getStringList('your info');
-                              FirebaseMedia.addUser(info[2],contacts[1][index], info[0], contacts[0][index]);
+                              FirebaseMedia.addUser(info[2],contacts[1][index], info[0], contacts[0][index],info[1],contacts[2][index]);
                               Navigator.popAndPushNamed(context, '/chatpannel',
                                   arguments: {
                                     'number': contacts[0][index],

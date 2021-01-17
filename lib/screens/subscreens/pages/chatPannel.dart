@@ -63,29 +63,21 @@ class _ChatState extends State<Chat> {
                     (e != 'callhis') &&
                     (e != 'downloadablelink') &&
                     (e != 'status') &&
-                    (e != 'time'))
+                    (e != 'time')&&
+                    (data[e]!=null)
+                    )
                 ? ChatModel(
                     username: e,
                     number: e,
-                    dp: data[e]['avtar'] != null ? data[e]['avtar'] : null,
+                    dp: data[e]['avatar'] != null ? data[e]['avatar'] : null,
                   )
                 : 'null')
             .toList();
-
-        print(chatlist);
-        // chatlist.remove('null');
-        // chatlist.remove('null');
-        // chatlist.remove('null');
-        // chatlist.remove('null');
-        // chatlist.remove('null');
-        // chatlist.remove('null');
-        // chatlist.remove('null');
-        // chatlist.remove('null');
-        // chatlist.remove('null');
-        // chatlist.remove('null');
+          
+     
         while (chatlist.contains('null')) chatlist.remove('null');
 
-     
+   
         length = data.length;
       
 
@@ -140,7 +132,18 @@ class _ChatState extends State<Chat> {
       this.snap.cancel();
     check[0] = 1;
   }
-
+  void deletechat(String number) async{
+    await Firebase.initializeApp();
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+     SharedPreferences pref = await SharedPreferences.getInstance();
+    info = pref.getStringList('your info');
+    
+    var doc = firestore.doc(info[2]);
+    doc.update({
+      number:null,
+    });
+    
+  }
   @override
   Widget build(BuildContext context) {
     if (!checkcall) checkCall(context);
@@ -175,7 +178,16 @@ class _ChatState extends State<Chat> {
                 // print(dataman[chatlist[index].number]['docid']);
                 //  print(index);
                 return FlatButton(
-                   
+                   onLongPress: (){
+                     showDialog(context: context,builder: (context)=>AlertDialog(actions: [FlatButton(child: Text("Delete"),onPressed: (){
+                       Navigator.pop(context);
+                       this.deletechat(chatlist[index].number);
+                      
+                     },),FlatButton(child:Text("Back"),onPressed: (){
+                       Navigator.pop(context);
+
+                     },)],));
+                   },
                     onPressed: () {
                       check[0] = 1;
                       Navigator.popAndPushNamed(context, '/chatpannel',

@@ -11,7 +11,7 @@ class FirebaseMedia
   String text;
   String type;
   FirebaseMedia({this.file,this.user1,this.user2,this.text,this.type});
-  static void addUser(docid1,docid2,number1,number2) async{
+  static void addUser(docid1,docid2,number1,number2,name1,name2) async{
     await Firebase.initializeApp();
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     var doc1 = firestore.doc(docid1);
@@ -20,6 +20,8 @@ class FirebaseMedia
  
       doc1.update({
         number2:{
+
+         'name':name2,
          
           "docid":docid2,
         }
@@ -27,7 +29,7 @@ class FirebaseMedia
      
         doc2.update({
  number1:{
-          
+          'name':name1,
           "docid":docid1,
         }
         });

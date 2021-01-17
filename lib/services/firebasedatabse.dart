@@ -109,7 +109,7 @@ class FireBaseDataBase {
     this.dp = data;
   }
 
-  Future<void> addDP(File file, [metadata]) async {
+  Future<String> addDP(File file, [metadata]) async {
     await Firebase.initializeApp();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     StorageReference storageReference = FirebaseStorage()
@@ -122,6 +122,7 @@ class FireBaseDataBase {
     var firebase = FirebaseFirestore.instance;
     var firestore = firebase.doc(val[2]);
     await firestore.update({'DP': await ref.ref.getDownloadURL()});
+    return await ref.ref.getDownloadURL();
   }
 
   Future<void> addUser() async {

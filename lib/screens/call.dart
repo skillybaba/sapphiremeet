@@ -168,7 +168,7 @@ class _CallState extends State<Call> {
                         width: 100,
                       )
                     : SizedBox(
-                        width: 180,
+                        width: 150,
                       ),
                 IconButton(
                     icon: Icon(
@@ -181,7 +181,7 @@ class _CallState extends State<Call> {
 
                       if (info['check'][0] == 3) {
                         info['check'][0] = 0;
-                        Navigator.popAndPushNamed(context, '/home');
+                        Navigator.pop(context);
                       } else {
                         info['check'][0] = 1;
                         Navigator.pop(context);
