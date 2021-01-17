@@ -20,6 +20,12 @@ class ImageSelect {
       
 
       return File(video.path);
+    }
+      else if (this.selecttype == 'video_camera') {
+      var video = await picker.getVideo(source: ImageSource.camera);
+      
+
+      return File(video.path);
     } else
       image = await picker.getImage(source: ImageSource.gallery);
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,7 +25,7 @@ class _ChatState extends State<Chat> {
   _ChatState({List check}) {
     this.check = check;
   }
-  List chatlist = <ChatModel>[
+  List chatlist = [
     ChatModel(
         number: '+918979626196',
         username: "Kanishk",
@@ -34,17 +36,21 @@ class _ChatState extends State<Chat> {
   var dataman;
   SharedPreferences pref1;
   Map infodata;
+
   getChats() async {
+    print('onn');
     pref1 = await SharedPreferences.getInstance();
     await Firebase.initializeApp();
+    print('dd');
     SharedPreferences pref = await SharedPreferences.getInstance();
     var info = pref.getStringList('your info');
-    var doc = await FirebaseFirestore.instance.doc(info[2]).get();
-    var data = doc.data();
-    dataman = data;
-
+    var doc = FirebaseFirestore.instance.doc(info[2]);
+    print('vfd');
+   doc.snapshots().listen((event) {
+     var data = event.data();
+     dataman = data;
     setState(() {
-      if (data.length > length) {
+     
         this.chatlist = data.keys
             .map((e) => ((e != 'name') &&
                     (e != 'number') &&
@@ -57,38 +63,32 @@ class _ChatState extends State<Chat> {
                     (e != 'callhis') &&
                     (e != 'downloadablelink') &&
                     (e != 'status') &&
-                    (e != 'time'))
+                    (e != 'time')&&
+                    (data[e]!=null)
+                    )
                 ? ChatModel(
                     username: e,
                     number: e,
-                    dp: data[e]['avtar'] != null ? data[e]['avtar'] : null,
+                    dp: data[e]['avatar'] != null ? data[e]['avatar'] : null,
                   )
                 : 'null')
             .toList();
-
-        print(chatlist);
-        // chatlist.remove('null');
-        // chatlist.remove('null');
-        // chatlist.remove('null');
-        // chatlist.remove('null');
-        // chatlist.remove('null');
-        // chatlist.remove('null');
-        // chatlist.remove('null');
-        // chatlist.remove('null');
-        // chatlist.remove('null');
-        // chatlist.remove('null');
+          
+     
         while (chatlist.contains('null')) chatlist.remove('null');
 
-     
+   
         length = data.length;
       
-      }
+
     });
+    });
+    
 
     flag = false;
     
   }
-
+  StreamSubscription<DocumentSnapshot> snap;
   bool checkcall = false;
   void checkCall(context) async {
     checkcall = true;
@@ -97,12 +97,11 @@ class _ChatState extends State<Chat> {
     await Firebase.initializeApp();
     var doc = FirebaseFirestore.instance;
     var ref = doc.doc(info[2]);
-    while (check[0] == 0) {
-      var dataref = await ref.get();
-      var data1 = dataref.data();
+    this.snap=ref.snapshots().listen((event) { 
+       var data1 = event.data();
       print('allcool');
     
-      if ((check[0] == 0) &&
+      if (
           ((data1['receving'] != null) && (data1['receving'])) &&
           (((data1['calling'] == null) || (!data1['calling'])) &&
               ((data1['connected'] == null) || (!data1['connected'])))) {
@@ -117,24 +116,38 @@ class _ChatState extends State<Chat> {
         });
 
         check[0] = 3;
-      }
-    }
+      }});
+     
+    
   }
 
   void initState() {
     super.initState();
+    getChats();
     check[0] = 0;
   }
 
   void dispose() {
     super.dispose();
+      this.snap.cancel();
     check[0] = 1;
   }
-
+  void deletechat(String number) async{
+    await Firebase.initializeApp();
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+     SharedPreferences pref = await SharedPreferences.getInstance();
+    info = pref.getStringList('your info');
+    
+    var doc = firestore.doc(info[2]);
+    doc.update({
+      number:null,
+    });
+    
+  }
   @override
   Widget build(BuildContext context) {
     if (!checkcall) checkCall(context);
-    getChats();
+    
     if (!flag)
       return CustomScrollView(
         slivers: [
@@ -165,7 +178,16 @@ class _ChatState extends State<Chat> {
                 // print(dataman[chatlist[index].number]['docid']);
                 //  print(index);
                 return FlatButton(
-                   
+                   onLongPress: (){
+                     showDialog(context: context,builder: (context)=>AlertDialog(actions: [FlatButton(child: Text("Delete"),onPressed: (){
+                       Navigator.pop(context);
+                       this.deletechat(chatlist[index].number);
+                      
+                     },),FlatButton(child:Text("Back"),onPressed: (){
+                       Navigator.pop(context);
+
+                     },)],));
+                   },
                     onPressed: () {
                       check[0] = 1;
                       Navigator.popAndPushNamed(context, '/chatpannel',

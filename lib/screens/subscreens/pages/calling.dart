@@ -5,7 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:loading_overlay/loading_overlay.dart';
-
+import "dart:async";
 class Calling extends StatefulWidget {
   List check;
   Calling({List check}) {
@@ -22,48 +22,91 @@ class _CallingState extends State<Calling> {
   }
   List info;
   bool isloading = false;
-  var reflist;
-  List<CallingModel> callinglist = <CallingModel>[];
+
+  var reflist={};
+  List callinglist = [];
   Future<bool> getData() async {
     await Firebase.initializeApp();
     SharedPreferences pref = await SharedPreferences.getInstance();
     info = pref.getStringList('your info');
     var ref = FirebaseFirestore.instance;
     var doc = ref.doc(info[2]);
-    var getvals = await doc.get();
-    var data = getvals.data()['callhis'];
-    callinglist = [];
-    reflist = {};
-    if (data != null)
-      for (var i in data) {
-        if (!reflist.keys.contains(i['number']))
+    this.snap = doc.collection("calling").snapshots().listen((event) {  
+     event.docChanges.forEach((element) {
+ var data =element.doc.data();
+     
+        if (!reflist.keys.contains(data['number']))
           callinglist.add(CallingModel(
-              name: i['name'],
-              docid: i['docid'],
-              number: i['number'],
-              type: i['type']));
-        if (reflist.containsKey(i['number']))
-          reflist[i['number']]++;
+              name: data['name'],
+              docid: data['docid'],
+              number: data['number'],
+              type: data['type']));
+        if (reflist.containsKey(data['number']))
+          reflist[data['number']]++;
         else
-          reflist[i['number']] = 1;
+          reflist[data['number']] = 1;
        
-      }
+      });
+ 
+  
+   
     setState(() {
       if (!flag) flag = true;
      
     });
+    });
+   
     return true;
   }
+  StreamSubscription snap;
+    StreamSubscription snap2;
+  void checkCall(context) async {
+    this.call=false;
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    info = pref.getStringList('your info');
+    await Firebase.initializeApp();
+    var doc = FirebaseFirestore.instance;
+    var ref = doc.doc(info[2]);
+   this.snap2=ref.snapshots().listen((event) { 
+       var data1 = event.data();
+      print('allcool');
+    
+      if (
+          ((data1['receving'] != null) && (data1['receving'])) &&
+          (((data1['calling'] == null) || (!data1['calling'])) &&
+              ((data1['connected'] == null) || (!data1['connected'])))) {
+        Navigator.pushNamed(context, '/caller', arguments: {
+          'number': data1['caller'][0],
+          'type': 'receving',
+          
+          'recever': data1['caller'][2],
+          'caller': info[2],
+          'check': check,
+          'channelid': data1['channelid']
+        });
 
+        check[0] = 3;
+      }});
+     
+    
+  }
+  bool call=true;
   bool flag = false;
   void initState() {
     super.initState();
-    check[0] = 32323;
+    
+ 
+    getData();
   }
-
+ void dispose()
+ {
+  super.dispose();
+  this.snap.cancel();
+  this.snap2.cancel();
+ }
   @override
   Widget build(BuildContext context) {
-    getData();
+  if(this.call)this.checkCall(context);
     if (flag)
       return LoadingOverlay(
         child: CustomScrollView(
@@ -137,29 +180,22 @@ class _CallingState extends State<Calling> {
                                       (callinglist[index].number.substring(1) +
                                           info[0].substring(1))
                                 });
-                                List caller = data1['callhis'];
-                                List recever = data2['callhis'];
-                                if (caller == null) caller = [];
-                                if (recever == null) recever = [];
-                                caller.add({
-                                  'type': 'calling',
-                                  'number': callinglist[index].number,
-                                  'name': callinglist[index].name,
-                                  'docid': callinglist[index].docid,
-                                });
-
-                                recever.add({
-                                  'type': 'receving',
+                            
+                                doc.collection('calling').add(
+                                  {
+                                      'type': 'receving',
                                   'number': info[0],
                                   'name': info[1],
                                   'docid': info[2],
-                                });
-                                doc.update({
-                                  'callhis': recever,
-                                });
-                                doc2.update({
-                                  'callhis': caller,
-                                });
+                                  }
+                                );
+                                
+                               doc2.collection('calling').add({
+                                    'type': 'calling',
+                                  'number': callinglist[index].number,
+                                  'name': callinglist[index].name,
+                                  'docid': callinglist[index].docid,
+                               });
                                 setState(() {
                                   isloading = false;
                                 });

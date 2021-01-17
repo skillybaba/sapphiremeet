@@ -5,43 +5,40 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 
+import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'dart:async';
+
 class Sapphireweb extends StatefulWidget {
   @override
   _SapphirewebState createState() => _SapphirewebState();
 }
 
 class _SapphirewebState extends State<Sapphireweb> {
-  void func(BuildContext context) async {
+  GlobalKey qrKey = GlobalKey();
+  void func(BuildContext context,codedata) async {
+  
     await Firebase.initializeApp();
     var firestore = FirebaseFirestore.instance;
     var doc = firestore.doc('web/0ysJuZ64RshAHyBnbMqc');
     SharedPreferences pref = await SharedPreferences.getInstance();
     var code = pref.getStringList('your info');
-    var doccode = pref.getString('userdocid').split('/');
-    print(doccode);
-    var codedata =
-        code[1] + doccode[1] + DateTime.now().toString().split(' ')[0]+ DateTime.now().toString().split('.')[0];
-    print(codedata);
+    
+   
     doc.update({
       codedata: pref.getString('userdocid'),
+      
     });
-    showDialog(
-        context: context,
-        child: AlertDialog(
-          content: Text(codedata),
-          title: Text('your code'),
-          actions: [
-            IconButton(
-              onPressed: () {
-                Clipboard.setData(ClipboardData(text: codedata));
-                Toast.show('Copied', context);
-              },
-              icon: Icon(Icons.copy),
-            )
-          ],
-        ));
+  
+    Toast.show('Logged_in', context);
+    
+    
+  
+    
   }
 
+
+  QRViewController controller;
+  StreamSubscription<Barcode> sub;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,17 +47,16 @@ class _SapphirewebState extends State<Sapphireweb> {
           title: Text('Sapphire-Web'),
           centerTitle: true,
         ),
-        body: Center(
-          child: RaisedButton(
-            color: Colors.yellow[800],
-            onPressed: () {
-              func(context);
-            },
-            child: Text(
-              'Generate Code',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ));
+        body: Stack(children:[
+         
+          QRView(key:qrKey,onQRViewCreated: (controller){
+          this.controller=controller;
+          this.sub=this.controller.scannedDataStream.listen((event) { 
+            
+          this.func(context, event.code);
+          
+            });
+          
+        },), Container(margin: EdgeInsets.all(30),child: Text("Scan your QR code",style: TextStyle(color: Colors.yellow[800],fontSize: 30),),),]));
   }
 }

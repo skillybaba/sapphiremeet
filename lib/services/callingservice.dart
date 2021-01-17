@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:jitsi_meet/feature_flag/feature_flag_enum.dart';
 import 'package:jitsi_meet/jitsi_meet.dart';
 import 'package:jitsi_meet/jitsi_meeting_listener.dart';
@@ -28,27 +30,33 @@ class CallingService {
     FeatureFlagEnum.TILE_VIEW_ENABLED: false,
     FeatureFlagEnum.RECORDING_ENABLED: false,
   };
+
   check() async {
     try {
-      while (true) {
+
+     
         await Firebase.initializeApp();
-        var doc = FirebaseFirestore.instance.doc(this.caller);
+    
         var doc2 = FirebaseFirestore.instance.doc(this.recever);
-        var data1ref = await doc.get();
-        var data2ref = await doc2.get();
+       snap=doc2.snapshots().listen((event) async { 
+    var doc = FirebaseFirestore.instance.doc(this.caller);
+  var data1ref = await doc.get();
         var data1 = data1ref.data();
-        var data2 = data2ref.data();
+        var data2 = event.data();
         if (((data1['connected'] == null) || (!data1['connected'])) &&
             (data1['connected'] || (!data2['connected']))) {
           JitsiMeet.closeMeeting();
-          break;
-        }
-      }
+          
+        }});
+       
+     
+   
+ 
     } catch (e) {
       print(e);
     }
   }
-
+StreamSubscription<DocumentSnapshot> snap;
   fun() async {
     try {
       await Firebase.initializeApp();
@@ -74,6 +82,8 @@ class CallingService {
             onConferenceJoined: ({Map<dynamic, dynamic> message}) {
           check();
         }, onConferenceTerminated: ({Map<dynamic, dynamic> message}) {
+          snap.cancel();
+          
           fun();
         }));
   }

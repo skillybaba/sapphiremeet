@@ -26,7 +26,7 @@ class Conf_Service {
     this.type = type;
     this.confinfo = confinfo;
   }
-
+  
   hostMeet() async {
     print(1);
     await Firebase.initializeApp();
@@ -38,6 +38,10 @@ class Conf_Service {
         (inst.getString('userdocid') != null)) {
       userref = ref.doc(inst.getString('userdocid'));
       userefdata = await userref.get();
+      Future.delayed(userefdata.data()['account']=="free"?Duration(hours: 1):Duration(days: 1),()
+      {
+        JitsiMeet.closeMeeting();
+      });
       if ((userefdata.data()['time'] != null) &&
           (DateTime.now().isAfter(userefdata.data()['time'].toDate())))
         await userref.update({
@@ -56,7 +60,7 @@ class Conf_Service {
     options.subject = this.subject;
     options.userDisplayName = this.username;
     options.userEmail = this.email;
-    options.videoMuted = false;
+    options.videoMuted = true;
     options.audioMuted = false;
 
     options.featureFlags
