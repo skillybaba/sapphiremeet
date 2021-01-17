@@ -43,5 +43,7 @@ Confrence Calling Application
 1. share_extend
 1. just_audio
 1. flutter_gradient_colors
+1. qr_code_scanner: ^0.2.1
+1. adaptive_theme: ^1.1.0
 
 
