@@ -45,5 +45,7 @@ Confrence Calling Application
 1. flutter_gradient_colors
 1. qr_code_scanner: ^0.2.1
 1. adaptive_theme: ^1.1.0
+1. firebase_messaging: ^7.0.3
+1. http: ^0.12.2
 
 
