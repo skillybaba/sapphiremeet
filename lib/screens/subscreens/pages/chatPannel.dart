@@ -64,6 +64,7 @@ class _ChatState extends State<Chat> {
                     (e != 'downloadablelink') &&
                     (e != 'status') &&
                     (e != 'time')&&
+                    (e!="notiToken")&&
                     (data[e]!=null)
                     )
                 ? ChatModel(

@@ -10,7 +10,9 @@ import 'package:toast/toast.dart';
 import '../services/imageselectservice.dart';
 import '../services/firebasedatabse.dart';
 import '../models/Usermodel.dart';
+import "dart:convert";
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:http/http.dart';
 import "../services/firebasemedia.dart";
 
 class ChatPannel extends StatefulWidget {
@@ -34,10 +36,14 @@ class _ChatPannelState extends State<ChatPannel> {
   bool retrivedp = false;
   Map chats={};
   Map useravatar = {};
+  String serverToken;
+  
   var snap;
   void initState()
   {
+
     super.initState();
+    
       (()async{
       this.thememode = await AdaptiveTheme.getThemeMode();
 
@@ -133,9 +139,14 @@ bool loading=false;
   @override
   Widget build(BuildContext context) {
     this.data = ModalRoute.of(context).settings.arguments;
+    if(this.serverToken==null)(()async{
+     this.serverToken= await FirebaseMedia.serverToken(data['docid']);
+     setState((){});
+
+    })();
   if(!this.retrivedp) getAvatar();
     if(this.retrive) messageRetrive();
-    if((!this.retrive)||(this.retrivedp))
+    if((!this.retrive)||(this.retrivedp)||(this.serverToken!=null))
     return Scaffold(appBar: AppBar(actions: [IconButton(icon: Icon(Icons.call),onPressed: ()async {
 
                   setState(() {
@@ -388,7 +399,25 @@ bool loading=false;
   'video':message.video,
  });
 
-
+var post_data = await  post("'https://fcm.googleapis.com/fcm/send',",headers: <String,String>{
+'Content-Type': 'application/json',
+       'Authorization': 'key=${pref.getString('tokenValue')}',
+      
+},body:  jsonEncode(
+     <String, dynamic>{
+       'notification': <String, dynamic>{
+         'body': {"name":"${data['name']}","message":message.text},
+         'title': 'message'
+       },
+       'priority': 'high',
+       'data': <String, dynamic>{
+         'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+         'id': '1',
+         'status': 'done'
+       },
+       'to': this.serverToken
+     },
+    ),);
      
     },user: ChatUser(firstName:info[1]),)));
     
