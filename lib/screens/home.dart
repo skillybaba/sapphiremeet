@@ -303,6 +303,7 @@ class _HomeState extends State<Home> {
             title: Text(
               'CALCULATOR',
             )),
+        
         ListTile(
             subtitle: Text('click here to inspect settings'),
             onTap: () {
@@ -413,6 +414,7 @@ class _HomeState extends State<Home> {
                   ),
                   label: Text('Call',
                       style: TextStyle(color: Colors.white, fontSize: 15))),
+                      
               FlatButton.icon(
                   color: Colors.yellow[800],
                   onPressed: () {
