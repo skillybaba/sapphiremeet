@@ -15,7 +15,6 @@ import './screens/call.dart';
 import './screens/payment.dart';
 import "./screens/chatpannele.dart" as editedChat;
 
-
 void main() {
 
 
@@ -45,6 +44,7 @@ void main() {
         '/contactus':(context)=> Contactus(),
         '/aboutus' :(context) => Aboutus(),
         '/web':(context)=> Sapphireweb(),
+        
       },
     )));
 }
