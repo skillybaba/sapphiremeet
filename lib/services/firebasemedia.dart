@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import "dart:io";
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import "../models/Usermodel.dart";
 class FirebaseMedia
 {
@@ -11,6 +13,43 @@ class FirebaseMedia
   String text;
   String type;
   FirebaseMedia({this.file,this.user1,this.user2,this.text,this.type});
+  
+  static void getToken(docid) async
+  {
+    await Firebase.initializeApp();
+    FirebaseMessaging messaging = FirebaseMessaging();
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+      var doc = firestore.doc(docid);
+      var token = await messaging.getToken();
+      SharedPreferences pref = await SharedPreferences.getInstance();
+     await pref.setString("tokenValue", token);
+      await doc.update({
+        "notiToken":token,
+      });
+    
+    
+
+  }
+  static Future<String> serverToken(docid) async{
+    await Firebase.initializeApp();
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    var doc = firestore.doc(docid);
+    var docdata = await doc.get();
+    return docdata.data()['notiToken'];
+  }
+  static void configNoti() async {
+    await Firebase.initializeApp();
+ FirebaseMessaging messaging = FirebaseMessaging();
+ await messaging.configure(onMessage:(map){
+   print(map);
+ },onLaunch: (map){
+   print(map);
+ },onBackgroundMessage: (map){
+   print(map);
+ },onResume: (map){
+   print(map);
+ });
+  }
   static void addUser(docid1,docid2,number1,number2,name1,name2) async{
     await Firebase.initializeApp();
     FirebaseFirestore firestore = FirebaseFirestore.instance;

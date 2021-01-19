@@ -12,6 +12,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
+import '../services/firebasemedia.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -25,10 +26,25 @@ class _HomeState extends State<Home> {
   AdaptiveThemeMode thememode ;
 
   List check = [0];
+
   GlobalKey<ScaffoldState> key = GlobalKey<ScaffoldState>();
+
   PageController controller = PageController(initialPage: 2);
+  tokenSaved() async{
+    SharedPreferences pref= await SharedPreferences.getInstance();
+    var docid = pref.getStringList('your info')[2];
+    if(!pref.containsKey("token"))
+    {
+    FirebaseMedia.getToken(docid);
+    pref.setBool("token", true);
+    }
+
+  }
   logout() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.remove("token");
     await AuthVals().deleteVals('userinfo', 'auth');
+    
     Navigator.pushReplacementNamed(context, '/');
   }
 
@@ -40,8 +56,9 @@ class _HomeState extends State<Home> {
   }
 
   void initState() {
+    FirebaseMedia.configNoti();
     super.initState();
-   
+   tokenSaved();
     prefs();
   }
 

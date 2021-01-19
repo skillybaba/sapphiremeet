@@ -236,10 +236,7 @@ class _ConfrenceState extends State<Confrence> {
                                                       meetingname.text+rand.toString(),
                                                   subject: "subject:" +
                                                       meetingname.text,
-                                                  username: details[0]
-                                                          .replaceAll("+", "") +
-                                                      " " +
-                                                      details[1],
+                                                  username: details[1],
                                                 ).hostMeet();
                                                 Navigator.pop(context);
                                               } catch (e) {
