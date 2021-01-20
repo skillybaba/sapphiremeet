@@ -399,7 +399,7 @@ bool loading=false;
   'video':message.video,
  });
 
-var post_data = await  post("'https://fcm.googleapis.com/fcm/send',",headers: <String,String>{
+post("'https://fcm.googleapis.com/fcm/send',",headers: <String,String>{
 'Content-Type': 'application/json',
        'Authorization': 'key=${pref.getString('tokenValue')}',
       
