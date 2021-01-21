@@ -195,6 +195,9 @@ class _ConfrenceState extends State<Confrence> {
                           ),
                         ),
                         actions: [
+                          FlatButton.icon(onPressed: (){
+                            Navigator.pop(context);
+                          },label: Text("Close"),icon: Icon(Icons.close),),
                           FlatButton(
                               onPressed: () {
                                 Navigator.pop(context);

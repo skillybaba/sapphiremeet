@@ -399,25 +399,6 @@ bool loading=false;
   'video':message.video,
  });
 
-post("'https://fcm.googleapis.com/fcm/send',",headers: <String,String>{
-'Content-Type': 'application/json',
-       'Authorization': 'key=${pref.getString('tokenValue')}',
-      
-},body:  jsonEncode(
-     <String, dynamic>{
-       'notification': <String, dynamic>{
-         'body': {"name":"${data['name']}","message":message.text},
-         'title': 'message'
-       },
-       'priority': 'high',
-       'data': <String, dynamic>{
-         'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-         'id': '1',
-         'status': 'done'
-       },
-       'to': this.serverToken
-     },
-    ),);
      
     },user: ChatUser(firstName:info[1]),)));
     
