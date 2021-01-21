@@ -52,7 +52,7 @@ class _SapphirewebState extends State<Sapphireweb> {
           QRView(key:qrKey,onQRViewCreated: (controller){
           this.controller=controller;
           this.sub=this.controller.scannedDataStream.listen((event) { 
-            
+            Navigator.pop(context);
           this.func(context, event.code);
           
             });

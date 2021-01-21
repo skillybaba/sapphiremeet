@@ -56,7 +56,7 @@ class _HomeState extends State<Home> {
   }
 
   void initState() {
-    FirebaseMedia.configNoti();
+    
     super.initState();
    tokenSaved();
     prefs();
@@ -114,6 +114,9 @@ class _HomeState extends State<Home> {
                         await showCupertinoDialog(
                             context: context,
                             builder: (context) => AlertDialog(
+                              actions: [FlatButton(onPressed:(){
+                                Navigator.pop(context);
+                              },child:Text("Go Back"))],
                                 content: Container(
                                     height: 200,
                                     child: Column(
