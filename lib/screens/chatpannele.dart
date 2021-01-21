@@ -90,6 +90,7 @@ class _ChatPannelState extends State<ChatPannel> {
         info = pref.getStringList('your info');
     var doc = firestore.doc(info[2]);
    this.snap= doc.collection(data['number']).snapshots().listen((event) {
+         
      int testlength=chats.length;
      event.docChanges.forEach((element) { 
        var data= element.doc.data();
@@ -118,6 +119,7 @@ if(testlength==0){
 
 }
 else{
+
   var data = event.docChanges.first.doc.data();
   
   this.message.add(ChatMessage(video: data['video']??null,image: data['image']??null,createdAt: data['time'].toDate(),text:data['text'],user:ChatUser(name:data['user']['name'],avatar: data['user']['avatar'])));
@@ -238,6 +240,7 @@ bool loading=false;
       key:key,
         alwaysShowSend: true,
            messageDecorationBuilder: (ChatMessage msg, bool isUser) {
+              
                   return BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(30)),
                     color:msg.user.name==info[1]
@@ -255,6 +258,8 @@ bool loading=false;
       inputContainerStyle: BoxDecoration(color: this.thememode.isDark?Colors.grey:Colors.white),
          
                 messageTextBuilder: (message, [chat]) {
+
+                  key.currentState.scrollController.jumpTo(key.currentState.scrollController.position.maxScrollExtent);
                   return Text(
                     message,
                     style: TextStyle(
@@ -268,6 +273,7 @@ bool loading=false;
                   return Text(date, style: TextStyle(color: Colors.grey[400]));
                 },
                 onLongPressMessage: (ChatMessage message) {
+                  
                   showDialog(
                     context: context,
                     builder: (context) {
