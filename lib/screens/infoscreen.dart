@@ -1,6 +1,6 @@
 import 'package:application/services/firebasedatabse.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+// import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:application/services/authvals.dart';
 
 class InfoScreen extends StatefulWidget {
@@ -32,24 +32,24 @@ class _InfoScreenState extends State<InfoScreen> {
                     ),
                     hintText: 'What People Should Call You'),
               )),
-          FlatButton.icon(
-              onPressed: () {
-                DatePicker.showDatePicker(context, showTitleActions: true,
-                    onConfirm: (date) {
-                  setState(() {
-                    dob = date;
-                  });
-                }, currentTime: dob,minTime: DateTime(1947));
-              },
-              icon: Icon(
-                Icons.date_range,
-                color: Colors.yellow[800],
-                size: 40,
-              ),
-              label: Text('Enter Your DOB',
-                  style: TextStyle(
-                    color: Colors.yellow[800],
-                  ))),
+          // FlatButton.icon(
+          //     onPressed: () {
+          //       DatePicker.showDatePicker(context, showTitleActions: true,
+          //           onConfirm: (date) {
+          //         setState(() {
+          //           dob = date;
+          //         });
+          //       }, currentTime: dob,minTime: DateTime(1947));
+          //     },
+          //     icon: Icon(
+          //       Icons.date_range,
+          //       color: Colors.yellow[800],
+          //       size: 40,
+          //     ),
+          //     label: Text('Enter Your DOB',
+          //         style: TextStyle(
+          //           color: Colors.yellow[800],
+          //         ))),
           SizedBox(
             height: 30,
           ),
