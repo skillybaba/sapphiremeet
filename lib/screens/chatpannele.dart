@@ -125,6 +125,7 @@ else{
   this.message.add(ChatMessage(video: data['video']??null,image: data['image']??null,createdAt: data['time'].toDate(),text:data['text'],user:ChatUser(name:data['user']['name'],avatar: data['user']['avatar'])));
 
 }
+key.currentState.scrollController.jumpTo(key.currentState.scrollController.position.maxScrollExtent);
 setState(() {
   
 });
@@ -259,7 +260,7 @@ bool loading=false;
          
                 messageTextBuilder: (message, [chat]) {
 
-                  key.currentState.scrollController.jumpTo(key.currentState.scrollController.position.maxScrollExtent);
+                  
                   return Text(
                     message,
                     style: TextStyle(
@@ -379,7 +380,7 @@ bool loading=false;
         info = pref.getStringList('your info');
         var doc1 = firestore.doc(info[2]);
         var doc2 = firestore.doc(data['docid']);
-  doc1.collection(data['number']).add({
+  await doc1.collection(data['number']).add({
   "user":{
     "name":info[1],
     'docid':data['docid'],
@@ -391,7 +392,7 @@ bool loading=false;
   'video':message.video,
   'time':DateTime.now(),
  });
- doc2.collection(info[0]).add({
+ await doc2.collection(info[0]).add({
  "user":{
     "name":info[1],
     'docid':data['docid'],

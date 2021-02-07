@@ -36,7 +36,7 @@ dependencies:
   dotted_line: ^2.0.1
   permission_handler: ^5.0.1+1
   contacts_service: ^0.4.6
-  flutter_datetime_picker: ^1.4.0
+  # flutter_datetime_picker: ^1.4.0
   shared_preferences: '>=0.5.12<2.0.0'
   flutter_spinkit: "^4.1.2"
   firebase_storage: ^4.0.0
