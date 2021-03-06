@@ -52,7 +52,7 @@ android {
         multiDexEnabled true
 
         versionCode 9
-        versionName "2.0.1"
+        versionName "2.0.2"
     }
      signingConfigs {
        release {
