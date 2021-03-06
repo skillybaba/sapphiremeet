@@ -55,8 +55,8 @@ class Conf_Service {
 
     print(this.roomid);
     options.room = this.roomid;
-    options.serverURL =
-        'https://h121ran717133kan4xweyzacassacv.sapphiremeet.in/';
+    // options.serverURL =
+    //     'https://h121ran717133kan4xweyzacassacv.sapphiremeet.in/';
     options.subject = this.subject;
     options.userDisplayName = this.username;
     options.userEmail = this.email;
