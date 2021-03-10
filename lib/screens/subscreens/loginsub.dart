@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:application/services/authvals.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:application/services/firebasedatabse.dart';
+var _debugLocked=false;
 
 class LoginSub extends StatefulWidget {
   @override
@@ -36,16 +37,16 @@ class _LoginSubState extends State<LoginSub> {
                 if (vals != null) {
                   if (vals[0] != null) {
                     if ((vals[0].length > 0) && (vals[0][0] == number)) {
-                      Navigator.pop(context);
+                      // Navigator.pop(context);
                       Navigator.popAndPushNamed(context, '/home');
                     } else {
-                      Navigator.pop(context);
+                      // Navigator.pop(context);
                       Navigator.popAndPushNamed(context, '/info', arguments: {
                         'number': number,
                       });
                     }
                   } else {
-                    Navigator.pop(context);
+                    // Navigator.pop(context);
                     Navigator.popAndPushNamed(context, '/info', arguments: {
                       'number': number,
                     });
@@ -68,7 +69,7 @@ class _LoginSubState extends State<LoginSub> {
                   return AlertDialog(
                     title: Text('Enter the OTP'),
                     actions: [
-                      FlatButton(
+                      TextButton(
                         onPressed: () async {
                           var credential = PhoneAuthProvider.credential(
                               verificationId: verification,
@@ -142,6 +143,7 @@ class _LoginSubState extends State<LoginSub> {
                                       });
                                 }
                               } else {
+                                
                                 Navigator.pop(context);
                                 Navigator.popAndPushNamed(context, '/info',
                                     arguments: {
@@ -189,7 +191,7 @@ class _LoginSubState extends State<LoginSub> {
                       borderRadius: BorderRadius.circular(30))),
             ),
             SizedBox(height: 30),
-            FlatButton.icon(
+            TextButton.icon(
                 onPressed: () {
                   String number = s1.toString() + controller.text;
                   print(number);
