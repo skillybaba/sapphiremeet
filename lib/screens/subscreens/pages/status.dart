@@ -115,16 +115,16 @@ class _StatusState extends State<Status> {
           SliverList(delegate:
               SliverChildBuilderDelegate((BuildContext context, int index) {
             if (index == 0)
-              return FlatButton(
+              return TextButton(
                   onPressed: () {
                     var image;
                     var info = prefs.getStringList('your info');
                     showDialog(
                       context: context,
-                      child: AlertDialog(
+                      builder:(context)=> AlertDialog(
                         title: Text('From'),
                         actions: [
-                          FlatButton(
+                          TextButton(
                               onPressed: () async {
                                 image = await ImageSelect(
                                         context: context, selecttype: 'camera')
@@ -145,7 +145,7 @@ class _StatusState extends State<Status> {
                                 });
                               },
                               child: Text('From Camera')),
-                          FlatButton(
+                          TextButton(
                               onPressed: () async {
                                 image = await ImageSelect(
                                   context: context,
